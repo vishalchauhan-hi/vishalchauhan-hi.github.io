@@ -22,9 +22,6 @@
   <meta property="og:url" content="https://vishalchauhan-hi.github.io/" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="canonical" href="https://vishalchauhan-hi.github.io/" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Source+Sans+3:wght@400;500;600;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&amp;display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/style.css" />
   <link rel="icon" href="favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
@@ -564,7 +561,7 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
             </p>
             <p class="hero-tagline">
               Designing <em>interactions for autonomous vehicles, robots, and the smart cities they move through</em> —
-              so humans and machines share space better, with Human Intelligence(HI) in the lead.
+              so humans and machines share space better, with Human Intelligence (HI) in the lead.
             </p>
             <ul class="keyword-row" aria-label="Research areas">
               <li>Human–Computer Interaction (HCI)</li>
@@ -620,7 +617,7 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
           <span class="kw" data-el="av" role="button" tabindex="0">autonomous vehicles</span>,
           <span class="kw" data-el="robot" role="button" tabindex="0">robots</span>, and
           <span class="kw" data-el="drone" role="button" tabindex="0">intelligent systems</span>
-          — and how these systems can communicate back more clearly. My doctoral work at
+          — and how these systems can communicate back more clearly. My research at
           <a class="kw" data-el="tower" href="https://www.u-tokyo.ac.jp/en/">The University of Tokyo</a>
           centers on the
           <span class="kw" data-el="pole" role="button" tabindex="0"><strong>Smart Pole Interaction Unit (SPIU)</strong></span>,
@@ -1334,7 +1331,7 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
         <ul class="news-list">
           <li>
             <span class="news-date">Aug–Sep 2026</span>
-            <span>Will deliver a talk titled  <em>“Who Goes First? Reducing Pedestrian Decision-Making Burden with Infrastructure-Side eHMI in Shared Spaces”</em> at the <a href="https://civ-summerschool.org/" target="_blank" rel="noopener"><strong>CIV Summer School 2026</strong></a> in Miyazaki, Japan.</span>
+            <span>Delivered an invited talk, <em>“Who Goes First? Reducing Pedestrian Decision-Making Burden with Infrastructure-Side eHMI in Shared Spaces”</em>, at the <a href="https://civ-summerschool.org/" target="_blank" rel="noopener"><strong>CIV Summer School 2026</strong></a> in Miyazaki, Japan (<a href="moments.html">photos</a>).</span>
           </li>
           <li>
             <span class="news-date">Apr 2026</span>
@@ -1988,148 +1985,56 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
           }
         </style>
         <style>
-          /* ── Research agenda: colourful theme ── */
+          /* ── Research agenda: one colour per area, flat ── */
           #research{
-            --rs-green:#2f9e6a;
-            --rs-teal:#0f9bb0;
-            --rs-blue:#4b6fe6;
-            --rs-orange:#f08a3c;
-            --rs-plum:#9b5de5;
+            --rs-green:#2e8b5e;
+            --rs-teal:#12879a;
+            --rs-blue:#3a63c9;
+            --rs-orange:#e07b2f;
           }
           [data-theme="dark"] #research{
-            --rs-green:#5ed49b;
-            --rs-teal:#4fd2e4;
-            --rs-blue:#8fa8ff;
-            --rs-orange:#ffab6b;
-            --rs-plum:#c79bff;
+            --rs-green:#6cc79a;
+            --rs-teal:#5cc6d6;
+            --rs-blue:#8fa9f5;
+            --rs-orange:#f0a468;
           }
-          #research .rs-intro h2{
-            background:linear-gradient(95deg,var(--rs-green) 0%,var(--rs-teal) 45%,var(--rs-blue) 100%);
-            -webkit-background-clip:text;
-            background-clip:text;
-            color:transparent;
-          }
-          #research .rs-principle{
-            padding:.9rem 1rem .9rem 1.1rem;
-            border-left:3px solid var(--rs-orange);
-            border-radius:0 14px 14px 0;
-            background:linear-gradient(135deg,
-              color-mix(in srgb,var(--rs-orange) 12%,transparent),
-              color-mix(in srgb,var(--rs-plum) 8%,transparent));
-          }
-          #research .rs-principle strong{color:var(--rs-orange)}
-          #research .rs-live{
-            padding:.75rem 1rem;
-            border:1px solid color-mix(in srgb,var(--rs-orange) 30%,var(--rule));
-            border-radius:14px;
-            background:linear-gradient(90deg,
-              color-mix(in srgb,var(--rs-orange) 10%,transparent),
-              color-mix(in srgb,var(--rs-blue) 6%,transparent));
-          }
-          #research .rs-live-hint{grid-column:2;margin-top:-.2rem}
-          #research .rs-live-state{
-            padding:.25rem .6rem;
-            border-radius:999px;
-            color:#fff;
-            background:linear-gradient(90deg,var(--rs-green),var(--rs-teal));
-          }
-          #research .rs-signal-path::before{
-            height:3px;
-            top:74px;
-            border-radius:3px;
-            opacity:1;
-            background:linear-gradient(90deg,var(--rs-green),var(--rs-teal),var(--rs-blue));
-          }
+          #research .rs-principle{border-left-color:var(--rs-orange)}
+          #research .rs-signal-path::before{height:2px;top:74px;opacity:.9}
           #research .rs-domain{
-            padding:.9rem .9rem 1.1rem;
-            margin:-.45rem;
-            border:1px solid color-mix(in srgb,var(--rs-domain) 22%,var(--rule));
-            border-radius:22px;
-            background:linear-gradient(180deg,
-              color-mix(in srgb,var(--rs-domain) 9%,var(--paper)) 0%,
-              color-mix(in srgb,var(--rs-domain) 3%,var(--paper)) 55%,
-              var(--paper) 100%);
-            box-shadow:0 14px 34px -28px var(--rs-domain);
-          }
-          #research .rs-domain::before{
-            content:"";
-            position:absolute;
-            top:0;left:14%;right:14%;
-            height:4px;
-            border-radius:0 0 6px 6px;
-            background:linear-gradient(90deg,var(--rs-domain),color-mix(in srgb,var(--rs-domain) 55%,var(--rs-orange)));
+            padding:0 1.1rem 1.2rem;
+            margin:0;
+            border-top:3px solid var(--rs-domain);
+            border-radius:0;
+            background:none;
           }
           #research .rs-domain:is(:hover,:focus-visible,.is-active){
-            background:linear-gradient(180deg,
-              color-mix(in srgb,var(--rs-domain) 16%,var(--paper)) 0%,
-              color-mix(in srgb,var(--rs-domain) 5%,var(--paper)) 60%,
-              var(--paper) 100%);
-            border-color:color-mix(in srgb,var(--rs-domain) 45%,var(--rule));
+            background:color-mix(in srgb,var(--rs-domain) 5%,transparent);
           }
           #research .rs-scene{
-            border:2px solid color-mix(in srgb,var(--rs-domain) 55%,transparent);
-            background:
-              radial-gradient(circle at 35% 30%,#fff 0%,transparent 55%),
-              radial-gradient(circle at 70% 75%,color-mix(in srgb,var(--rs-domain) 34%,var(--paper)) 0%,color-mix(in srgb,var(--rs-domain) 16%,var(--paper)) 100%);
-            box-shadow:
-              0 0 0 8px color-mix(in srgb,var(--rs-domain) 9%,transparent),
-              0 20px 40px -26px var(--rs-domain);
+            margin-top:1.4rem;
+            border:1.5px solid color-mix(in srgb,var(--rs-domain) 60%,transparent);
+            background:color-mix(in srgb,var(--rs-domain) 10%,var(--paper));
+            box-shadow:none;
           }
-          [data-theme="dark"] #research .rs-scene{
-            background:
-              radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--rs-domain) 20%,transparent) 0%,transparent 55%),
-              radial-gradient(circle at 70% 75%,color-mix(in srgb,var(--rs-domain) 30%,var(--paper)) 0%,color-mix(in srgb,var(--rs-domain) 12%,var(--paper)) 100%);
-          }
+          #research .rs-domain:hover .rs-scene,
           #research .rs-domain.is-active .rs-scene{
-            box-shadow:
-              0 0 0 10px color-mix(in srgb,var(--rs-domain) 14%,transparent),
-              0 0 40px color-mix(in srgb,var(--rs-domain) 35%,transparent),
-              0 22px 46px -30px var(--rs-domain);
+            background:color-mix(in srgb,var(--rs-domain) 16%,var(--paper));
+            border-color:var(--rs-domain);
+            box-shadow:none;
           }
-          #research .rs-domain-number{
-            width:32px;height:32px;
-            font-weight:600;
-            background:linear-gradient(140deg,var(--rs-domain),color-mix(in srgb,var(--rs-domain) 60%,var(--rs-orange)));
-            box-shadow:0 6px 14px -6px var(--rs-domain);
-          }
+          #research .rs-domain-number{top:1.4rem;background:var(--rs-domain);font-weight:600}
           #research .rs-domain h3{color:var(--rs-domain)}
           #research .rs-tags span{
-            border-color:color-mix(in srgb,var(--rs-domain) 45%,transparent);
-            background:color-mix(in srgb,var(--rs-domain) 15%,transparent);
-            color:color-mix(in srgb,var(--rs-domain) 90%,var(--ink));
-            font-weight:500;
+            border-color:color-mix(in srgb,var(--rs-domain) 40%,transparent);
+            background:color-mix(in srgb,var(--rs-domain) 10%,transparent);
+            color:color-mix(in srgb,var(--rs-domain) 85%,var(--ink));
           }
-          #research .rs-methods{
-            padding:1.15rem 1.2rem;
-            border:1px solid color-mix(in srgb,var(--rs-plum) 25%,var(--rule));
-            border-radius:16px;
-            background:linear-gradient(90deg,
-              color-mix(in srgb,var(--rs-plum) 8%,transparent),
-              color-mix(in srgb,var(--rs-teal) 6%,transparent));
-          }
-          #research .rs-methods-title{color:var(--rs-plum)}
-          #research .rs-method-list span > span,
-          #research .rs-method-list > span{
-            font-weight:500;
-          }
-          #research .rs-method-list > span::before{
-            content:"";
-            width:9px;height:9px;
-            border-radius:50%;
-            flex:none;
-            background:var(--rs-step,var(--rs-green));
-          }
-          #research .rs-method-list > span:nth-child(1){--rs-step:var(--rs-green)}
-          #research .rs-method-list > span:nth-child(2){--rs-step:var(--rs-teal)}
-          #research .rs-method-list > span:nth-child(3){--rs-step:var(--rs-blue)}
-          #research .rs-method-list > span:nth-child(4){--rs-step:var(--rs-plum)}
-          #research .rs-method-list > span:nth-child(5){--rs-step:var(--rs-orange)}
-          #research .rs-method-list > span:not(:last-child)::after{color:var(--rs-step)}
           #research .rs-bottom-line b{color:var(--rs-orange)}
           @media (max-width:880px){
-            #research .rs-signal-path::before{width:3px;height:auto;left:73px;border-radius:3px}
-            #research .rs-domain::before{left:auto;right:auto;top:14%;bottom:14%;left:0;width:4px;height:auto;border-radius:0 6px 6px 0;
-              background:linear-gradient(180deg,var(--rs-domain),color-mix(in srgb,var(--rs-domain) 55%,var(--rs-orange)))}
+            #research .rs-domain{border-top:0;border-left:3px solid var(--rs-domain);padding:.4rem 0 .4rem 1.1rem}
+            #research .rs-scene{margin-top:0}
+            #research .rs-domain-number{top:0}
+            #research .rs-signal-path::before{width:2px;height:auto}
           }
         </style>
         <p class="section-eyebrow">Research agenda</p>
@@ -2479,7 +2384,7 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
             </dd>
             <dt>lab</dt>
             <dd>
-              <a href="https://tlab.hongo.wide.ad.jp/">Tsukada Laboratory</a> · 4F, I-REF, Bldg.&nbsp;,<br/>
+              <a href="https://tlab.hongo.wide.ad.jp/">Tsukada Laboratory</a> · I-REF Building, 4F<br/>
               Graduate School of Information Science and Technology, The University of Tokyo<br/>
               1-1-1, Yayoi, Bunkyo-ku, Tokyo, 113-8657 Japan
             </dd>
