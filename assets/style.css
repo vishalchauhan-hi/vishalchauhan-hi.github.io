@@ -1229,3 +1229,15 @@ hr.thin {
 @media (max-width: 600px) {
   .moments-grid { gap: 1.5rem; }
 }
+
+/* Assistant Professor link in hero */
+#top .role a {
+  color: inherit;
+  text-decoration: none;
+}
+
+#top .role a:hover,
+#top .role a:focus-visible {
+  text-decoration: underline;
+}
+
