@@ -13,7 +13,7 @@
   <link rel="canonical" href="https://vishalchauhan-hi.github.io/moments.html" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Source+Sans+3:wght@400;500;600;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" />
   <link rel="stylesheet" href="assets/style.css" />
   <!-- ===== Moments gallery: one tile per event, click to open all photos ===== -->
   <style>
@@ -152,7 +152,7 @@
              2. Copy the whole <figure> ... </figure> block of the first event
                 and paste it right under <div class="moments-grid">.
              3. In the copy, change:
-                  - the cover <img src> and its alt text (this is the thumbnail)
+                  - the cover <img decoding="async" src> and its alt text (this is the thumbnail)
                   - <strong> = event name, <span> = place · month year
                   - the <li> lines inside <ol class="tile-gallery">: one line per
                     photo, data-src = the file, the text = caption shown under it.
@@ -303,7 +303,7 @@
       <button class="lb-btn lb-prev" id="lbPrev" type="button" aria-label="Previous photo">
         <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
       </button>
-      <img id="lbImg" src="" alt="" />
+      <img loading="lazy" decoding="async" id="lbImg" src="" alt="" />
       <button class="lb-btn lb-next" id="lbNext" type="button" aria-label="Next photo">
         <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
       </button>
