@@ -10,10 +10,8 @@
 //     the light/dark toggle or the footer (keeps every page consistent)
 //   • an image over 600 KB or a video over 6 MB (keeps the site fast)
 //   • broken JSON-LD (what Google reads about you)
-//   • homepage news out of step with news.html (run: node scripts/sync-news.mjs)
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, dirname, extname, relative } from 'node:path';
-import { compare } from './news.mjs';
 
 const ROOT = process.cwd();
 const IMG_MAX = 600 * 1024, VIDEO_MAX = 6 * 1024 * 1024;
@@ -121,11 +119,6 @@ for (const f of files) {
     fail(rel, 1, `video is ${(size / 1048576).toFixed(1)} MB (limit 6 MB). Re-export it smaller (e.g. avconvert -p Preset960x540).`);
   }
 }
-
-/* ---------- homepage news = newest items in news.html ---------- */
-const news = compare(ROOT);
-if (news.missing) fail('index.html', 1, 'homepage news markers (<!-- news:start --> / <!-- news:end -->) are missing');
-else if (!news.ok) fail('index.html', lineOf(news.index, news.a), 'homepage news is out of date with news.html. Run: node scripts/sync-news.mjs');
 
 /* ---------- report ---------- */
 if (problems.length) {

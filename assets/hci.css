@@ -186,3 +186,9 @@ nav.primary a.is-current { color: var(--ink); text-decoration-color: var(--ink);
   .make { grid-template-columns: 1fr; }
   .make-step::after { content: none !important; }
 }
+
+/* link from the street to the SPIU page */
+.street figcaption { flex-wrap: wrap; }
+.street-more { font: 600 1.2rem var(--hand); color: var(--ink-soft); margin-left: auto; margin-right: 1rem; }
+.street-more:hover { color: var(--ink); }
+.spiu-intro { padding-bottom: 0; }
