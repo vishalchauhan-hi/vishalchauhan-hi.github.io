@@ -55,26 +55,22 @@ Merge the PR on GitHub once **Site checks** is green.
 
 ### Add a news item (most common)
 
-Edit **only `news.html`**. Add a new `<li>` at the **top** of the current year's list:
+1. **`news.html`** is the full archive. Add a new `<li>` at the **top** of the current year's list:
 
-```html
-<li>
-  <span class="news-date">Nov 2026</span>
-  <span>What happened, with a <a href="https://example.com">link</a> and <strong>emphasis</strong>.</span>
-</li>
-```
+   ```html
+   <li>
+     <span class="news-date">Nov 2026</span>
+     <span>What happened, with a <a href="https://example.com">link</a> and <strong>emphasis</strong>.</span>
+   </li>
+   ```
 
-Then copy the newest five items onto the homepage:
+   For a new year, copy a whole `<div class="news-year">…</div>` block, put it above
+   the previous year and change the `<h2>`.
 
-```bash
-node scripts/sync-news.mjs
-```
-
-The homepage list sits between `<!-- news:start -->` and `<!-- news:end -->` in
-`index.html`. Don't edit it by hand. If you forget to sync, the checks will tell you.
-
-For a new year, copy a whole `<div class="news-year">…</div>` block, put it above
-the previous year and change the `<h2>`.
+2. **Homepage (optional).** If it should also appear on the homepage, add your own
+   short version at the top of the list in `index.html`, section `<section id="recent">`.
+   The homepage wording is yours and is never overwritten. Remove the oldest item
+   when the list gets longer than about five.
 
 ### Add a publication
 
@@ -121,7 +117,6 @@ Overwrite `photo.jpg` (keep the name), then run `python3 tools/optimize-images.p
 | Command | What it does |
 |---|---|
 | `node scripts/check-site.mjs` | Checks the whole site (same as the PR check). |
-| `node scripts/sync-news.mjs` | Copies the newest 5 items from `news.html` onto the homepage. |
 | `python3 tools/optimize-images.py [files…]` | Shrinks images, keeps names, strips GPS/camera data. Safe to re-run. |
 
 You need **Node** (already on this Mac) and **Pillow** for the image tool
@@ -137,7 +132,6 @@ You need **Node** (already on this Mac) and **Pillow** for the image tool
   light/dark toggle or the footer. This keeps every page consistent.
 - Any image over **600 KB** or video over **6 MB**, so the site stays fast.
 - Broken JSON-LD (the profile data Google reads).
-- Homepage news that no longer matches `news.html`.
 
 Each problem names the file and line and says how to fix it.
 
@@ -146,18 +140,19 @@ Each problem names the file and line and says how to fix it.
 ## File map
 
 ```
-index.html          Homepage: hero + street, pole teardown, how it was built, about,
-                    news (synced), selected papers, field photos, research, contact
+index.html          Homepage: hero + street, about, news, research, service, teaching,
+                    selected papers, field photos, working together, contact
+spiu.html           The Smart Pole Interaction Unit: scroll teardown + how it was built
 publications.html   All papers, grouped by year
-news.html           All news, newest first. The single source for the homepage news
+news.html           All news, newest first
 moments.html        Event photo gallery
 cv.html             Curriculum vitae
 photo.jpg           Portrait
 assets/style.css    Site-wide design: colours, type, layout (light + dark)
-assets/hci.css      Homepage-only styles (street, teardown, papers, photos)
-assets/hci.js       Homepage figures: the street, the pole teardown, the model video
+assets/hci.css      Styles for the street, pole teardown, papers and photos
+assets/hci.js       The street (homepage), pole teardown and model video (spiu.html)
 assets/images/      Images. notes/ = taped photos, making/ = CAD, print, drawing, video
-scripts/            Site checks and news sync (Node, no dependencies)
+scripts/            Site checks (Node, no dependencies)
 tools/              Image optimiser (Python + Pillow)
 .github/            The PR check workflow and PR template
 ```
