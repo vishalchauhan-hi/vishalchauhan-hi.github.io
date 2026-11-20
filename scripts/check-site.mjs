@@ -10,6 +10,7 @@
 //     the light/dark toggle or the footer (keeps every page consistent)
 //   • an image over 600 KB or a video over 6 MB (keeps the site fast)
 //   • broken JSON-LD (what Google reads about you)
+//   • (on GitHub, or with --external) photos linked from other websites that no longer exist
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, dirname, extname, relative } from 'node:path';
 
@@ -107,6 +108,25 @@ for (const page of pages) {
   for (const m of raw.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
     try { JSON.parse(m[1]); } catch (e) { fail(rel, lineOf(raw, m.index), 'JSON-LD is not valid JSON: ' + e.message); }
   }
+}
+
+/* ---------- photos loaded from other websites (CI only: needs the network) ---------- */
+// Catches images that another site (e.g. the lab website) has moved or deleted.
+if (ci || process.argv.includes('--external')) {
+  const ext = new Map();
+  for (const page of pages) {
+    const html = visible(readFileSync(page, 'utf8'));
+    for (const m of html.matchAll(/\s(src|data-src|poster)="(https?:[^"]+)"/g)) {
+      if (!/\.(jpe?g|png|gif|webp|avif|mp4)(\?|$)/i.test(m[2])) continue;
+      if (!ext.has(m[2])) ext.set(m[2], [relative(ROOT, page), lineOf(html, m.index)]);
+    }
+  }
+  await Promise.all([...ext].map(async ([url, [file, line]]) => {
+    try {
+      const r = await fetch(url, { method: 'GET', headers: { 'User-Agent': 'Mozilla/5.0 (site check)', Range: 'bytes=0-0' } });
+      if (r.status === 404 || r.status === 410) fail(file, line, `photo from another website is gone (HTTP ${r.status}): ${url}`);
+    } catch (e) { /* network hiccup: don't fail the build */ }
+  }));
 }
 
 /* ---------- file sizes ---------- */
