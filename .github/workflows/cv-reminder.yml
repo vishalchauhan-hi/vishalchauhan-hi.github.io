@@ -28,12 +28,13 @@ jobs:
           gh issue create --title "${title}" --body "$(cat <<'BODY'
           Time for the monthly CV update.
 
-          1. Export a **web copy** of your CV **without the phone number**.
+          1. Save your latest CV as a PDF (your normal one is fine; the tool removes
+             the phone number and referees from the public copy).
           2. On your Mac:
              ```bash
              cd ~/Desktop/vishalchauhan-hi-redesign
              git switch main && git pull && git switch -c cv-update
-             tools/update-cv.sh ~/Documents/Vishal_Chauhan_CV_web.pdf
+             tools/update-cv.sh ~/Downloads/02_Curriculum_Vitae.pdf
              git add -A && git commit -m "Update CV" && git push -u origin HEAD
              gh pr create --fill
              ```
