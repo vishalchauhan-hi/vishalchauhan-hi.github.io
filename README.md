@@ -106,7 +106,25 @@ The taped photos are in `index.html`, section `From the field`. Each one is a
 
 Overwrite `photo.jpg` (keep the name), then run `python3 tools/optimize-images.py photo.jpg`.
 
-### Edit the CV
+### Update the CV PDF (monthly)
+
+On the 1st of each month GitHub opens a reminder issue. To update, give the tool
+your **normal** CV PDF, on a new branch:
+
+```bash
+tools/update-cv.sh ~/Downloads/02_Curriculum_Vitae.pdf
+```
+
+It makes the public web copy automatically: it **removes your phone number**
+and replaces the **Referees** section with "Available on request." (your
+original file is not touched). It then saves it as
+`assets/cv/Vishal_Chauhan_CV.pdf` (the download link never changes), makes the
+first-page preview, sets "N pages · updated <month>" on the CV page and runs
+the checks. If anything private is still found, it stops and changes nothing.
+
+Then commit, open a PR, merge when green, and close the reminder issue.
+
+### Edit the written CV
 
 `cv.html` is hand-written. Copy an existing `<div class="cv-entry">` and edit it.
 
@@ -117,6 +135,7 @@ Overwrite `photo.jpg` (keep the name), then run `python3 tools/optimize-images.p
 | Command | What it does |
 |---|---|
 | `node scripts/check-site.mjs` | Checks the whole site (same as the PR check). |
+| `tools/update-cv.sh path/to/cv.pdf` | Puts a new CV PDF on the site; removes phone number and referees from the public copy. |
 | `python3 tools/optimize-images.py [files…]` | Shrinks images, keeps names, strips GPS/camera data. Safe to re-run. |
 
 You need **Node** (already on this Mac) and **Pillow** for the image tool
