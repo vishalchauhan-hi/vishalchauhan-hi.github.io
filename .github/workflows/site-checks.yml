@@ -1,0 +1,25 @@
+# Site checks — runs on every pull request and every push to main.
+# Catches broken links/images, oversized images, inconsistent pages and
+# out-of-date homepage news before they reach the live site.
+# Run the same thing locally with:  node scripts/check-site.mjs
+name: Site checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check the site
+        run: node scripts/check-site.mjs
