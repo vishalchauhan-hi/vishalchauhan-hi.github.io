@@ -148,12 +148,17 @@
     var gLive = gNotes.querySelector('.st-live');
 
     /* --- pole: two frames, swapped instantly (real LEDs don't fade) --- */
-    /* top-down view of the real SPIU: a ring display around a camera unit */
-    var PX = 688, PY = 226;
-    var poleBase = '<circle class="fill-car" cx="' + PX + '" cy="' + PY + '" r="21"/>' +
-                   path(ellipse(PX, PY, 21, 21, .7) + ellipse(PX, PY, 13, 13, .5)) + path(ellipse(PX, PY, 6, 6, .4) + ellipse(PX - 2, PY - 1, 2, 2, .2));
-    var walkFig = '<circle class="ring walk" cx="' + PX + '" cy="' + PY + '" r="17"/>' + text(PX + 28, PY + 8, 'WALK', 'led walk');
-    var stopFig = '<circle class="ring stop" cx="' + PX + '" cy="' + PY + '" r="17"/>' + text(PX + 28, PY + 8, 'STOP', 'led stop');
+    /* top-down view of the real SPIU (configuration 4 drawing): a rounded-rectangle
+       ring, 606 × 393 mm, four spokes, the camera unit in the middle */
+    var PX = 688, PY = 226, RW = 23, RH = 15;
+    var ringD = 'M' + (PX - RW + 9) + ' ' + (PY - RH) + 'H' + (PX + RW - 9) + 'Q' + (PX + RW) + ' ' + (PY - RH) + ' ' + (PX + RW) + ' ' + (PY - RH + 9) +
+                'V' + (PY + RH - 9) + 'Q' + (PX + RW) + ' ' + (PY + RH) + ' ' + (PX + RW - 9) + ' ' + (PY + RH) + 'H' + (PX - RW + 9) +
+                'Q' + (PX - RW) + ' ' + (PY + RH) + ' ' + (PX - RW) + ' ' + (PY + RH - 9) + 'V' + (PY - RH + 9) + 'Q' + (PX - RW) + ' ' + (PY - RH) + ' ' + (PX - RW + 9) + ' ' + (PY - RH) + 'Z';
+    var poleBase = '<path class="fill-car" d="' + ringD + '"/>' +
+                   path(line(PX - RW + 3, PY, PX - 6, PY, .4) + line(PX + 6, PY, PX + RW - 3, PY, .4) + line(PX, PY - RH + 3, PX, PY - 6, .4) + line(PX, PY + 6, PX, PY + RH - 3, .4), 'pencil soft') +
+                   path(ellipse(PX, PY, 6, 6, .4) + ellipse(PX - 2, PY - 1, 2, 2, .2));
+    var walkFig = '<path class="ring walk" d="' + ringD + '"/>' + text(PX + 30, PY + 6, 'WALK', 'led walk');
+    var stopFig = '<path class="ring stop" d="' + ringD + '"/>' + text(PX + 30, PY + 6, 'STOP', 'led stop');
     var poleState = '';
     function setPole(walk) {
       var s = walk ? 'walk' : 'stop';
@@ -415,7 +420,7 @@
 
     var PARTS = [
       { name: 'camera unit', note: 'watches the crossing and the cars', dir: [0, -1], dist: 130, anchor: [262, 96], label: [470, -44], draw: cam },
-      { name: 'ring display', note: 'WALK or STOP, readable from every side', dir: [0, -1], dist: 46, anchor: [352, 190], label: [470, 112], draw: ring },
+      { name: 'ring display', note: 'printed ribs inside, flexible LEDs outside', dir: [0, -1], dist: 46, anchor: [352, 190], label: [470, 112], draw: ring },
       { name: 'bracket arms', note: 'hold the ring above the crowd', dir: [0, 0], dist: 0, anchor: [300, 250], label: [470, 268], draw: arms },
       { name: 'the pole', note: 'speaks for every car at the crossing', dir: [0, 0], dist: 0, anchor: [246, 440], label: [470, 440], draw: pole },
       { name: 'mobile base', note: 'on wheels, so it can follow you (CHI ’26)', dir: [0, 1], dist: 54, anchor: [340, 660], label: [470, 690], draw: base }
@@ -481,5 +486,23 @@
     window.addEventListener('scroll', function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
     window.addEventListener('resize', onScroll);
     onScroll();
+  })();
+  /* ---------- 4. the Fusion 360 model: plays only while you hover or after a tap ---------- */
+  (function () {
+    var v = document.querySelector('.make-video');
+    if (!v) return;
+    var hint = v.parentNode.querySelector('.make-hint');
+    var hover = window.matchMedia && window.matchMedia('(hover: hover)').matches;
+    if (!hover && hint) hint.textContent = 'tap to turn it.';
+    function play() { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+    if (hover) {
+      v.addEventListener('mouseenter', play);
+      v.addEventListener('mouseleave', function () { v.pause(); });
+    }
+    v.addEventListener('click', function () { if (v.paused) play(); else v.pause(); });
+    v.setAttribute('tabindex', '0');
+    v.addEventListener('keydown', function (e) {
+      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (v.paused) play(); else v.pause(); }
+    });
   })();
 })();
