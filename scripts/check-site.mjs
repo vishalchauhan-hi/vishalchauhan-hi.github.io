@@ -7,7 +7,7 @@
 //   • an in-site link to an #anchor that doesn't exist on that page
 //   • an image without alt text
 //   • a page missing its title, description, header name, the standard menu,
-//     the light/dark toggle or the footer (keeps every page consistent)
+//     the light/dark toggle, the footer or the tab icon (keeps every page consistent)
 //   • an image over 600 KB or a video over 6 MB (keeps the site fast)
 //   • broken JSON-LD (what Google reads about you)
 //   • (on GitHub, or with --external) photos linked from other websites that no longer exist
@@ -70,6 +70,7 @@ for (const page of pages) {
   if (!has(/<a class="brand"/)) fail(rel, 1, 'header is missing the name link (<a class="brand">)');
   if (!has(/id="themeToggle"/)) fail(rel, 1, 'missing the light/dark toggle (#themeToggle)');
   if (!has(/<footer class="site"/)) fail(rel, 1, 'missing the shared <footer class="site">');
+  if (!has(/<link rel="icon"/)) fail(rel, 1, 'missing the tab icon (<link rel="icon" href="favicon.ico">)');
   const nav = html.match(/<nav class="primary"[\s\S]*?<\/nav>/);
   if (!nav) fail(rel, 1, 'missing the main menu (<nav class="primary">)');
   else {
