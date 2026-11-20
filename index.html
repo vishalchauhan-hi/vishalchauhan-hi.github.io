@@ -23,6 +23,8 @@
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="canonical" href="https://vishalchauhan-hi.github.io/" />
   <link rel="stylesheet" href="assets/style.css" />
+  <link rel="stylesheet" href="assets/hci.css" />
+  <script src="assets/hci.js" defer></script>
   <link rel="icon" href="favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
@@ -568,6 +570,21 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
               <li>Robotics</li>
               <li>Artificial Intelligence (AI)</li>
               <li>Smart Cities &amp; Urban Mobility</li>
+            </ul>
+            <p class="hci-hook">
+              I design how <b>autonomous vehicles, robots, and city infrastructure</b>
+              tell people what they are about to do, so that the person on the
+              sidewalk never has to guess.
+            </p>
+            <div class="hci-cta">
+              <a class="hci-btn hci-btn--primary" href="#crossing">Try the crossing study ↓</a>
+              <a class="hci-btn" href="#selected">Selected work</a>
+              <a class="hci-btn" href="#collaborate">Work with me</a>
+            </div>
+            <ul class="hci-ribbon" aria-label="Highlights">
+              <li><b>🏆 2× Honourable Mention</b> CHI 2026</li>
+              <li><b>JST ACT-X</b> Principal Investigator, 2026</li>
+              <li>Reviewer · CHI · IROS · IJHCS</li>
             </ul>
           </div>
         </div>
@@ -1391,6 +1408,137 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
     </p>
   </div>
 </section>
+
+    <!-- ============ SELECTED WORK (filterable, Fig.-captioned) ============ -->
+    <section id="selected">
+      <div class="container">
+        <p class="section-eyebrow">Selected work</p>
+        <h2>Papers, by how they were studied.</h2>
+        <p class="hci-lede">Four recent papers. Filter by method to see how each question was studied: in the street, in VR, or with AI participants.</p>
+        <div class="sw-filters" role="group" aria-label="Filter papers by method">
+          <button type="button" data-filter="all" aria-pressed="true">All</button>
+          <button type="button" data-filter="field" aria-pressed="false">In-the-wild field study</button>
+          <button type="button" data-filter="vr" aria-pressed="false">VR study</button>
+          <button type="button" data-filter="ai" aria-pressed="false">LLM / VLM</button>
+          <button type="button" data-filter="design" aria-pressed="false">Design study</button>
+        </div>
+        <p id="sw-live" class="visually-hidden" aria-live="polite" style="position:absolute;left:-9999px"></p>
+        <div class="sw-grid">
+          <a class="sw-card reveal" data-methods="field prototype" href="https://doi.org/10.1145/3772318.3790882" target="_blank" rel="noopener">
+            <figure class="sw-thumb"><img loading="lazy" src="assets/images/thumb-chi.png" alt="Mobile SPIU prototype with cameras and LED displays delivering WALK and STOP cues" /></figure>
+            <div class="sw-body">
+              <p class="sw-fig">Fig. A · CHI 2026 · Barcelona</p>
+              <h3>Don’t Worry, Just Follow Me: In-the-Wild Evaluation of a Mobile Smart Pole Interaction Unit</h3>
+              <p>A street study (N=21) of a mobile SPIU that shows explicit WALK and STOP cues. The SPIU and the vehicle’s eHMI worked best together for understandability, trust and perceived safety.</p>
+              <div class="sw-meta"><span class="sw-award">🏆 Honourable Mention</span><span class="sw-tag">Field study</span><span class="sw-read">Paper ↗</span></div>
+            </div>
+          </a>
+          <a class="sw-card reveal" data-methods="field ai" href="https://doi.org/10.1145/3772318.3790537" target="_blank" rel="noopener">
+            <figure class="sw-thumb"><img loading="lazy" src="assets/images/thumb-vlm.png" alt="Study diagram comparing a field study with 20 people and a video study with 20 VLM personas" /></figure>
+            <div class="sw-body">
+              <p class="sw-fig">Fig. B · CHI 2026 · Barcelona</p>
+              <h3>Peeking Ahead of the Field Study: VLM Personas as Support Tools for Embodied Studies in HCI</h3>
+              <p>20 people and 20 VLM personas made the same street-crossing decisions. The study maps where personas can stand in for human participants and where they cannot.</p>
+              <div class="sw-meta"><span class="sw-award">🏆 Honourable Mention</span><span class="sw-tag">Field study</span><span class="sw-tag">VLM</span><span class="sw-read">Paper ↗</span></div>
+            </div>
+          </a>
+          <a class="sw-card reveal" data-methods="vr" href="https://doi.org/10.1145/3756884.3765991" target="_blank" rel="noopener">
+            <figure class="sw-thumb"><img loading="lazy" src="assets/images/thumb-vrst.png" alt="VR scene of SPIU deployed at a crosswalk for cross-cultural evaluation" /></figure>
+            <div class="sw-body">
+              <p class="sw-fig">Fig. C · VRST 2025 · Montréal</p>
+              <h3>A Silent Negotiator? Cross-cultural VR Evaluation of Smart Pole Interaction Units</h3>
+              <p>A VR study (N=40) in Japan and Norway covering four high-risk shared-space scenarios. SPIU shortened decisions, with effects that depended on the scenario and the culture.</p>
+              <div class="sw-meta"><span class="sw-tag">VR study</span><span class="sw-tag">Cross-cultural</span><span class="sw-read">Paper ↗</span></div>
+            </div>
+          </a>
+          <a class="sw-card reveal" data-methods="design ai" href="https://doi.org/10.1016/j.ijhcs.2025.103628" target="_blank" rel="noopener">
+            <figure class="sw-thumb"><img loading="lazy" src="assets/images/thumb-ijhcs-v2.png" alt="Comparison of human and LLM responses on SPIU design questions" /></figure>
+            <div class="sw-body">
+              <p class="sw-fig">Fig. D · IJHCS 2025</p>
+              <h3>Human Perception vs. LLM Insights on Smart Pole Interaction Unit in Shared Spaces</h3>
+              <p>A group design study (N=25) compared against three multimodal LLMs. 90% of participants preferred SPIU-mediated interaction. LLMs leaned on safety keywords but gave less nuanced answers.</p>
+              <div class="sw-meta"><span class="sw-tag">Design study</span><span class="sw-tag">LLM</span><span class="sw-read">Paper ↗</span></div>
+            </div>
+          </a>
+        </div>
+        <p class="see-all"><a href="publications.html">All publications →</a></p>
+      </div>
+    </section>
+
+    <!-- ============ FIG. 1 — WHO GOES FIRST? (interactive crossing study) ============ -->
+    <section id="crossing">
+      <div class="container">
+        <p class="section-eyebrow">Fig. 1 · Try it yourself</p>
+        <h2>Who goes first?</h2>
+        <p class="hci-lede">You are the pedestrian. A self-driving car is coming. It may or may not stop. Press <b>Cross</b> when you feel safe. Then switch conditions and see whether an eHMI on the car or a Smart Pole Interaction Unit (SPIU) at the curb changes how quickly and how safely you decide.</p>
+        <div class="xs" id="xs">
+          <div>
+            <div class="xs-stage" tabindex="0" aria-label="Crossing scene. Press Space or Enter to cross, N for the next trial.">
+              <svg viewBox="0 0 720 300" role="img" aria-labelledby="xs-title">
+                <title id="xs-title">Top-down street: a pedestrian waits at a crosswalk while an autonomous car approaches from the left. A smart pole at the curb can show WALK or STOP.</title>
+                <rect class="xs-curb" x="0" y="0" width="720" height="80"/>
+                <rect class="xs-road" x="0" y="80" width="720" height="146"/>
+                <rect class="xs-curb" x="0" y="226" width="720" height="74"/>
+                <line class="xs-lane" x1="0" y1="150" x2="720" y2="150"/>
+                <g>
+                  <rect class="xs-walk" x="330" y="86"  width="70" height="10"/>
+                  <rect class="xs-walk" x="330" y="106" width="70" height="10"/>
+                  <rect class="xs-walk" x="330" y="126" width="70" height="10"/>
+                  <rect class="xs-walk" x="330" y="146" width="70" height="10"/>
+                  <rect class="xs-walk" x="330" y="166" width="70" height="10"/>
+                  <rect class="xs-walk" x="330" y="186" width="70" height="10"/>
+                  <rect class="xs-walk" x="330" y="206" width="70" height="10"/>
+                </g>
+                <line class="xs-stopln" x1="318" y1="154" x2="318" y2="222"/>
+                <text class="xs-label" x="12" y="20">FIG. 1 · SHARED SPACE, TOP VIEW</text>
+                <g id="xs-spiu">
+                  <rect class="xs-pole" x="412" y="238" width="6" height="40" rx="2"/>
+                  <rect class="xs-panel" x="420" y="236" width="74" height="28" rx="4"/>
+                  <text id="xs-panel-txt" class="xs-panel-txt" x="457" y="255" text-anchor="middle">OFF</text>
+                  <text class="xs-label" x="420" y="288">SPIU</text>
+                </g>
+                <g id="xs-car" transform="translate(-90 167)">
+                  <rect class="xs-car" x="0" y="0" width="76" height="38" rx="9"/>
+                  <rect class="xs-glass" x="42" y="5" width="16" height="28" rx="4"/>
+                  <rect id="xs-ehmi" class="xs-ehmi" x="69" y="5" width="5" height="28" rx="2"/>
+                </g>
+                <text id="xs-car-label" class="xs-label" x="-52" y="160" text-anchor="middle">AV</text>
+                <g id="xs-ped" transform="translate(365 252)">
+                  <circle class="xs-ped-ring" r="15"/>
+                  <circle class="xs-ped" r="9"/>
+                </g>
+                <text class="xs-label" x="388" y="276">YOU</text>
+                <rect id="xs-flash" class="xs-flash" x="0" y="0" width="720" height="300"/>
+              </svg>
+              <div class="xs-toolbar">
+                <button class="hci-btn hci-btn--primary" id="xs-start" type="button">Start trial</button>
+                <button class="hci-btn" id="xs-cross" type="button" disabled>Cross now</button>
+                <span class="grow"></span>
+                <span class="xs-kbd"><kbd>Space</kbd> cross · <kbd>N</kbd> next</span>
+              </div>
+            </div>
+            <p class="hci-fig-cap"><b>Fig. 1.</b> A simplified version of the decision my studies measure. Your trials stay in this browser tab and are never sent anywhere. For the real study, see the <a href="https://doi.org/10.1145/3772318.3790882" target="_blank" rel="noopener">CHI 2026 in-the-wild evaluation</a>.</p>
+          </div>
+          <div>
+            <fieldset class="xs-seg">
+              <legend>Condition</legend>
+              <label><input type="radio" name="xs-cond" value="none" checked /><span>No signal</span><small>Read the car’s motion</small></label>
+              <label><input type="radio" name="xs-cond" value="ehmi" /><span>Car eHMI</span><small>Light bar on the vehicle</small></label>
+              <label><input type="radio" name="xs-cond" value="spiu" /><span>SPIU</span><small>Smart pole at the curb</small></label>
+              <label><input type="radio" name="xs-cond" value="both" /><span>SPIU + eHMI</span><small>Both channels</small></label>
+            </fieldset>
+            <label class="xs-kbd" style="display:flex;gap:.4em;align-items:center;margin:-.3rem 0 1rem"><input type="checkbox" id="xs-rotate" checked /> Rotate conditions after each trial</label>
+            <p class="xs-status" id="xs-status" aria-live="polite">Pick a condition and press <b>Start trial</b>.</p>
+            <table class="xs-table">
+              <thead><tr><th>Condition</th><th>Trials</th><th>Mean decision</th><th>Risky</th></tr></thead>
+              <tbody id="xs-tbody"></tbody>
+            </table>
+            <p class="xs-insight" id="xs-insight" aria-live="polite"></p>
+            <p class="xs-private"><button class="hci-btn" id="xs-reset" type="button" disabled style="padding:.45em .8em;font-size:.8rem">Clear my results</button></p>
+          </div>
+        </div>
+      </div>
+    </section>
     <!-- ============ RESEARCH AGENDA ============ -->
     <section id="research">
       <div class="container">
@@ -2404,6 +2552,38 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
           <p class="teaching-meta">UTokyo × Doshisha, with Tier IV and Digital Agency · 2022</p>
           <p>Team lead for an interdisciplinary student team competing on a mobility business challenge.</p>
         </div>
+      </div>
+    </section>
+    <!-- ============ COLLABORATE ============ -->
+    <section id="collaborate">
+      <div class="container">
+        <p class="section-eyebrow">Collaborate</p>
+        <h2>Work with me.</h2>
+        <div class="co-now reveal">
+          <svg class="co-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="14" y="10" width="20" height="18" rx="5"/><circle cx="20" cy="19" r="2"/><circle cx="28" cy="19" r="2"/>
+            <path d="M24 4v6M18 28v8M30 28v8M12 40h24"/><circle cx="18" cy="40" r="3"/><circle cx="30" cy="40" r="3"/>
+          </svg>
+          <div>
+            <h3>Now building: Co-walker robots for Japan’s sidewalks</h3>
+            <p>JST ACT-X project (2026–) with me as sole PI. We are designing service robots whose intentions people on the sidewalk can read. It was one of 20 projects selected from 177 proposals.</p>
+          </div>
+        </div>
+        <div class="co-grid">
+          <div class="co-card reveal">
+            <h3>Students</h3>
+            <p>If you are curious about HCI or HRI for mobility, such as eHMI, sidewalk robots, or VR and field studies, tell me which of my papers brought you here.</p>
+          </div>
+          <div class="co-card reveal">
+            <h3>Researchers</h3>
+            <p>I am open to joint studies across cultures, VR and in-the-wild methods, and VLM-assisted study design. My past collaborations span Japan, Singapore, Canada and Norway.</p>
+          </div>
+          <div class="co-card reveal">
+            <h3>Industry &amp; cities</h3>
+            <p>I am interested in taking interfaces out of the lab: infrastructure-side eHMI, robot signalling, and shared-space pilots on real streets.</p>
+          </div>
+        </div>
+        <p class="co-tip">The fastest way to start is a short email with the paper or idea you have in mind. My details are below.</p>
       </div>
     </section>
     <!-- ============ CONTACT (console-style card) ============ -->
