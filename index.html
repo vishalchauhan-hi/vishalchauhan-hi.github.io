@@ -23,6 +23,11 @@
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="canonical" href="https://vishalchauhan-hi.github.io/" />
   <link rel="stylesheet" href="assets/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap" />
+  <link rel="stylesheet" href="assets/hci.css" />
+  <script src="assets/hci.js" defer></script>
   <link rel="icon" href="favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
@@ -569,8 +574,26 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
               <li>Artificial Intelligence (AI)</li>
               <li>Smart Cities &amp; Urban Mobility</li>
             </ul>
+            <p class="hci-hook">I study how self-driving cars, robots and street infrastructure tell people what they are about to do, so the person on the sidewalk does not have to guess.</p>
+            <p class="hci-honours">Honourable Mention ×2, CHI 2026 · JST ACT-X Principal Investigator, 2026</p>
           </div>
         </div>
+        <figure class="street" id="street">
+          <svg viewBox="0 0 1000 260" role="img" aria-labelledby="street-title street-desc">
+            <title id="street-title">A hand-drawn street where you are the pedestrian</title>
+            <desc id="street-desc">Self-driving cars pass a crosswalk. Move your cursor, or drag on a touch screen, to walk the pedestrian to the curb. An approaching car notices, yields, and lights its cyan eHMI bar, and the smart pole (SPIU) switches to a walking figure.</desc>
+            <g class="st-static"></g>
+            <g class="st-gaze"></g>
+            <g class="st-car"></g>
+            <g class="st-pole"></g>
+            <g class="st-ped"></g>
+            <g class="st-notes"></g>
+          </svg>
+          <figcaption>
+            <span class="street-note" aria-live="polite">walk up to the curb and wait. you are the pedestrian.</span>
+            <button class="street-pause" type="button" aria-pressed="false">pause</button>
+          </figcaption>
+        </figure>
       </div>
     </section>
     <script>
@@ -606,6 +629,69 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
         document.addEventListener('visibilitychange', syncAnimation);
       })();
     </script>
+    <!-- ============ FIG. 2 — THE SMART POLE, TAKEN APART BY SCROLL ============ -->
+    <section id="spiu" class="teardown">
+      <div class="td-track">
+        <div class="td-sticky">
+          <div class="container td-grid">
+            <figure class="td-fig">
+              <svg viewBox="80 -140 780 920" role="img" aria-labelledby="td-title td-desc">
+                <title id="td-title">Pencil drawing of the Smart Pole Interaction Unit</title>
+                <desc id="td-desc">As you scroll, the pole separates into its parts: the camera unit, the ring LED display, the bracket arms, the pole itself and the wheeled base. Each part is labelled by hand.</desc>
+              </svg>
+            </figure>
+            <div class="td-text">
+              <h2>Taking the pole apart</h2>
+              <p>The Smart Pole Interaction Unit is what my PhD is built around. It stands at the curb, watches the crossing, and tells people on foot when it is their turn, so each car does not have to.</p>
+              <p class="td-phase" aria-live="polite">scroll to take it apart</p>
+              <p class="td-src">Parts as described in my <a href="https://doi.org/10.1145/3641308.3685037">AutoUI ’24</a> and <a href="https://doi.org/10.1145/3772318.3790882">CHI ’26</a> papers.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- ============ HOW THE POLE WAS BUILT (real process artefacts) ============ -->
+    <section id="making">
+      <div class="container">
+        <h2>How the pole was built</h2>
+        <p class="make-lede">The ring display went from CAD to a printed frame to a workshop drawing before it ever said WALK on a street.</p>
+        <ol class="make">
+          <li class="make-step" style="--tilt:-1.2deg">
+            <span class="make-n">1 · modelled</span>
+            <figure class="note note--wide">
+              <img loading="lazy" src="assets/images/making/ring-cad.jpg" alt="CAD model of one half of the ring frame: two arched end plates with radial ribs, joined around a curved inner shell" />
+              <figcaption>the ring frame in CAD. radial ribs carry the curve.</figcaption>
+            </figure>
+          </li>
+          <li class="make-step" style="--tilt:.9deg">
+            <span class="make-n">2 · printed</span>
+            <figure class="note note--wide">
+              <img loading="lazy" src="assets/images/making/printed-ring.jpg" alt="The 3D-printed grey half-ring frame on a desk, with a flexible black LED panel wrapped over its outer edge" />
+              <figcaption>printed, with the flexible LED panel wrapped over the ribs.</figcaption>
+            </figure>
+          </li>
+          <li class="make-step" style="--tilt:-.6deg">
+            <span class="make-n">3 · drawn up</span>
+            <figure class="note note--wide note--drawing">
+              <a href="assets/images/making/drawing-config4.png" target="_blank" rel="noopener">
+                <img loading="lazy" src="assets/images/making/drawing-config4.png" alt="Technical drawing of SPIU configuration 4: top, front, side and isometric views. Overall height 1650 mm; ring 606 by 393 mm with four spokes; flat foot plate." />
+              </a>
+              <figcaption>configuration 4: 1650 mm tall, ring 606 × 393 mm, about 32 kg.</figcaption>
+            </figure>
+          </li>
+          <li class="make-step" style="--tilt:1.4deg">
+            <span class="make-n">4 · assembled</span>
+            <figure class="note note--wide note--video">
+              <video class="make-video" muted playsinline loop preload="none" poster="assets/images/making/spiu-model-poster.jpg" aria-label="The full pole model turning in Fusion 360, with one curved LED segment highlighted">
+                <source src="assets/images/making/spiu-model.mp4" type="video/mp4" />
+              </video>
+              <figcaption><span class="make-hint">hover to turn it.</span> the whole pole in Fusion 360.</figcaption>
+            </figure>
+          </li>
+        </ol>
+        <p class="make-credit">Technical drawing by the prototype workshop of the Institute of Industrial Science, The University of Tokyo (2025).</p>
+      </div>
+    </section>
     <!-- ============ ABOUT ============ -->
 <section id="about" class="about">
   <div class="container">
@@ -1391,6 +1477,81 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
     </p>
   </div>
 </section>
+
+    <!-- ============ SELECTED PAPERS ============ -->
+    <section id="selected">
+      <div class="container">
+        <h2>Selected papers</h2>
+        <ol class="papers">
+          <li>
+            <p class="p-when">CHI 2026<br><span>Barcelona</span></p>
+            <div>
+              <h3><a href="https://doi.org/10.1145/3772318.3790882">Don’t Worry, Just Follow Me: Prototyping and In-the-Wild Evaluation of Smart Pole Interaction Unit with Mobility</a></h3>
+              <p class="p-what">We put a mobile SPIU on a real street with 21 people. The pole and the car’s own eHMI worked best together.</p>
+              <p class="p-meta"><span class="me">Vishal Chauhan</span>, Anubhav, Mark Colley, Chia-Ming Chang, Xinyue Gui, Ding Xia, Ehsan Javanmardi, Takeo Igarashi, Kantaro Fujiwara, Manabu Tsukada · <span class="p-award">Honourable Mention</span></p>
+              <p class="p-links"><a href="https://doi.org/10.1145/3772318.3790882">paper</a> · <a href="https://www.youtube.com/watch?v=PLmCgmTwsHQ">video</a></p>
+            </div>
+          </li>
+          <li>
+            <p class="p-when">CHI 2026<br><span>Barcelona</span></p>
+            <div>
+              <h3><a href="https://doi.org/10.1145/3772318.3790537">Peeking Ahead of the Field Study: Exploring VLM Personas as Support Tools for Embodied Studies in HCI</a></h3>
+              <p class="p-what">Twenty people and twenty VLM personas made the same crossing decisions. Where can personas stand in for people, and where can’t they?</p>
+              <p class="p-meta">Xinyue Gui, Ding Xia, Mark Colley, Yuan Li, <span class="me">Vishal Chauhan</span>, Anubhav, Zhongyi Zhou, Ehsan Javanmardi, Stela Hanbyeol Seo, Chia-Ming Chang, Manabu Tsukada, Takeo Igarashi · <span class="p-award">Honourable Mention</span></p>
+              <p class="p-links"><a href="https://doi.org/10.1145/3772318.3790537">paper</a> · <a href="https://arxiv.org/abs/2602.16157">arXiv</a></p>
+            </div>
+          </li>
+          <li>
+            <p class="p-when">VRST 2025<br><span>Montréal</span></p>
+            <div>
+              <h3><a href="https://doi.org/10.1145/3756884.3765991">A Silent Negotiator? Cross-cultural VR Evaluation of Smart Pole Interaction Units in Dynamic Shared Spaces</a></h3>
+              <p class="p-what">Forty people in Japan and Norway, four risky scenarios. The pole shortened decisions, and culture changed how much.</p>
+              <p class="p-meta"><span class="me">Vishal Chauhan</span>, Anubhav, Robin Sidhu, Yu Asabe, Kanta Tanaka, Chia-Ming Chang, Xiang Su, Ehsan Javanmardi, Takeo Igarashi, Alex Orsholits, Kantaro Fujiwara, Manabu Tsukada</p>
+              <p class="p-links"><a href="https://doi.org/10.1145/3756884.3765991">paper</a></p>
+            </div>
+          </li>
+          <li>
+            <p class="p-when">IJHCS 2025<br><span>vol. 205</span></p>
+            <div>
+              <h3><a href="https://doi.org/10.1016/j.ijhcs.2025.103628">Towards the Future of Pedestrian–AV Interaction: Human Perception vs. LLM Insights on Smart Pole Interaction Unit in Shared Spaces</a></h3>
+              <p class="p-what">Twenty-five people designed with us; three LLMs answered the same questions. The models talked about safety more and understood it less.</p>
+              <p class="p-meta"><span class="me">Vishal Chauhan</span>, Anubhav, Chia-Ming Chang, Xiang Su, Jin Nakazato, Ehsan Javanmardi, Alex Orsholits, Takeo Igarashi, Kantaro Fujiwara, Manabu Tsukada</p>
+              <p class="p-links"><a href="https://doi.org/10.1016/j.ijhcs.2025.103628">paper</a></p>
+            </div>
+          </li>
+        </ol>
+        <p class="see-all"><a href="publications.html">All publications</a></p>
+      </div>
+    </section>
+
+    <!-- ============ FROM THE FIELD (real photos) ============ -->
+    <section id="field">
+      <div class="container">
+        <h2>From the field</h2>
+        <div class="notes">
+          <figure class="note" style="--tilt:-1.6deg">
+            <img loading="lazy" src="assets/images/notes/civ26-talk.jpg" alt="Giving “Who goes first?” at the CIV Summer School 2026 in Miyazaki" />
+            <figcaption>giving “who goes first?”, CIV ’26 Miyazaki</figcaption>
+          </figure>
+          <figure class="note" style="--tilt:1.2deg">
+            <img loading="lazy" src="assets/images/notes/chi26-barcelona.jpg" alt="At CHI 2026 in Barcelona" />
+            <figcaption>CHI ’26, Barcelona</figcaption>
+          </figure>
+          <figure class="note" style="--tilt:-0.8deg">
+            <img loading="lazy" src="assets/images/notes/autoui24-stanford.jpg" alt="Sitting in a DeLorean at AutomotiveUI 2024, Stanford" />
+            <figcaption>AutoUI ’24 at Stanford. had to.</figcaption>
+          </figure>
+          <figure class="note" style="--tilt:1.8deg">
+            <img loading="lazy" src="assets/images/notes/civ25-blonay.jpg" alt="Above Blonay, Switzerland, at the CIV Summer School 2025" />
+            <figcaption>CIV ’25, above Blonay</figcaption>
+          </figure>
+          <figure class="note" style="--tilt:-1.2deg">
+            <img loading="lazy" src="assets/images/notes/lab-dinner.jpg" alt="Dinner with the lab" />
+            <figcaption>lab dinner</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
     <!-- ============ RESEARCH AGENDA ============ -->
     <section id="research">
       <div class="container">
@@ -2404,6 +2565,14 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
           <p class="teaching-meta">UTokyo × Doshisha, with Tier IV and Digital Agency · 2022</p>
           <p>Team lead for an interdisciplinary student team competing on a mobility business challenge.</p>
         </div>
+      </div>
+    </section>
+    <!-- ============ WORKING TOGETHER ============ -->
+    <section id="collaborate">
+      <div class="container">
+        <h2>Working together</h2>
+        <p>Right now I am building co-walker robots for Japan’s sidewalks: service robots whose intentions people can read at a glance. It is a JST ACT-X project (2026–), and I am its principal investigator.</p>
+        <p>Students, tell me which paper brought you here. Researchers, I like studies that cross cultures or leave the lab. Cities and companies, I want these interfaces on real streets.</p>
       </div>
     </section>
     <!-- ============ CONTACT (console-style card) ============ -->
