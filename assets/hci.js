@@ -98,7 +98,7 @@
     svg.setAttribute('tabindex', '0');
     /* on a phone, frame just the crossing so the drawing stays legible */
     var narrow = window.matchMedia('(max-width: 640px)');
-    function frame() { svg.setAttribute('viewBox', narrow.matches ? '410 20 600 250' : '0 0 1000 260'); }
+    function frame() { svg.setAttribute('viewBox', narrow.matches ? '410 0 600 270' : '0 0 1000 260'); }
     frame();
     if (narrow.addEventListener) narrow.addEventListener('change', frame);
 
@@ -136,6 +136,46 @@
         h += path(d, 'pencil soft');
       }
       h += path(line(STOP_FRONT + 6, MID + 5, STOP_FRONT + 6, BOT - 4, 1), 'pencil');
+
+      /* --- street life (all static): paving, trees, a bench, planters, road marks --- */
+      d = '';                                              // paving joints on both pavements
+      for (x = 22; x < 1000; x += 44) {
+        d += stroke(x, TOP - 24, x - 1, TOP - 4, 0.3);
+        d += stroke(x + 22, BOT + 4, x + 21, BOT + 26, 0.3);
+      }
+      d += stroke(-10, TOP - 25, 1010, TOP - 25, 0.6) + stroke(-10, BOT + 27, 1010, BOT + 27, 0.6);
+      h += path(d, 'pencil hatch');
+      // manhole cover and lane arrows
+      h += path(ellipse(300, 94, 9, 9, 0.3) + stroke(293, 94, 307, 94, 0.2) + stroke(300, 87, 300, 101, 0.2), 'pencil soft');
+      h += path(line(392, LANE, 440, LANE, 0.5) + stroke(440, LANE, 430, LANE - 6, 0.3) + stroke(440, LANE, 430, LANE + 6, 0.3), 'pencil soft');
+      h += path(line(860, 94, 812, 94, 0.5) + stroke(812, 94, 822, 88, 0.3) + stroke(812, 94, 822, 100, 0.3), 'pencil soft');
+      // a bench and two planters on the far pavement
+      h += path(rect(318, 30, 40, 12, 0.5) + stroke(320, 36, 356, 36, 0.3), 'pencil');
+      [[858, 38], [214, 224]].forEach(function (p) {
+        h += path(rect(p[0], p[1] - 7, 22, 14, 0.4), 'pencil') +
+             path(ellipse(p[0] + 6, p[1], 3, 3, 0.3) + ellipse(p[0] + 13, p[1] - 2, 2.6, 2.6, 0.3) + ellipse(p[0] + 17, p[1] + 3, 2.4, 2.4, 0.3), 'pencil tree-ink') +
+             '<circle class="flower" cx="' + (p[0] + 6) + '" cy="' + p[1] + '" r="1.6"/><circle class="flower" cx="' + (p[0] + 13) + '" cy="' + (p[1] - 2) + '" r="1.4"/><circle class="flower f2" cx="' + (p[0] + 17) + '" cy="' + (p[1] + 3) + '" r="1.3"/>';
+      });
+      // trees, seen from above: a soft shadow, a leafy crown, a trunk in the middle
+      function tree(cx, cy, R) {
+        var s = '<ellipse class="tree-shadow" cx="' + (cx + 5) + '" cy="' + (cy + 5) + '" rx="' + R + '" ry="' + f(R * 0.9) + '"/>';
+        var n = 44, ph = r() * 6.28, i, t, rr, dd = '';
+        for (i = 0; i <= n; i++) {
+          t = i / n * Math.PI * 2;
+          rr = R * (1 + 0.1 * Math.sin(7 * t + ph) + 0.04 * Math.sin(13 * t + ph * 2)) + j(0.5);
+          dd += (i ? 'L' : 'M') + f(cx + Math.cos(t) * rr) + ' ' + f(cy + Math.sin(t) * rr * 0.95);
+        }
+        s += '<path class="tree-fill" d="' + dd + 'Z"/>' + path(dd, 'pencil tree-ink');
+        s += '<ellipse class="tree-light" cx="' + f(cx - R * 0.25) + '" cy="' + f(cy - R * 0.28) + '" rx="' + f(R * 0.5) + '" ry="' + f(R * 0.42) + '"/>';
+        var leaves = '';
+        for (i = 0; i < 7; i++) {
+          var a = r() * 6.28, rad = R * (0.25 + r() * 0.45), lx = cx + Math.cos(a) * rad, ly = cy + Math.sin(a) * rad;
+          leaves += stroke(lx - 3, ly + 1, lx + 1, ly - 3, 0.3) + stroke(lx + 1, ly - 3, lx + 4, ly + 1, 0.3);
+        }
+        return s + path(leaves, 'pencil soft tree-ink') + path(ellipse(cx, cy, 1.8, 1.8, 0.2), 'pencil tree-ink');
+      }
+      [[250, 30, 24], [440, 28, 19], [770, 31, 25], [935, 28, 21],
+       [150, 228, 22], [338, 226, 24], [480, 230, 18], [962, 214, 16]].forEach(function (tr) { h += tree(tr[0], tr[1], tr[2]); });
       gStatic.innerHTML = h;
       // annotations
       var n = '';
@@ -177,20 +217,32 @@
       if (parent) parent.appendChild(e);
       return e;
     }
-    var ehmiEl, alarmEl, carPaths;
+    var ehmiEl, alarmEl, carPaths, carBody, lidarBeam, carColour = 0;
+    /* a small self-driving car seen from above: rounded body, curved windscreen,
+       rear window, mirrors, headlights, and a lidar dome on the roof */
+    var BODY = 'M10 -20H84Q99 -20 100 -8V8Q99 20 84 20H10Q0 20 0 10V-10Q0 -20 10 -20Z';
+    var GLASS = 'M62 -15Q72 -14 77 -11Q79 0 77 11Q72 14 62 15Z M22 -14Q16 -13 13 -11Q12 0 13 11Q16 13 22 14Z';
     function carShapes() {
-      return [line(8, -20, 92, -20, 1) + line(92, 20, 8, 20, 1) +
-                stroke(8, -20, 1, -12, 0.6) + line(0, -12, 0, 12, 0.8) + stroke(1, 12, 8, 20, 0.6) +
-                stroke(92, -20, 99, -12, 0.6) + line(100, -12, 100, 12, 0.8) + stroke(99, 12, 92, 20, 0.6),
-              stroke(66, -16, 73, 0, 0.6) + stroke(73, 0, 66, 16, 0.6) + line(20, -15, 20, 15, 0.6) +
-                line(28, -13, 60, -13, 0.6) + line(28, 13, 60, 13, 0.6),
-              line(14, -23, 30, -23, 0.4) + line(70, -23, 86, -23, 0.4) + line(14, 23, 30, 23, 0.4) + line(70, 23, 86, 23, 0.4)];
+      return [line(10, -20, 84, -20, 0.8) + stroke(84, -20, 98, -11, 0.5) + line(100, -9, 100, 9, 0.6) + stroke(98, 11, 84, 20, 0.5) +
+                line(84, 20, 10, 20, 0.8) + stroke(10, 20, 1, 12, 0.5) + line(0, 10, 0, -10, 0.6) + stroke(1, -12, 10, -20, 0.5),
+              stroke(62, -15, 77, -11, 0.4) + stroke(77, -11, 77, 11, 0.4) + stroke(77, 11, 62, 15, 0.4) + stroke(62, 15, 62, -15, 0.4) +
+                stroke(22, -14, 13, -11, 0.4) + stroke(13, -11, 13, 11, 0.4) + stroke(13, 11, 22, 14, 0.4) +
+                stroke(26, -15, 58, -15, 0.4) + stroke(26, 15, 58, 15, 0.4),
+              stroke(66, -20, 70, -25, 0.3) + stroke(70, -25, 75, -21, 0.3) + stroke(66, 20, 70, 25, 0.3) + stroke(70, 25, 75, 21, 0.3) +
+                line(14, -23, 30, -23, 0.4) + line(72, -23, 88, -23, 0.4) + line(14, 23, 30, 23, 0.4) + line(72, 23, 88, 23, 0.4)];
     }
     function drawCar() {
       var d = carShapes();
       if (!carPaths) {
-        el('rect', { 'class': 'fill-car', x: 0, y: -20, width: CAR_L, height: 40, rx: 9 }, gCar);
+        carBody = el('path', { 'class': 'car-body c0', d: BODY }, gCar);
+        el('path', { 'class': 'car-glass', d: GLASS }, gCar);
+        el('ellipse', { 'class': 'car-hl', cx: 96, cy: -13, rx: 2.4, ry: 3.2 }, gCar);
+        el('ellipse', { 'class': 'car-hl', cx: 96, cy: 13, rx: 2.4, ry: 3.2 }, gCar);
+        el('path', { 'class': 'car-tail', d: 'M1.5 -16V-10M1.5 10V16' }, gCar);
         carPaths = [el('path', { 'class': 'pencil' }, gCar), el('path', { 'class': 'pencil soft' }, gCar), el('path', { 'class': 'pencil' }, gCar)];
+        el('circle', { 'class': 'car-lidar', cx: 42, cy: 0, r: 5 }, gCar);
+        lidarBeam = el('path', { 'class': 'car-beam', d: 'M0 0L13 0' }, gCar);
+        el('circle', { 'class': 'car-lidar-dot', cx: 42, cy: 0, r: 1.4 }, gCar);
         ehmiEl = el('line', { 'class': 'ehmi', x1: 104, y1: -14, x2: 104, y2: 14 }, gCar);
         alarmEl = el('text', { 'class': 'alarm', x: 112, y: -14, visibility: 'hidden' }, gCar);
         alarmEl.textContent = '!';
@@ -230,6 +282,8 @@
     function spawn() {
       car = { x: -130, v: V, a: 0, state: 'cruise', noticed: false, waitT: 0, leaveAt: null, quietSince: null };
       drawCar();
+      carColour = (carColour + 1) % 4;                 // each new car has its own colour
+      carBody.setAttribute('class', 'car-body c' + carColour);
     }
 
     function step(dt) {
@@ -328,6 +382,7 @@
         boilCar += 1;
         if (car.v > 5 && boilCar % 8 === 0) drawCar();
         gCar.setAttribute('transform', 'translate(' + f(car.x) + ' ' + LANE + ')');
+        lidarBeam.setAttribute('transform', 'translate(42 0) rotate(' + Math.round(t * 400 % 360) + ')');   // the roof sensor keeps scanning
         if (gCar.style.display) gCar.style.display = '';
         if (car.state === 'yield') ehmiOn = true;
         else if (car.state === 'wait' && !crossed && car.noticed) ehmiOn = Math.floor(t * 2.4) % 2 === 0;
