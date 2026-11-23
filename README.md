@@ -159,6 +159,7 @@ Then commit, open a PR, merge when green, and close the reminder issue.
 | Command | What it does |
 |---|---|
 | `node scripts/check-site.mjs` | Checks the whole site (same as the PR check). |
+| `node scripts/stamp-assets.mjs` | After changing any CSS/JS file: updates the `?v=` stamps so browsers load the new version right away. |
 | `node scripts/build-blog.mjs` | Turns `blog/*.md` posts into pages and updates the Blog list. |
 | `tools/update-cv.sh path/to/cv.pdf` | Puts a new CV PDF on the site; removes phone number and referees from the public copy. |
 | `python3 tools/optimize-images.py [files…]` | Shrinks images, keeps names, strips GPS/camera data. Safe to re-run. |
@@ -175,6 +176,7 @@ You need **Node** (already on this Mac) and **Pillow** for the image tool
   menu (Research · Publications · CV · News · Blog · Moments · About · Contact), the
   light/dark toggle or the footer. This keeps every page consistent.
 - Any image over **600 KB** or video over **6 MB**, so the site stays fast.
+- CSS/JS links whose `?v=` version stamp is out of date (visitors would see an old design).
 - Broken JSON-LD (the profile data Google reads).
 
 Each problem names the file and line and says how to fix it.
