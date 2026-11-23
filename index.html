@@ -407,15 +407,22 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
       transition:transform .16s ease-out,opacity .2s ease;
       opacity:.82;
     }
-    #top .hero-signal-field svg{
-      display:block;
-      width:100%;
-      height:100%;
-      overflow:visible;
+    /* Performance: the soft hole behind the hero text used to be an SVG mask with a
+       large blur that was recomputed every frame. The same shape is now a CSS mask the
+       graphics card applies, and the drift moves the whole pattern layer (no repaint). */
+    #top .hero-weave-hole{
+      position:absolute;
+      inset:0;
+      overflow:hidden;
+      -webkit-mask-image:radial-gradient(ellipse 36% 41% at 53% 49%,transparent 46%,#000 100%);
+      mask-image:radial-gradient(ellipse 36% 41% at 53% 49%,transparent 46%,#000 100%);
     }
-    #top .hero-woven-layer{
-      transform-box:fill-box;
-      transform-origin:center;
+    #top .hero-weave-svg{
+      position:absolute;
+      inset:-12px;
+      display:block;
+      width:calc(100% + 24px);
+      height:calc(100% + 24px);
       animation:hero-weave-drift 14s ease-in-out infinite alternate;
       will-change:transform;
       backface-visibility:hidden;
@@ -461,7 +468,7 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
         transition:none;
         opacity:.44;
       }
-      #top .hero-woven-layer{animation:none!important}
+      #top .hero-weave-svg{animation:none!important}
     }
     
   </style>
@@ -533,29 +540,19 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
     <!-- ============ HERO ============ -->
     <section class="hero" id="top">
       <div class="hero-signal-field" data-hero-signal aria-hidden="true">
-        <svg viewBox="0 0 1600 620" preserveAspectRatio="xMidYMid slice">
-          <defs>
-            <pattern id="heroWovenPattern" width="96" height="96" patternUnits="userSpaceOnUse">
-              <path class="hero-weave-line"
-                    d="M48 0 60 36 96 48 60 60 48 96 36 60 0 48 36 36ZM0 0 36 36M96 0 60 36M96 96 60 60M0 96 36 60"/>
-              <path class="hero-weave-stitch" d="M0 48H96M48 0V96M0 0 96 96M96 0 0 96"/>
-              <circle class="hero-weave-knot" cx="48" cy="48" r="1.8"/>
-            </pattern>
-            <filter id="heroContentBlur" x="-20%" y="-30%" width="140%" height="160%">
-              <feGaussianBlur stdDeviation="38"/>
-            </filter>
-            <mask id="heroContentSafeMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1600" height="620">
-              <rect width="1600" height="620" fill="white"/>
-              <rect x="330" y="82" width="1040" height="448" rx="76" fill="black"
-                    filter="url(#heroContentBlur)"/>
-            </mask>
-          </defs>
-          <g mask="url(#heroContentSafeMask)">
-            <g class="hero-woven-layer">
-              <rect class="hero-woven-texture" x="-120" y="-120" width="1840" height="860"/>
-            </g>
-          </g>
-        </svg>
+        <div class="hero-weave-hole">
+          <svg class="hero-weave-svg" viewBox="0 0 1600 620" preserveAspectRatio="xMidYMid slice">
+            <defs>
+              <pattern id="heroWovenPattern" width="96" height="96" patternUnits="userSpaceOnUse">
+                <path class="hero-weave-line"
+                      d="M48 0 60 36 96 48 60 60 48 96 36 60 0 48 36 36ZM0 0 36 36M96 0 60 36M96 96 60 60M0 96 36 60"/>
+                <path class="hero-weave-stitch" d="M0 48H96M48 0V96M0 0 96 96M96 0 0 96"/>
+                <circle class="hero-weave-knot" cx="48" cy="48" r="1.8"/>
+              </pattern>
+            </defs>
+            <rect class="hero-woven-texture" x="-120" y="-120" width="1840" height="860"/>
+          </svg>
+        </div>
       </div>
       <div class="container">
         <div class="hero-grid">
