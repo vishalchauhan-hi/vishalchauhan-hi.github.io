@@ -49,7 +49,7 @@ nav.primary a.is-current { color: var(--ink); text-decoration-color: var(--ink);
 
 .street figcaption {
   display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
-  margin-top: .35rem; min-height: 2.1em;
+  margin-top: 1.1rem; min-height: 2.1em;
 }
 .street-note { font: 600 1.35rem/1.25 var(--hand); color: var(--ink-soft); }
 .street-pause {

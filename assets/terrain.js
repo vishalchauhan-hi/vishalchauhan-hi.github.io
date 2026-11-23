@@ -1,8 +1,8 @@
-/* terrain.js — every page gets its own faint contour map in the side margins.
+/* terrain.js — every page gets its own soft contour map across the whole page.
    The map is generated once from the page's name, so the homepage, Publications,
    CV, News… each have a different landscape from the same family, like sheets
    of an atlas. Drawn once as a background image: nothing moves, no cost while
-   scrolling. The text column is masked out in CSS (see style.css, "terrain"). */
+   scrolling. Behind the text column it is veiled to about a third (style.css, "terrain"). */
 (function () {
   'use strict';
   var root = document.documentElement;
@@ -28,18 +28,17 @@
     }
     return d + 'Z';
   }
-  // two hills in each margin, at page-specific positions and shapes; each hill
-  // takes one colour from the contact box's sunset palette
+  // hills spread across the whole width; each takes one colour from the
+  // contact box's sunset palette
   var PALETTE = [[232, 128, 98], [232, 180, 60], [74, 140, 105], [96, 140, 214]];
   var hills = [], start = Math.floor(rnd() * 4);
-  [[60, 320], [1280, 1540]].forEach(function (span, side) {
-    for (var h = 0; h < 2; h++) {
-      var cx = span[0] + rnd() * (span[1] - span[0]);
-      var cy = 260 + h * 560 + rnd() * 280;
-      var ph = rnd() * 6.28, sx = 0.9 + rnd() * 0.6, rings = 7 + Math.floor(rnd() * 5), base = 14 + rnd() * 22, d = '';
-      for (var k = 0; k < rings; k++) d += loop(cx, cy, base + k * 26, 0.05 + k * 0.009, ph + k * 0.2, sx);
-      hills.push({ cx: cx, cy: cy, r: base + rings * 26, sx: sx, d: d, c: PALETTE[(start + side * 2 + h) % 4] });
-    }
+  var SPOTS = [[80, 300, 120, 520], [500, 760, 60, 420], [880, 1140, 520, 900], [1300, 1540, 160, 560], [140, 420, 860, 1200], [1180, 1480, 900, 1260]];
+  SPOTS.forEach(function (sp, idx) {
+    var cx = sp[0] + rnd() * (sp[1] - sp[0]);
+    var cy = sp[2] + rnd() * (sp[3] - sp[2]);
+    var ph = rnd() * 6.28, sx = 0.9 + rnd() * 0.6, rings = 6 + Math.floor(rnd() * 5), base = 14 + rnd() * 22, d = '';
+    for (var k = 0; k < rings; k++) d += loop(cx, cy, base + k * 26, 0.05 + k * 0.009, ph + k * 0.2, sx);
+    hills.push({ cx: cx, cy: cy, r: base + rings * 26, sx: sx, d: d, c: PALETTE[(start + idx) % 4] });
   });
   function tile(lineAlpha, glowAlpha) {
     var defs = '', body = '';
@@ -48,12 +47,12 @@
       defs += '<radialGradient id="g' + i + '"><stop offset="0" stop-color="rgb(' + rgb + ')" stop-opacity="' + glowAlpha + '"/>' +
               '<stop offset="1" stop-color="rgb(' + rgb + ')" stop-opacity="0"/></radialGradient>';
       body += '<ellipse cx="' + hl.cx.toFixed(1) + '" cy="' + hl.cy.toFixed(1) + '" rx="' + (hl.r * hl.sx * 1.15).toFixed(1) + '" ry="' + (hl.r * 1.15).toFixed(1) + '" fill="url(#g' + i + ')"/>' +
-              '<path d="' + hl.d + '" fill="none" stroke="rgb(' + rgb + ')" stroke-opacity="' + lineAlpha + '" stroke-width="1.3"/>';
+              '<path d="' + hl.d + '" fill="none" stroke="rgb(' + rgb + ')" stroke-opacity="' + lineAlpha + '" stroke-width="1.1"/>';
     });
     var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '"><defs>' + defs + '</defs>' + body + '</svg>';
     return 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '")';
   }
-  root.style.setProperty('--terrain-light', tile(0.75, 0.46));
-  root.style.setProperty('--terrain-dark', tile(0.40, 0.22));
+  root.style.setProperty('--terrain-light', tile(0.42, 0.22));
+  root.style.setProperty('--terrain-dark', tile(0.26, 0.12));
   root.classList.add('has-terrain');
 })();
