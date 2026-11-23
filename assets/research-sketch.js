@@ -119,9 +119,10 @@
   function person(S, parent, opts) {
     opts = opts || {};
     var g = S.g(parent, 'sk-dark');
-    S.ink(g, function (P) { return P.ell(0, -31, 4, 4.4, 0.4); });
-    S.ink(g, function (P) { return P.line(0, -26.5, 0.4, -13, 0.4); });
-    if (opts.hair) S.ink(g, function (P) { return P.seg(-4, -33, 0, -36.2, 0.3) + P.seg(0, -36.2, 4.3, -33, 0.3); }, 'sk-soft');
+    S.ink(g, function (P) { return P.ell(0, -32, 5.6, 6, 0.4); });
+    S.ink(g, function (P) { return P.line(0, -26, 0.4, -13, 0.4); });
+    if (opts.hair) S.ink(g, function (P) { return P.seg(-5.6, -34, -1, -38.8, 0.3) + P.seg(-1, -38.8, 5.4, -35, 0.3); }, 'sk-soft');
+    var face = face6(g);
     var legA = S.g(el('g', g, { transform: 'translate(0.4 -13)' }));
     var legB = S.g(el('g', g, { transform: 'translate(0.4 -13)' }));
     S.ink(legA, function (P) { return P.seg(0, 0, -0.8, 13, 0.3); });
@@ -132,7 +133,34 @@
     S.ink(armB, function (P) { return P.seg(0, 0, 4, 9, 0.3); });
     if (opts.cup) S.ink(armB, function (P) { return P.poly([[2.6, 9], [6.6, 9], [6, 14], [3.2, 14]], true, 0.2); }, 'sk-gold');
     if (opts.bag) S.ink(armA, function (P) { return P.poly([[-6.5, 8], [-1.5, 8], [-1.5, 14], [-6.5, 14]], true, 0.2); }, 'sk-soft');
-    return { g: g, legA: legA, legB: legB, armA: armA, armB: armB };
+    return { g: g, legA: legA, legB: legB, armA: armA, armB: armB, mood: face.mood, blink: face.blink };
+  }
+
+  // a small face: eyes that blink, and a mood (flat, worried, oh, happy)
+  function face6(parent) {
+    var f6 = el('g', parent, { transform: 'translate(0.6 -32)', 'class': 'sk-face' });
+    var eyes = el('g', f6);
+    el('circle', eyes, { cx: -2, cy: -0.6, r: 0.8, 'class': 'sk-fill' });
+    el('circle', eyes, { cx: 2, cy: -0.6, r: 0.8, 'class': 'sk-fill' });
+    var parts = {
+      worried: [el('path', f6, { d: 'M-3.4 -2.4L-1 -3.5M3.4 -2.4L1 -3.5' }), el('path', f6, { d: 'M-1.9 3Q0 1.5 1.9 3' }),
+                el('path', f6, { d: 'M5.2 -4.6q-1.1 1.7 0 2.3q1.1-.6 0-2.3', 'class': 'sk-drop' })],
+      oh: [el('path', f6, { d: 'M-3.2 -3.3L-1 -3.6M3.2 -3.3L1 -3.6' }), el('circle', f6, { cx: 0, cy: 2.3, r: 1 })],
+      happy: [el('path', f6, { d: 'M-2.4 1.4Q0 4 2.4 1.4' }),
+              el('ellipse', f6, { cx: -3.4, cy: 1, rx: 1, ry: 0.55, 'class': 'sk-blush' }), el('ellipse', f6, { cx: 3.4, cy: 1, rx: 1, ry: 0.55, 'class': 'sk-blush' })],
+      flat: [el('path', f6, { d: 'M-1.5 2.2L1.5 2.2' })]
+    };
+    var cur = '';
+    function mood(m) {
+      if (m === cur) return; cur = m;
+      for (var k in parts) parts[k].forEach(function (n) { n.style.display = k === m ? '' : 'none'; });
+    }
+    function blink(t) {
+      var b = (t % 3.1) < 0.12;
+      eyes.setAttribute('transform', b ? 'scale(1 0.15)' : '');
+    }
+    mood('flat');
+    return { mood: mood, blink: blink };
   }
   function walkPose(p, phase, amt) {
     var s = Math.sin(phase) * 24 * amt;
@@ -225,6 +253,7 @@
       put(pedG, px, py, ps);
       walkPose(ped, t * 9, t > 3.5 && t < 5.4 ? 1 : 0);
       rotAt(ped.armB, t > 5.6 && t < 7 ? -150 + Math.sin(t * 12) * 18 : 0);
+      ped.mood(t < 2.5 ? 'worried' : t < 3.2 ? 'oh' : 'happy'); ped.blink(t);
       show(ask, bump(t, 0.6, 3.2, 0.3));
       show(yes, bump(t, 3.0, 4.3, 0.2));
       show(pedG, Math.min(ease(span(t, 0, 0.4)), 1 - ease(span(t, 7.2, 7.7))));
@@ -302,6 +331,7 @@
       put(hG, hx, 162, 1.08);
       walkPose(hum, t * 8, 1);
       rotAt(hum.armA, t > 3.6 && t < 4.9 ? 150 + Math.sin(t * 12) * 18 : -Math.sin(t * 8) * 16);
+      hum.mood(t < 2.7 ? 'flat' : t < 3.4 ? 'oh' : t < 6 ? 'happy' : 'flat'); hum.blink(t + 1.3);
       show(heart, bump(t, 3.9, 5.0, 0.2));
       show(label, bump(t, 2.6, 5.0, 0.4));
     }
@@ -369,27 +399,98 @@
       show(cone, bump(t, 2.7, 5.6, 0.4));
       show(ok, bump(t, 4.2, 5.8, 0.4));
       // car from the right, waits, leaves
-      var cx = t < 2.6 ? 250 - 112 * outQ(span(t, 0.2, 2.6)) : t < 5.8 ? 138 : 138 - 240 * inQ(span(t, 5.8, 7.4));
+      var cx = t < 2.6 ? 250 - 112 * outQ(span(t, 0.2, 2.6)) : t < 6.3 ? 138 : 138 - 240 * inQ(span(t, 6.3, 7.7));
       put(cG, cx, 150);
       C.wheels.forEach(function (w) { rotAt(w, -cx * 9); });
-      var waiting = t > 2.4 && t < 5.8;
+      var waiting = t > 2.4 && t < 6.3;
       C.bar.style.color = waiting ? 'var(--go)' : 'var(--coral)';
       C.bar.style.strokeDasharray = waiting ? '1 1' : '0.12 0.08';
       C.bar.style.strokeDashoffset = waiting ? 0 : (-t * 0.6).toFixed(3);
       show(dots, waiting ? 0.35 + 0.65 * Math.abs(Math.sin(t * 3)) : 0);
       // pedestrian crosses on the lit crossing
       var w = ease(span(t, 3.0, 5.2));
-      put(pedG, 100, 110 + w * 58, 0.8 + w * 0.22);
-      walkPose(ped, t * 9, t > 3.0 && t < 5.2 ? 1 : 0);
+      var away = ease(span(t, 5.3, 7.0));
+      put(pedG, 100 - away * 95, 110 + w * 58, 0.8 + w * 0.22);
+      ped.mood(t < 1.4 ? 'flat' : t < 2.7 ? 'worried' : 'happy'); ped.blink(t + 0.7);
+      walkPose(ped, t * 9, (t > 3.0 && t < 5.2) || (t > 5.3 && t < 7.0) ? 1 : 0);
       show(pedG, Math.min(ease(span(t, 0, 0.4)), 1 - ease(span(t, 7.1, 7.7))));
     }
     return { S: S, frame: frame, L: L, still: 3.6 };
   }
 
   // ---- run: one clock, only for circles on screen ----
-  var makers = [mobility, robot, city];
+
+  // ================= 04 · Design =================
+  // the double diamond: discover → define → develop → deliver
+  function design(svg) {
+    var S = new Scene(svg, 44, 1.0, 104), W = S.world, L = 8.6;
+    var dVars = S.P.map(function (P) {
+      return P.poly([[18, 100], [59, 64], [100, 100]], false, 0.4) + P.poly([[100, 100], [141, 64], [182, 100]], false, 0.4) +
+             P.poly([[182, 100], [141, 136], [100, 100]], false, 0.4) + P.poly([[100, 100], [59, 136], [18, 100]], false, 0.4);
+    });
+    var dia = el('path', W, { d: dVars[0], pathLength: 1, 'class': 'sk-reveal sk-proto' });
+    S.parts.push({ p: dia, vars: dVars });
+    var pencil = el('g', W);
+    var pin = S.g(pencil, 'sk-dark');
+    S.ink(pin, function (P) { return P.poly([[0, 0], [3, -7], [24, -28], [29, -23], [8, -2]], true, 0.2); });
+    S.ink(pin, function (P) { return P.poly([[24, -28], [27, -31], [32, -26], [29, -23]], false, 0.1); }, 'sk-sig');
+
+    // discover: scattered sticky notes (they later gather = define)
+    var notes = [[32, 88, 'sk-gold'], [44, 108, 'sk-sig'], [52, 82, 'sk-go'], [36, 112, 'sk-gold'], [58, 100, 'sk-sig']].map(function (n, i) {
+      var g = el('g', W);
+      var inner = S.g(g, n[2]);
+      S.ink(inner, function (P) { return P.poly([[-4, -4], [4, -4], [4, 4], [-4, 4]], true, 0.2) + P.seg(-2.4, -1, 2.4, -1, 0.1) + P.seg(-2.4, 1.4, 1, 1.4, 0.1); });
+      return { g: g, x: n[0], y: n[1], cx: 76 + (i % 3) * 5 - 5, cy: 92 + Math.floor(i / 3) * 6, r: (i * 37 % 13) - 6 };
+    });
+    // define: an insight
+    var bulb = S.g(W, 'sk-gold');
+    S.ink(bulb, function (P) { return P.ell(82, 112, 5, 5.6, 0.3) + P.seg(80, 118, 84, 118, 0.1) + P.seg(80.5, 120.5, 83.5, 120.5, 0.1); });
+    S.ink(bulb, function (P) { return P.seg(74, 106, 71, 104, 0.1) + P.seg(90, 106, 93, 104, 0.1) + P.seg(82, 104, 82, 101, 0.1); }, 'sk-soft');
+    // develop: quick UI sketches, one gets refined
+    var ui = S.g(W, 'sk-dark');
+    S.ink(ui, function (P) { return P.poly([[110, 82], [124, 82], [124, 106], [110, 106]], true, 0.3) + P.seg(113, 87, 121, 87, 0.1) + P.seg(113, 92, 119, 92, 0.1) + P.ell(117, 100, 2.6, 2.6, 0.1); });
+    var ui2 = S.g(W, 'sk-dark');
+    S.ink(ui2, function (P) { return P.poly([[128, 96], [142, 96], [142, 120], [128, 120]], true, 0.3) + P.seg(131, 101, 139, 101, 0.1) + P.hatch(131, 105, 8, 6, 2.2) + P.seg(131, 115, 136, 115, 0.1); });
+    // deliver: someone uses it and is happy
+    var tG = S.g(W);
+    var tester = person(S, tG, { hair: true });
+    var yes = S.g(tG, 'sk-go');
+    S.ink(yes, function (P) { return P.ell(12, -46, 8.5, 7, 0.4, 1.04) + P.seg(6, -40.5, 3, -37, 0.2); }, 'sk-soft');
+    S.ink(yes, function (P) { return P.seg(8, -46, 11, -43, 0.2) + P.seg(11, -43, 16, -50, 0.2); });
+    var words = S.g(W, 'sk-dark');
+    S.text(words, 38, 154, 'discover', '', 11); S.text(words, 80, 154, 'define', '', 11);
+    S.text(words, 120, 154, 'develop', '', 11); S.text(words, 162, 154, 'deliver', '', 11);
+
+    function frame(t) {
+      var d = ease(span(t, 0.2, 4.4));
+      dia.style.strokeDashoffset = (1 - d).toFixed(3);
+      var pt = dia.getPointAtLength(dia.getTotalLength() * d);
+      put(pencil, pt.x, pt.y);
+      show(pencil, Math.min(ease(span(t, 0, 0.3)), 1 - ease(span(t, 4.4, 4.9))));
+      var gather = ease(span(t, 2.0, 2.9));
+      notes.forEach(function (n, i) {
+        var x = n.x + (n.cx - n.x) * gather, y = n.y + (n.cy - n.y) * gather;
+        put(n.g, x, y, 1, n.r * (1 - gather));
+        show(n.g, bump(t, 0.6 + i * 0.15, 7.9, 0.25));
+      });
+      show(bulb, bump(t, 2.9, 7.9, 0.3));
+      show(ui, bump(t, 3.6, 7.9, 0.3));
+      show(ui2, bump(t, 4.2, 7.9, 0.3));
+      var w = ease(span(t, 4.8, 5.8));
+      put(tG, 196 - w * 30, 128, 0.78);
+      walkPose(tester, t * 9, t > 4.8 && t < 5.8 ? 1 : 0);
+      tester.mood(t < 5.9 ? 'flat' : t < 6.3 ? 'oh' : 'happy'); tester.blink(t + 2);
+      show(yes, bump(t, 6.3, 7.9, 0.25));
+      show(tG, Math.min(ease(span(t, 4.7, 5.0)), 1 - ease(span(t, 7.8, 8.3))));
+      show(words, 1);
+      dia.style.opacity = (1 - ease(span(t, 7.9, 8.4))).toFixed(2);
+    }
+    return { S: S, frame: frame, L: L, still: 6.8 };
+  }
+
+  var makers = [mobility, robot, city, design];
   var holders = document.querySelectorAll('#research .rs-scene');
-  if (holders.length !== 3 || !window.IntersectionObserver) return; // keep the original drawings
+  if (holders.length < 3 || holders.length > 4 || !window.IntersectionObserver) return; // keep the original drawings
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var scenes = [].map.call(holders, function (holder, i) {
     var svg = el('svg', null, { viewBox: '0 0 200 200', 'class': 'rs-sketch', 'aria-hidden': 'true', focusable: 'false' });
