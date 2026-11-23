@@ -10,13 +10,15 @@
 //     the light/dark toggle, the footer or the tab icon (keeps every page consistent)
 //   • an image over 600 KB or a video over 6 MB (keeps the site fast)
 //   • broken JSON-LD (what Google reads about you)
+//   • blog pages out of date with their blog/*.md (run: node scripts/build-blog.mjs)
 //   • (on GitHub, or with --external) photos linked from other websites that no longer exist
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, dirname, extname, relative } from 'node:path';
+import { spawnSync } from 'node:child_process';
 
 const ROOT = process.cwd();
 const IMG_MAX = 600 * 1024, VIDEO_MAX = 6 * 1024 * 1024;
-const MENU = ['Research', 'Publications', 'CV', 'News', 'Moments', 'About', 'Contact'];
+const MENU = ['Research', 'Publications', 'CV', 'News', 'Blog', 'Moments', 'About', 'Contact'];
 const SKIP_DIRS = new Set(['.git', '.github', 'node_modules', 'scripts', 'tools']);
 const ci = !!process.env.GITHUB_ACTIONS;
 
@@ -139,6 +141,12 @@ for (const f of files) {
   if (['.mp4', '.webm', '.mov'].includes(ext) && size > VIDEO_MAX) {
     fail(rel, 1, `video is ${(size / 1048576).toFixed(1)} MB (limit 6 MB). Re-export it smaller (e.g. avconvert -p Preset960x540).`);
   }
+}
+
+/* ---------- blog pages match the .md files they come from ---------- */
+if (existsSync(join(ROOT, 'scripts/build-blog.mjs'))) {
+  const r = spawnSync(process.execPath, ['scripts/build-blog.mjs', '--check'], { cwd: ROOT, encoding: 'utf8' });
+  if (r.status !== 0) for (const l of (r.stdout + r.stderr).trim().split('\n')) fail('blog', 1, l.replace(/^✗ /, ''));
 }
 
 /* ---------- report ---------- */
