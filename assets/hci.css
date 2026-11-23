@@ -194,32 +194,53 @@ nav.primary a.is-current { color: var(--ink); text-decoration-color: var(--ink);
 .spiu-intro { padding-bottom: 0; }
 .spiu-back { padding-top: 0; border-top: 0; }
 
-/* ---------- "Get in touch": colourful wash ----------
-   Built from the three dots on the contact card (coral, yellow, green) plus a soft
-   blue. Static (no animation), so it costs nothing while scrolling. */
+/* ---------- "Get in touch": a sunset-coloured, map-like backdrop ----------
+   Colours come from the three dots on the contact card (coral, yellow, green)
+   plus blue and a touch of rose. Fine white contour lines (like a topographic
+   map) and a light paper grain sit on top. Everything is static: no animation,
+   no cost while scrolling. */
 #contact {
   position: relative;
+  isolation: isolate;
   border-top: 0;
+  overflow: hidden;
   background:
-    radial-gradient(46% 75% at 6% 16%,  rgba(226,125, 96,.46), transparent 72%),
-    radial-gradient(42% 70% at 94% 10%, rgba(232,197, 71,.50), transparent 72%),
-    radial-gradient(48% 75% at 90% 94%, rgba( 74,140,105,.42), transparent 72%),
-    radial-gradient(44% 65% at 18% 98%, rgba(102,153,214,.42), transparent 72%),
-    radial-gradient(30% 50% at 55% 50%, rgba(214,120,170,.18), transparent 75%),
-    linear-gradient(180deg, #FBF6EE, #F6F1F8);
+    url("images/contact-contours.svg") center / cover no-repeat,
+    radial-gradient(55% 85% at 0% 10%,   rgba(232,128, 98,.62), transparent 70%),
+    radial-gradient(50% 80% at 100% 0%,  rgba(240,200, 80,.58), transparent 70%),
+    radial-gradient(60% 90% at 100% 100%,rgba( 86,150,118,.55), transparent 72%),
+    radial-gradient(55% 80% at 0% 100%,  rgba(104,150,222,.55), transparent 72%),
+    radial-gradient(40% 55% at 52% 55%,  rgba(226,140,180,.30), transparent 75%),
+    linear-gradient(120deg, #FBE3D6 0%, #FDF1D4 38%, #E2F0E6 70%, #DDE7FA 100%);
 }
+#contact::after {                     /* paper grain, drawn once */
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .22;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3  0 0 0 0 .25  0 0 0 0 .2  0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+#contact .section-eyebrow { color: color-mix(in srgb, var(--ink) 70%, transparent); }
 #contact .contact-console {
-  background: color-mix(in srgb, var(--surface-soft) 88%, transparent);
-  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-  box-shadow: 0 22px 44px -30px rgba(60,40,20,.45), 0 1px 3px rgba(0,0,0,.05);
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.7);
+  background: rgba(255,253,249,.78);
+  -webkit-backdrop-filter: blur(10px) saturate(1.15); backdrop-filter: blur(10px) saturate(1.15);
+  box-shadow: 0 30px 60px -36px rgba(80,45,25,.55), 0 2px 6px rgba(0,0,0,.05), inset 0 1px 0 rgba(255,255,255,.8);
 }
+#contact .console-header { background: rgba(244,239,229,.75); border-bottom-color: rgba(0,0,0,.05); }
+
 [data-theme="dark"] #contact {
   background:
-    radial-gradient(46% 75% at 6% 16%,  rgba(226,125, 96,.34), transparent 72%),
-    radial-gradient(42% 70% at 94% 10%, rgba(232,197, 71,.26), transparent 72%),
-    radial-gradient(48% 75% at 90% 94%, rgba(120,200,150,.26), transparent 72%),
-    radial-gradient(44% 65% at 18% 98%, rgba(102,153,214,.32), transparent 72%),
-    radial-gradient(30% 50% at 55% 50%, rgba(214,120,170,.14), transparent 75%),
-    linear-gradient(180deg, #17130F, #15121A);
+    url("images/contact-contours-dark.svg") center / cover no-repeat,
+    radial-gradient(55% 85% at 0% 10%,   rgba(232,128, 98,.34), transparent 70%),
+    radial-gradient(50% 80% at 100% 0%,  rgba(240,200, 80,.22), transparent 70%),
+    radial-gradient(60% 90% at 100% 100%,rgba(110,190,150,.26), transparent 72%),
+    radial-gradient(55% 80% at 0% 100%,  rgba(104,150,222,.32), transparent 72%),
+    radial-gradient(40% 55% at 52% 55%,  rgba(226,140,180,.14), transparent 75%),
+    linear-gradient(120deg, #1D1512 0%, #1C1910 38%, #121A15 70%, #12151F 100%);
 }
-[data-theme="dark"] #contact .contact-console { background: color-mix(in srgb, var(--surface-soft) 86%, transparent); }
+[data-theme="dark"] #contact::after { mix-blend-mode: screen; opacity: .06; }
+[data-theme="dark"] #contact .contact-console {
+  background: rgba(30,26,20,.72); border-color: rgba(255,255,255,.08);
+  box-shadow: 0 30px 60px -36px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.05);
+}
+[data-theme="dark"] #contact .console-header { background: rgba(40,35,28,.7); }

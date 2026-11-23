@@ -10,6 +10,7 @@
 //     the light/dark toggle, the footer or the tab icon (keeps every page consistent)
 //   • an image over 600 KB or a video over 6 MB (keeps the site fast)
 //   • broken JSON-LD (what Google reads about you)
+//   • CSS/JS links without the current version stamp (run: node scripts/stamp-assets.mjs)
 //   • blog pages out of date with their blog/*.md (run: node scripts/build-blog.mjs)
 //   • (on GitHub, or with --external) photos linked from other websites that no longer exist
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
@@ -147,6 +148,12 @@ for (const f of files) {
 if (existsSync(join(ROOT, 'scripts/build-blog.mjs'))) {
   const r = spawnSync(process.execPath, ['scripts/build-blog.mjs', '--check'], { cwd: ROOT, encoding: 'utf8' });
   if (r.status !== 0) for (const l of (r.stdout + r.stderr).trim().split('\n')) fail('blog', 1, l.replace(/^✗ /, ''));
+}
+
+/* ---------- CSS/JS links carry the current version stamp ---------- */
+if (existsSync(join(ROOT, 'scripts/stamp-assets.mjs'))) {
+  const r = spawnSync(process.execPath, ['scripts/stamp-assets.mjs', '--check'], { cwd: ROOT, encoding: 'utf8' });
+  if (r.status !== 0) for (const l of (r.stdout + r.stderr).trim().split('\n')) fail('assets', 1, l.replace(/^✗ /, ''));
 }
 
 /* ---------- report ---------- */
