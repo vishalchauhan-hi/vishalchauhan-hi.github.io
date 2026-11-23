@@ -106,7 +106,7 @@ for (const p of posts) {
       <div class="container post-wrap">
         <p class="section-eyebrow"><a href="blog.html">Blog</a> · ${nice(p.date)} · ${p.minutes} min read</p>
         <h1 class="page-title">${inline(p.title)}</h1>
-${cover}${markdown(p.body).split('\n').map((l) => '        ' + l).join('\n')}
+${cover}${markdown(p.body)}
         <p class="post-back"><a href="blog.html">← All notes</a></p>
       </div>
     </article>
