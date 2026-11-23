@@ -240,3 +240,29 @@ nav.primary a.is-current { color: var(--ink); text-decoration-color: var(--ink);
 [data-theme="dark"] #contact .console-header { background: rgba(32,28,22,.45); border-color: rgba(255,255,255,.08); }
 [data-theme="dark"] #contact .console-body   { background: rgba(26,23,18,.58); border-color: rgba(255,255,255,.08); }
 
+
+/* ── Research circles: pencil scenes (assets/research-sketch.js) ── */
+#research { --sk-coral: #e07a5f; --sk-gold: #d99a2b; --sk-go: #3f9a6b; }
+[data-theme="dark"] #research { --sk-coral: #f0967c; --sk-gold: #f0bd5a; --sk-go: #6cc395; }
+#research .rs-domain .rs-scene.is-sketched { border-color: transparent; }
+#research .rs-scene svg.rs-sketch { width: 100%; height: 100%; overflow: visible; }
+#research .rs-scene svg.rs-sketch * { vector-effect: none; }
+.rs-sketch .sk-ink { fill: none; stroke: currentColor; stroke-width: 1.25; stroke-linecap: round; stroke-linejoin: round; opacity: .92;
+  stroke-dasharray: 1 1; stroke-dashoffset: 1; }
+.rs-sketch .sk-soft { opacity: .45; stroke-width: 1; }
+.rs-sketch .sk-faint { opacity: .25; stroke-width: .9; }
+.rs-sketch .sk-dark { color: var(--ink); }
+.rs-sketch .sk-sig { color: var(--sk-coral); stroke-width: 2.2; }
+.rs-sketch .sk-go { color: var(--sk-go); }
+.rs-sketch .sk-gold { color: var(--sk-gold); }
+.rs-sketch .sk-fill { fill: currentColor; stroke: none; }
+.rs-sketch .sk-plan { fill: none; stroke: var(--sk-coral); stroke-width: 1.3; stroke-linecap: round; stroke-dasharray: 2 4; opacity: .8; }
+.rs-sketch .sk-hand { font: 600 13px "Caveat", "Bradley Hand", cursive; fill: currentColor; stroke: none; }
+.rs-sketch.sk-drawn .sk-ink { stroke-dashoffset: 0; transition: stroke-dashoffset 1.1s cubic-bezier(.3,.6,.3,1); }
+.rs-sketch.sk-drawn .sk-ink.sk-late { transition-delay: .35s; }
+@media (max-width: 560px) {
+  .rs-sketch .sk-ink { stroke-width: 2.2; }
+  .rs-sketch .sk-soft, .rs-sketch .sk-faint { stroke-width: 1.6; }
+  .rs-sketch .sk-hand { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .rs-sketch .sk-ink { stroke-dashoffset: 0; transition: none; } }
