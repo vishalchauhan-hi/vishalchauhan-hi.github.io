@@ -1270,17 +1270,17 @@ hr.thin {
   nav.primary a { font-size: .9rem; white-space: nowrap; }
 }
 
-/* ---------- terrain: each page's own contour map, in the margins only ----------
-   assets/terrain.js generates the map once per page (from the page name). The
-   mask hides it under the text column, so reading is never disturbed; on narrow
-   screens there are no margins, so it is hidden. A soft coral-and-gold glow sits
-   at the top of every page. Static: no animation. */
+/* ---------- terrain: each page's own soft contour map, across the whole page ----------
+   assets/terrain.js generates the map once per page (from the page name). It
+   spans the full width; behind the text column a soft veil keeps it at about a
+   third of its strength, so reading is never disturbed. A soft coral-and-gold
+   glow sits at the top of every page. Static: no animation. */
 body { position: relative; }
 .has-terrain body::before {
   content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background: var(--terrain-light) top center / 1600px 1400px repeat-y;
-  -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(50% - 660px), transparent calc(50% - 560px), transparent calc(50% + 560px), #000 calc(50% + 660px), #000 100%);
-          mask-image: linear-gradient(90deg, #000 0, #000 calc(50% - 660px), transparent calc(50% - 560px), transparent calc(50% + 560px), #000 calc(50% + 660px), #000 100%);
+  background: var(--terrain-light) top center / max(100%, 1400px) auto repeat-y;
+  -webkit-mask-image: linear-gradient(90deg, #000 0, rgba(0,0,0,.32) calc(50% - 460px), rgba(0,0,0,.32) calc(50% + 460px), #000 100%);
+          mask-image: linear-gradient(90deg, #000 0, rgba(0,0,0,.32) calc(50% - 460px), rgba(0,0,0,.32) calc(50% + 460px), #000 100%);
 }
 [data-theme="dark"].has-terrain body::before { background-image: var(--terrain-dark); }
 body::after {
@@ -1294,5 +1294,5 @@ body::after {
     radial-gradient(48% 90% at 0% 0%,   rgba(232,128, 98,.10), transparent 70%),
     radial-gradient(44% 85% at 100% 0%, rgba(240,200, 80,.07), transparent 70%);
 }
-@media (max-width: 1180px) { .has-terrain body::before { display: none; } }
+@media (max-width: 760px) { .has-terrain body::before { opacity: .7; } }
 @media print { body::before, body::after { display: none !important; } }
