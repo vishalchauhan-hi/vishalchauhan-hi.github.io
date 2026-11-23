@@ -149,12 +149,50 @@
       h += path(ellipse(300, 94, 9, 9, 0.3) + stroke(293, 94, 307, 94, 0.2) + stroke(300, 87, 300, 101, 0.2), 'pencil soft');
       h += path(line(392, LANE, 440, LANE, 0.5) + stroke(440, LANE, 430, LANE - 6, 0.3) + stroke(440, LANE, 430, LANE + 6, 0.3), 'pencil soft');
       h += path(line(860, 94, 812, 94, 0.5) + stroke(812, 94, 822, 88, 0.3) + stroke(812, 94, 822, 100, 0.3), 'pencil soft');
-      // a bench and two planters on the far pavement
-      h += path(rect(318, 30, 40, 12, 0.5) + stroke(320, 36, 356, 36, 0.3), 'pencil');
-      [[858, 38], [214, 224]].forEach(function (p) {
+      // a bench and a planter on the far pavement
+      h += path(rect(492, 30, 40, 12, 0.5) + stroke(494, 36, 530, 36, 0.3), 'pencil');
+      [[868, 38]].forEach(function (p) {
         h += path(rect(p[0], p[1] - 7, 22, 14, 0.4), 'pencil') +
              path(ellipse(p[0] + 6, p[1], 3, 3, 0.3) + ellipse(p[0] + 13, p[1] - 2, 2.6, 2.6, 0.3) + ellipse(p[0] + 17, p[1] + 3, 2.4, 2.4, 0.3), 'pencil soft');
       });
+      // shop fronts along the top edge: the building line, a door, a striped awning
+      function shop(x0, x1, name) {
+        var s = path(line(x0, -4, x0, 7, 0.4) + line(x1, -4, x1, 7, 0.4) + line(x0 - 2, 7, x1 + 2, 7, 0.6));
+        var dx = (x0 + x1) / 2;
+        s += path(stroke(dx - 7, 7, dx - 7, 3, 0.2) + stroke(dx + 7, 7, dx + 7, 3, 0.2), 'pencil soft');      // door
+        var aw = '', st = '', x;
+        for (x = x0 + 4; x < x1 - 4; x += 9) {
+          aw += 'M' + f(x) + ' 18Q' + f(x + 4.5) + ' ' + f(22 + j(0.6)) + ' ' + f(x + 9) + ' 18';             // scalloped edge
+          st += stroke(x, 8, x, 18, 0.2);
+        }
+        s += '<path class="awning-wash" d="M' + (x0 + 6) + ' 9H' + (x1 - 2) + 'V20H' + (x0 + 6) + 'Z"/>';
+        s += path(aw) + path(st, 'pencil soft') + path(line(x0 + 4, 8, x1 - 4, 8, 0.3), 'pencil soft');
+        s += text(x0 + 3, 33, name, 'note-txt small');
+        return s;
+      }
+      // café tables seen from above: a round table, chairs around it, sometimes a parasol
+      function cafe(cx, cy, chairs, parasol) {
+        var s = '';
+        for (var k = 0; k < chairs; k++) {
+          var a = k / chairs * Math.PI * 2 + 0.4, ox = cx + Math.cos(a) * 11, oy = cy + Math.sin(a) * 11;
+          s += path(rect(ox - 3, oy - 3, 6, 6, 0.25), 'pencil soft');
+        }
+        s += path(ellipse(cx, cy, 6, 6, 0.3));
+        if (parasol) {
+          var d = '', R = 15, ph = r() * 0.4;
+          for (k = 0; k <= 8; k++) {
+            var t = ph + k / 8 * Math.PI * 2;
+            d += (k ? 'L' : 'M') + f(cx + Math.cos(t) * R + j(0.4)) + ' ' + f(cy + Math.sin(t) * R + j(0.4));
+          }
+          var ribs = '';
+          for (k = 0; k < 8; k++) { var tt = ph + k / 8 * Math.PI * 2; ribs += stroke(cx, cy, cx + Math.cos(tt) * R, cy + Math.sin(tt) * R, 0.2); }
+          s += '<path class="awning-wash" d="' + d + 'Z" transform="translate(2 1.5)"/>' + path(d) + path(ribs, 'pencil soft');
+        }
+        return s;
+      }
+      h += shop(300, 466, 'café') + shop(652, 748, 'books');
+      h += cafe(350, 45, 3, false) + cafe(396, 40, 4, true) + cafe(442, 46, 3, false);
+      h += cafe(236, 228, 3, false);
       function tree(cx, cy, R) {
         // an architect's tree: a loose loopy crown drawn twice, a light watercolour
         // wash that doesn't quite line up, pencil-hatched shadow, a trunk cross
@@ -188,7 +226,7 @@
                path(d1) + path(d2, 'pencil soft') + path(inner, 'pencil soft') +
                path(stroke(cx - 2.5, cy, cx + 2.5, cy, 0.2) + stroke(cx, cy - 2.5, cx, cy + 2.5, 0.2));
       }
-      [[272, 32, 22], [440, 28, 19], [770, 31, 25], [935, 28, 21],
+      [[262, 34, 20], [792, 32, 22], [940, 30, 20],
        [150, 228, 22], [338, 226, 24], [480, 230, 18], [962, 214, 16]].forEach(function (tr) { h += tree(tr[0], tr[1], tr[2]); });
       gStatic.innerHTML = h;
       // annotations

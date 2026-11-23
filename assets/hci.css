@@ -312,6 +312,8 @@ html #research .rs-signal-pulse { display: none; }
 
 /* ── street life (assets/hci.js, "the street"): pencil only, plus a light watercolour wash on the trees ── */
 .street .tree-wash { fill: #9cc48a; opacity: .28; }
+.street .awning-wash { fill: #e8957a; opacity: .22; }
+[data-theme="dark"] .street .awning-wash { fill: #e8957a; opacity: .14; }
 [data-theme="dark"] .street .tree-wash { fill: #7fae73; opacity: .16; }
 .street .car-lidar { fill: var(--paper); stroke: currentColor; stroke-width: 1; opacity: .75; }
 .street .car-beam  { fill: none; stroke: currentColor; stroke-width: 1; stroke-linecap: round; opacity: .55; }
