@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://vishalchauhan-hi.github.io/sitemap.xml

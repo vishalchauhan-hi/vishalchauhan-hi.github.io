@@ -25,9 +25,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" />
-  <link rel="stylesheet" href="assets/style.css?v=49f7610b" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap" />
-  <link rel="stylesheet" href="assets/hci.css?v=d3bf88bd" />
+  <link rel="stylesheet" href="assets/style.css?v=c895e369" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap" /></noscript>
+  <link rel="stylesheet" href="assets/hci.css?v=f29a9744" />
   <script src="assets/hci.js?v=db2c6dd1" defer></script>
   <link rel="icon" href="favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
@@ -39,7 +40,7 @@
    It reads your existing --paper / --ink / --accent directly. */
 #about{
   --kwc:var(--accent, #4a6d5c);   /* interaction color = YOUR site accent */
-  --muted:#6E6A63; --tansei:#1F7FB8;
+  --muted:#6E6A63; --tansei:#1A6EA0;
   --card:var(--paper, #FCFBF8); --line:#E7E2D8; --soft:#E4D9C6;
   --amber:#F2B33D; --green:#3E8E5A;
   --wash:color-mix(in srgb, var(--kwc) 14%, transparent);
@@ -109,7 +110,7 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
 .citysketch__cap b{color:var(--ink)}
 .cap-btn{
   border:0;background:none;padding:0;margin-left:.15rem;
-  font:inherit;color:var(--muted);opacity:.75;cursor:pointer;
+  font:inherit;color:var(--muted);cursor:pointer;
   text-decoration:underline dotted;text-underline-offset:3px;
 }
 .cap-btn:hover{color:var(--kwc);opacity:1}
@@ -556,7 +557,7 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
       </div>
       <div class="container">
         <div class="hero-grid">
-          <img class="portrait" src="photo.jpg" alt="Portrait of Vishal Chauhan" />
+          <img class="portrait" src="photo.jpg" alt="Portrait of Vishal Chauhan" width="1000" height="667" fetchpriority="high" />
           <div class="hero-text">
           <h1>Vishal&nbsp;Chauhan</h1>
         
@@ -636,23 +637,23 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
       <div class="about-text">
         <p class="lead">
           I'm an <strong>HCI researcher</strong> studying how humans interact with
-          <span class="kw" data-el="av" role="button" tabindex="0">autonomous vehicles</span>,
-          <span class="kw" data-el="robot" role="button" tabindex="0">robots</span>, and
-          <span class="kw" data-el="drone" role="button" tabindex="0">intelligent systems</span>
+          <span class="kw" data-el="av" role="button" tabindex="0" aria-pressed="false">autonomous vehicles</span>,
+          <span class="kw" data-el="robot" role="button" tabindex="0" aria-pressed="false">robots</span>, and
+          <span class="kw" data-el="drone" role="button" tabindex="0" aria-pressed="false">intelligent systems</span>
           — and how these systems can communicate back more clearly. My research at
           <a class="kw" data-el="tower" href="https://www.u-tokyo.ac.jp/en/">The University of Tokyo</a>
           centers on the
-          <span class="kw" data-el="pole" role="button" tabindex="0"><strong>Smart Pole Interaction Unit (SPIU)</strong></span>,
+          <span class="kw" data-el="pole" role="button" tabindex="0" aria-pressed="false"><strong>Smart Pole Interaction Unit (SPIU)</strong></span>,
           an infrastructure-based eHMI I designed to make communication between
-          <span class="kw" data-el="peds" role="button" tabindex="0">pedestrians</span>,
-          <span class="kw" data-el="av" role="button" tabindex="0">autonomous vehicles</span>, and
-          <span class="kw" data-el="robot" role="button" tabindex="0">robots</span>
+          <span class="kw" data-el="peds" role="button" tabindex="0" aria-pressed="false">pedestrians</span>,
+          <span class="kw" data-el="av" role="button" tabindex="0" aria-pressed="false">autonomous vehicles</span>, and
+          <span class="kw" data-el="robot" role="button" tabindex="0" aria-pressed="false">robots</span>
           safer and more intuitive in the spaces they share. I build with AI, but I design for
           <strong>Human Intelligence</strong> — the judgment, context, and care that machines don't have.
         </p>
         <p class="lead">
           Along the way, I’ve been fortunate to collaborate with inspiring researchers and research groups across Japan, Singapore, Canada, Norway, and beyond. These collaborations continue to shape how I think about
-          <span class="kw" data-el="city" role="button" tabindex="0">future cities</span>
+          <span class="kw" data-el="city" role="button" tabindex="0" aria-pressed="false">future cities</span>
           and how humans and machines can share them.
         </p>
         <p class="lead">
@@ -662,7 +663,7 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
           <a href="https://www.veltech.edu.in/">Vel Tech University</a> (India) and
           <a href="https://www.ntu.edu.sg/">Nanyang Technological University</a> (Singapore).
           I also contribute to
-          <span class="kw" data-el="av" role="button" tabindex="0"><strong>Tier IV's open-source autonomous driving platform</strong></span>,
+          <span class="kw" data-el="av" role="button" tabindex="0" aria-pressed="false"><strong>Tier IV's open-source autonomous driving platform</strong></span>,
           working with their engineering team.
         </p>
         <p class="cv-line"><a class="cv-link" href="cv.html">Full CV →</a></p>
@@ -1592,7 +1593,8 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
             background:linear-gradient(180deg,color-mix(in srgb,var(--rs-domain) 5%,transparent),transparent 68%);
           }
           #research .rs-domain:focus-visible{
-            box-shadow:0 0 0 2px var(--paper),0 0 0 4px color-mix(in srgb,var(--rs-domain) 62%,transparent);
+            outline:2px solid var(--rs-domain);
+            outline-offset:3px;
           }
           #research .rs-scene{
             position:relative;
@@ -2051,10 +2053,10 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
         <style>
           /* ── Research agenda: one colour per area, flat ── */
           #research{
-            --rs-green:#2e8b5e;
-            --rs-teal:#12879a;
+            --rs-green:#2a7d55;
+            --rs-teal:#0f7a8b;
             --rs-blue:#3a63c9;
-            --rs-orange:#e07b2f;
+            --rs-orange:#b4601f;
           }
           [data-theme="dark"] #research{
             --rs-green:#6cc79a;
@@ -2112,7 +2114,7 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
             Machine capability should support—not replace—human judgment.
           </aside>
         </div>
-        <div class="rs-live" aria-live="polite">
+        <div class="rs-live">
           <span class="rs-live-kicker">Research signal</span>
           <strong class="rs-live-question" id="rs-live-question">How can people read a vehicle’s intent?</strong>
           <span class="rs-live-state" id="rs-live-state">01 / Mobility</span>
@@ -2120,7 +2122,7 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
         </div>
         <div class="rs-signal-path" aria-label="Three connected research areas">
           <span class="rs-signal-pulse" aria-hidden="true"></span>
-          <article class="rs-domain is-active" data-index="0" data-state="01 / Mobility" data-question="How can people read a vehicle’s intent?" tabindex="0" role="button" aria-pressed="true">
+          <article class="rs-domain is-active" data-index="0" data-state="01 / Mobility" data-question="How can people read a vehicle’s intent?" tabindex="0">
             <span class="rs-domain-number">01</span>
             <div class="rs-scene" aria-hidden="true">
               <svg viewBox="0 0 100 70" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -2166,7 +2168,7 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
               <div class="rs-tags"><span>eHMI</span><span>in-cabin HMI</span><span>shared spaces</span><span>trust</span></div>
             </div>
           </article>
-          <article class="rs-domain" data-index="1" data-state="02 / Robotics" data-question="How can robots share everyday space with us?" tabindex="0" role="button" aria-pressed="false">
+          <article class="rs-domain" data-index="1" data-state="02 / Robotics" data-question="How can robots share everyday space with us?" tabindex="0">
             <span class="rs-domain-number">02</span>
             <div class="rs-scene" aria-hidden="true">
               <svg viewBox="0 0 100 70" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -2205,7 +2207,7 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
               <div class="rs-tags"><span>delivery robots</span><span>companion robots</span><span>social navigation</span><span>HRI</span></div>
             </div>
           </article>
-          <article class="rs-domain" data-index="2" data-state="03 / Cities" data-question="How can infrastructure coordinate the encounter?" tabindex="0" role="button" aria-pressed="false">
+          <article class="rs-domain" data-index="2" data-state="03 / Cities" data-question="How can infrastructure coordinate the encounter?" tabindex="0">
             <span class="rs-domain-number">03</span>
             <div class="rs-scene" aria-hidden="true">
               <svg viewBox="0 0 100 70" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -2253,7 +2255,7 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
               <div class="rs-tags"><span>SPIU</span><span>V2X</span><span>urban interfaces</span><span>smart mobility</span></div>
             </div>
           </article>
-          <article class="rs-domain" data-index="3" data-state="04 / Design" data-question="How can design research turn ideas into experiences people trust?" tabindex="0" role="button" aria-pressed="false">
+          <article class="rs-domain" data-index="3" data-state="04 / Design" data-question="How can design research turn ideas into experiences people trust?" tabindex="0">
             <span class="rs-domain-number">04</span>
             <div class="rs-scene" aria-hidden="true"></div>
             <div>
@@ -2320,7 +2322,7 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
           domains.forEach((domain, domainIndex) => {
             const selected = domainIndex === activeIndex;
             domain.classList.toggle('is-active', selected);
-            domain.setAttribute('aria-pressed', String(selected));
+            if (selected) domain.setAttribute('aria-current', 'true'); else domain.removeAttribute('aria-current');
           });
           if (movePulse) path.style.setProperty('--rs-pulse-position', `${positions[activeIndex]}%`);
           updateReadout(domains[activeIndex]);
@@ -2497,14 +2499,14 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
           <li class="make-step" style="--tilt:-1.2deg">
             <span class="make-n">1 · modelled</span>
             <figure class="note note--wide">
-              <img loading="lazy" src="assets/images/making/ring-cad.jpg" alt="CAD model of one half of the ring frame: two arched end plates with radial ribs, joined around a curved inner shell" />
+              <img width="1000" height="723" loading="lazy" src="assets/images/making/ring-cad.jpg" alt="CAD model of one half of the ring frame: two arched end plates with radial ribs, joined around a curved inner shell" />
               <figcaption>the ring frame in CAD. radial ribs carry the curve.</figcaption>
             </figure>
           </li>
           <li class="make-step" style="--tilt:.9deg">
             <span class="make-n">2 · printed</span>
             <figure class="note note--wide">
-              <img loading="lazy" src="assets/images/making/printed-ring.jpg" alt="The 3D-printed grey half-ring frame on a desk, with a flexible black LED panel wrapped over its outer edge" />
+              <img width="1100" height="620" loading="lazy" src="assets/images/making/printed-ring.jpg" alt="The 3D-printed grey half-ring frame on a desk, with a flexible black LED panel wrapped over its outer edge" />
               <figcaption>printed, with the flexible LED panel wrapped over the ribs.</figcaption>
             </figure>
           </li>
@@ -2512,7 +2514,7 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
             <span class="make-n">3 · drawn up</span>
             <figure class="note note--wide note--drawing">
               <a href="assets/images/making/drawing-config4.png" target="_blank" rel="noopener">
-                <img loading="lazy" src="assets/images/making/drawing-config4.png" alt="Technical drawing of SPIU configuration 4: top, front, side and isometric views. Overall height 1650 mm; ring 606 by 393 mm with four spokes; flat foot plate." />
+                <img width="1200" height="995" loading="lazy" src="assets/images/making/drawing-config4.png" alt="Technical drawing of SPIU configuration 4: top, front, side and isometric views. Overall height 1650 mm; ring 606 by 393 mm with four spokes; flat foot plate." />
               </a>
               <figcaption>configuration 4: 1650 mm tall, ring 606 × 393 mm, about 32 kg.</figcaption>
             </figure>
@@ -2538,23 +2540,23 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
         <h2>From the field.</h2>
         <div class="notes">
           <figure class="note" style="--tilt:-1.6deg">
-            <img loading="lazy" src="assets/images/notes/civ26-talk.jpg" alt="Giving “Who goes first?” at the CIV Summer School 2026 in Miyazaki" />
+            <img width="900" height="675" loading="lazy" src="assets/images/notes/civ26-talk.jpg" alt="Giving “Who goes first?” at the CIV Summer School 2026 in Miyazaki" />
             <figcaption>giving “who goes first?”, CIV ’26 Miyazaki</figcaption>
           </figure>
           <figure class="note" style="--tilt:1.2deg">
-            <img loading="lazy" src="assets/images/notes/chi26-barcelona.jpg" alt="At CHI 2026 in Barcelona" />
+            <img width="900" height="675" loading="lazy" src="assets/images/notes/chi26-barcelona.jpg" alt="At CHI 2026 in Barcelona" />
             <figcaption>CHI ’26, Barcelona</figcaption>
           </figure>
           <figure class="note" style="--tilt:-0.8deg">
-            <img loading="lazy" src="assets/images/notes/autoui24-stanford.jpg" alt="Sitting in a DeLorean at AutomotiveUI 2024, Stanford" />
+            <img width="900" height="675" loading="lazy" src="assets/images/notes/autoui24-stanford.jpg" alt="Sitting in a DeLorean at AutomotiveUI 2024, Stanford" />
             <figcaption>AutoUI ’24 at Stanford. had to.</figcaption>
           </figure>
           <figure class="note" style="--tilt:1.8deg">
-            <img loading="lazy" src="assets/images/notes/civ25-blonay.jpg" alt="Above Blonay, Switzerland, at the CIV Summer School 2025" />
+            <img width="675" height="900" loading="lazy" src="assets/images/notes/civ25-blonay.jpg" alt="Above Blonay, Switzerland, at the CIV Summer School 2025" />
             <figcaption>CIV ’25, above Blonay</figcaption>
           </figure>
           <figure class="note" style="--tilt:-1.2deg">
-            <img loading="lazy" src="assets/images/notes/lab-dinner.jpg" alt="Dinner with the lab" />
+            <img width="900" height="785" loading="lazy" src="assets/images/notes/lab-dinner.jpg" alt="Dinner with the lab" />
             <figcaption>lab dinner</figcaption>
           </figure>
         </div>
@@ -2695,10 +2697,11 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
     if (g) g.classList.toggle('is-live', on);
     kwsFor(name).forEach(function(k){ k.classList.toggle('kw-live', on); });
   }
-  function clearPin(){ if (pinned){ setLive(pinned,false); pinned=null; } }
+  function setPressed(name,on){ kwsFor(name).forEach(function(k){ if (k.getAttribute('role')==='button') k.setAttribute('aria-pressed', on ? 'true' : 'false'); }); }
+  function clearPin(){ if (pinned){ setLive(pinned,false); setPressed(pinned,false); pinned=null; } }
   function toggle(name){
     if (pinned===name){ clearPin(); return; }
-    clearPin(); pinned=name; setLive(name,true);
+    clearPin(); pinned=name; setLive(name,true); setPressed(name,true);
     if (!canHover){
       var r = svg.getBoundingClientRect();
       if (r.top<0 || r.bottom>window.innerHeight)

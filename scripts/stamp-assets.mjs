@@ -17,7 +17,7 @@ const check = process.argv.includes('--check');
 const pages = readdirSync('.').filter((f) => f.endsWith('.html')).concat(existsSync('blog/_page.html') ? ['blog/_page.html'] : []);
 const hashes = {};
 const fp = (file) => (hashes[file] ??= createHash('sha256').update(readFileSync(file)).digest('hex').slice(0, 8));
-const RE = /((?:href|src)=")(assets\/[\w./-]+\.(?:css|js))(?:\?v=([0-9a-f]+))?(")/g;
+const RE = /((?:href|src)="\/?)(assets\/[\w./-]+\.(?:css|js))(?:\?v=([0-9a-f]+))?(")/g;
 
 const stale = [];
 for (const page of pages) {
