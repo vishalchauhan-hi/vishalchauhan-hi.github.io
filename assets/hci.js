@@ -98,7 +98,7 @@
     svg.setAttribute('tabindex', '0');
     /* on a phone, frame just the crossing so the drawing stays legible */
     var narrow = window.matchMedia('(max-width: 640px)');
-    function frame() { svg.setAttribute('viewBox', narrow.matches ? '410 0 600 270' : '0 0 1000 260'); }
+    function frame() { svg.setAttribute('viewBox', narrow.matches ? '410 -84 600 354' : '0 -84 1000 344'); }
     frame();
     if (narrow.addEventListener) narrow.addEventListener('change', frame);
 
@@ -149,11 +149,101 @@
       h += path(ellipse(300, 94, 9, 9, 0.3) + stroke(293, 94, 307, 94, 0.2) + stroke(300, 87, 300, 101, 0.2), 'pencil soft');
       h += path(line(392, LANE, 440, LANE, 0.5) + stroke(440, LANE, 430, LANE - 6, 0.3) + stroke(440, LANE, 430, LANE + 6, 0.3), 'pencil soft');
       h += path(line(860, 94, 812, 94, 0.5) + stroke(812, 94, 822, 88, 0.3) + stroke(812, 94, 822, 100, 0.3), 'pencil soft');
-      // a bench and two planters on the far pavement
-      h += path(rect(318, 30, 40, 12, 0.5) + stroke(320, 36, 356, 36, 0.3), 'pencil');
-      [[858, 38], [214, 224]].forEach(function (p) {
+      // a bench and a planter on the far pavement
+      h += path(rect(470, 30, 40, 12, 0.5) + stroke(472, 36, 508, 36, 0.3), 'pencil');
+      [[868, 38]].forEach(function (p) {
         h += path(rect(p[0], p[1] - 7, 22, 14, 0.4), 'pencil') +
              path(ellipse(p[0] + 6, p[1], 3, 3, 0.3) + ellipse(p[0] + 13, p[1] - 2, 2.6, 2.6, 0.3) + ellipse(p[0] + 17, p[1] + 3, 2.4, 2.4, 0.3), 'pencil soft');
+      });
+      /* the far side of the street, drawn the way architects fold a street open:
+         the building fronts stand up along the top edge (ground line y = 0) */
+      var G = 0, FL = 22, UP = 14;                      // ground-floor and upper-floor heights
+      function wash(cls, x, y, w, hh) { return '<rect class="' + cls + '" x="' + f(x + 1.5) + '" y="' + f(y + 1) + '" width="' + f(w) + '" height="' + f(hh) + '"/>'; }
+      function windows(x, w, floors, top) {
+        var s = '', n = Math.max(2, Math.round(w / 22)), gap = w / n, k, fl;
+        for (fl = 0; fl < floors; fl++) for (k = 0; k < n; k++)
+          s += rect(x + k * gap + gap * 0.25, top + fl * UP + 3, gap * 0.5, UP - 7, 0.25);
+        return path(s, 'pencil soft');
+      }
+      function building(x, w, floors, kind, label) {
+        var hh = FL + floors * UP, top = G - hh, s = '';
+        if (kind === 'house') {                            // two-storey house with a gable roof
+          s += path(line(x, G, x, top, 0.5) + line(x + w, G, x + w, top, 0.5) +
+                    stroke(x - 4, top + 1, x + w / 2, top - 14, 0.4) + stroke(x + w / 2, top - 14, x + w + 4, top + 1, 0.4) + line(x - 4, top + 1, x + w + 4, top + 1, 0.3));
+          s += windows(x + 4, w - 8, floors, top);
+          var dx = x + w / 2 - 8;                           // door with a noren curtain and a paper lantern
+          s += path(rect(dx, G - 17, 16, 17, 0.3));
+          s += wash('noren-wash', dx + 1, G - 16, 14, 7) + path(stroke(dx + 5.3, G - 16, dx + 5.3, G - 9, 0.15) + stroke(dx + 10.6, G - 16, dx + 10.6, G - 9, 0.15) + line(dx + 1, G - 9, dx + 15, G - 9, 0.15), 'pencil soft');
+          s += '<ellipse class="lantern-wash" cx="' + f(dx + 22) + '" cy="' + f(G - 13) + '" rx="3" ry="4.2"/>' + path(ellipse(dx + 22, G - 13, 3, 4.2, 0.2) + stroke(dx + 22, G - 18, dx + 22, G - 20, 0.1));
+          return s;
+        }
+        s += path(line(x, G, x, top, 0.5) + line(x + w, G, x + w, top, 0.5) + line(x - 3, top, x + w + 3, top, 0.5) + line(x - 1, top + 3, x + w + 1, top + 3, 0.25));
+        s += windows(x + 3, w - 6, floors, top + 4);
+        if (kind === 'cafe') {                             // striped awning, big window, a menu board
+          s += path(rect(x + 6, G - 15, w - 26, 15, 0.3)) + path(rect(x + w - 16, G - 16, 10, 16, 0.3));
+          var aw = '', st = '', xx;
+          for (xx = x + 2; xx < x + w - 2; xx += 8) { aw += 'M' + f(xx) + ' ' + f(G - 18) + 'Q' + f(xx + 4) + ' ' + f(G - 15 + j(0.4)) + ' ' + f(xx + 8) + ' ' + f(G - 18); st += stroke(xx, G - 23, xx, G - 18, 0.15); }
+          s += wash('awning-wash', x + 2, G - 23, w - 4, 6) + path(line(x + 1, G - 23, x + w - 1, G - 23, 0.3) + aw) + path(st, 'pencil soft');
+          s += path(stroke(x + w + 4, G, x + w + 7, G - 9, 0.15) + stroke(x + w + 10, G, x + w + 7, G - 9, 0.15) + rect(x + w + 3.5, G - 9, 7, 6, 0.15), 'pencil soft');
+        } else if (kind === 'konbini') {                   // glass front with mullions, a sign band
+          s += wash('sign-wash', x + 2, G - FL + 1, w - 4, 6) + path(rect(x + 2, G - FL + 1, w - 4, 6, 0.25));
+          var mull = '';
+          for (xx = x + 4; xx <= x + w - 4; xx += 13) mull += stroke(xx, G - 14, xx, G, 0.15);
+          s += path(rect(x + 3, G - 14, w - 6, 14, 0.3)) + path(mull, 'pencil soft');
+        } else if (kind === 'books') {                     // shelves of book spines, a vertical sign
+          s += path(rect(x + 4, G - 15, w - 20, 15, 0.3)) + path(rect(x + w - 13, G - 16, 9, 16, 0.3));
+          var spines = '';
+          for (xx = x + 6; xx < x + w - 18; xx += 2.6) spines += stroke(xx, G - 7, xx + j(0.3), G - 12 - r() * 2, 0.1);
+          s += path(spines + line(x + 5, G - 6.5, x + w - 17, G - 6.5, 0.1), 'pencil soft');
+          s += wash('sign-wash', x + w + 1, top + 10, 7, 22) + path(rect(x + w + 1, top + 10, 7, 22, 0.2));
+        } else {                                           // a plain office front
+          s += path(rect(x + w / 2 - 7, G - 16, 14, 16, 0.3) + rect(x + 4, G - 12, w / 2 - 14, 8, 0.2) + rect(x + w / 2 + 10, G - 12, w / 2 - 14, 8, 0.2), 'pencil soft');
+        }
+        if (label) s += text(x + w / 2, top - 4, label, 'note-txt small', 'middle');
+        return s;
+      }
+      function vending(x) {                                // a pair of vending machines
+        var s = '';
+        for (var k = 0; k < 2; k++) {
+          var vx = x + k * 11, dots = '';
+          s += wash('vend-wash', vx, G - 22, 10, 22) + path(rect(vx, G - 22, 10, 22, 0.2));
+          for (var rr = 0; rr < 3; rr++) for (var c = 0; c < 3; c++) dots += ellipse(vx + 2.2 + c * 2.8, G - 19 + rr * 4, 0.6, 0.9, 0.05);
+          s += path(dots + rect(vx + 2, G - 6, 6, 3, 0.1), 'pencil soft');
+        }
+        return s;
+      }
+      // the row of buildings (a short alley gap here and there, like a real block)
+      h += building(150, 70, 2, 'office');
+      h += building(232, 64, 1, 'house');
+      h += building(312, 92, 2, 'cafe', 'café');
+      h += vending(408);
+      h += building(436, 86, 3, 'office');
+      h += building(668, 90, 1, 'konbini', '24h');
+      h += building(764, 66, 2, 'books', 'books');
+      h += building(850, 72, 2, 'house');
+      h += path(line(-10, G, 1010, G, 0.6), 'pencil soft');
+      // utility poles with sagging wires, as on most Tokyo streets
+      var poles = [118, 540, 660], wires = '';
+      poles.forEach(function (px) {
+        h += path(line(px, G + 2, px, G - 66, 0.4) + stroke(px - 9, G - 60, px + 9, G - 60, 0.2) + stroke(px - 6, G - 52, px + 6, G - 52, 0.2));
+      });
+      for (var w2 = 0; w2 < poles.length - 1; w2++) {
+        var a0 = poles[w2], a1 = poles[w2 + 1];
+        wires += 'M' + a0 + ' ' + (G - 60) + 'Q' + ((a0 + a1) / 2) + ' ' + (G - 44) + ' ' + a1 + ' ' + (G - 60);
+        wires += 'M' + a0 + ' ' + (G - 52) + 'Q' + ((a0 + a1) / 2) + ' ' + (G - 38) + ' ' + a1 + ' ' + (G - 52);
+      }
+      wires += 'M' + (-10) + ' ' + (G - 50) + 'Q50 ' + (G - 42) + ' 118 ' + (G - 60) + 'M660 ' + (G - 60) + 'Q840 ' + (G - 40) + ' 1010 ' + (G - 54);
+      h += path(wires, 'pencil soft');
+      // yellow tactile paving at both kerbs of the crossing (warning dots), as at real Japanese crossings
+      [TOP - 9, BOT + 2].forEach(function (yy) {
+        h += '<rect class="tactile-wash" x="' + (CW0 + 4) + '" y="' + yy + '" width="' + (CW1 - CW0 - 8) + '" height="7"/>';
+        var dts = '';
+        for (var tx = CW0 + 8; tx < CW1 - 6; tx += 5) dts += ellipse(tx, yy + 3.5, 0.8, 0.8, 0.05);
+        h += path(dts, 'pencil soft');
+      });
+      // parked bicycles outside the convenience store (seen from above)
+      [[700, 22], [712, 24], [724, 22]].forEach(function (b) {
+        h += path(stroke(b[0], b[1] - 9, b[0], b[1] + 9, 0.15) + ellipse(b[0], b[1] - 7, 1.2, 4, 0.1) + ellipse(b[0], b[1] + 7, 1.2, 4, 0.1) + stroke(b[0] - 4, b[1] - 3, b[0] + 4, b[1] - 3, 0.1));
       });
       function tree(cx, cy, R) {
         // an architect's tree: a loose loopy crown drawn twice, a light watercolour
@@ -188,7 +278,7 @@
                path(d1) + path(d2, 'pencil soft') + path(inner, 'pencil soft') +
                path(stroke(cx - 2.5, cy, cx + 2.5, cy, 0.2) + stroke(cx, cy - 2.5, cx, cy + 2.5, 0.2));
       }
-      [[272, 32, 22], [440, 28, 19], [770, 31, 25], [935, 28, 21],
+      [[262, 34, 20], [792, 32, 22], [940, 30, 20],
        [150, 228, 22], [338, 226, 24], [480, 230, 18], [962, 214, 16]].forEach(function (tr) { h += tree(tr[0], tr[1], tr[2]); });
       gStatic.innerHTML = h;
       // annotations
