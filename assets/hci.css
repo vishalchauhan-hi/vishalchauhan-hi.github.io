@@ -293,9 +293,6 @@ html #research .rs-domain::before { /* masking tape */
   background: color-mix(in srgb, var(--rs-domain) 22%, rgba(245,236,210,.85)); opacity: .85;
   clip-path: polygon(3% 0, 97% 4%, 100% 50%, 96% 100%, 2% 96%, 0 45%);
 }
-html #research .rs-domain::after { /* red margin line */
-  content: ""; position: absolute; top: 0; bottom: 0; left: 14px; width: 1px; background: color-mix(in srgb, var(--rs-coral, #e07a5f) 45%, transparent);
-}
 html #research .rs-domain { position: relative; }
 html #research .rs-signal-path::before { border-top: 1.5px dashed color-mix(in srgb, var(--ink) 35%, transparent); background: none; height: 0; opacity: 1; }
 html #research .rs-domain h3 { font-family: "Caveat", cursive; font-weight: 600; font-size: 2.1rem; line-height: 1.05; }
