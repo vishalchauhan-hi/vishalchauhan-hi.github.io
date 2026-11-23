@@ -28,22 +28,32 @@
     }
     return d + 'Z';
   }
-  // two hills in each margin, at page-specific positions and shapes
-  var paths = '';
-  [[60, 320], [1280, 1540]].forEach(function (span) {
+  // two hills in each margin, at page-specific positions and shapes; each hill
+  // takes one colour from the contact box's sunset palette
+  var PALETTE = [[232, 128, 98], [232, 180, 60], [74, 140, 105], [96, 140, 214]];
+  var hills = [], start = Math.floor(rnd() * 4);
+  [[60, 320], [1280, 1540]].forEach(function (span, side) {
     for (var h = 0; h < 2; h++) {
       var cx = span[0] + rnd() * (span[1] - span[0]);
       var cy = 260 + h * 560 + rnd() * 280;
-      var ph = rnd() * 6.28, sx = 0.9 + rnd() * 0.6, rings = 7 + Math.floor(rnd() * 5), base = 14 + rnd() * 22;
-      for (var k = 0; k < rings; k++) paths += '<path d="' + loop(cx, cy, base + k * 26, 0.05 + k * 0.009, ph + k * 0.2, sx) + '"/>';
+      var ph = rnd() * 6.28, sx = 0.9 + rnd() * 0.6, rings = 7 + Math.floor(rnd() * 5), base = 14 + rnd() * 22, d = '';
+      for (var k = 0; k < rings; k++) d += loop(cx, cy, base + k * 26, 0.05 + k * 0.009, ph + k * 0.2, sx);
+      hills.push({ cx: cx, cy: cy, r: base + rings * 26, sx: sx, d: d, c: PALETTE[(start + side * 2 + h) % 4] });
     }
   });
-  function tile(stroke, opacity) {
-    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '"><g fill="none" stroke="' + stroke +
-      '" stroke-opacity="' + opacity + '" stroke-width="1">' + paths + '</g></svg>';
+  function tile(lineAlpha, glowAlpha) {
+    var defs = '', body = '';
+    hills.forEach(function (hl, i) {
+      var rgb = hl.c.join(',');
+      defs += '<radialGradient id="g' + i + '"><stop offset="0" stop-color="rgb(' + rgb + ')" stop-opacity="' + glowAlpha + '"/>' +
+              '<stop offset="1" stop-color="rgb(' + rgb + ')" stop-opacity="0"/></radialGradient>';
+      body += '<ellipse cx="' + hl.cx.toFixed(1) + '" cy="' + hl.cy.toFixed(1) + '" rx="' + (hl.r * hl.sx * 1.15).toFixed(1) + '" ry="' + (hl.r * 1.15).toFixed(1) + '" fill="url(#g' + i + ')"/>' +
+              '<path d="' + hl.d + '" fill="none" stroke="rgb(' + rgb + ')" stroke-opacity="' + lineAlpha + '" stroke-width="1.3"/>';
+    });
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '"><defs>' + defs + '</defs>' + body + '</svg>';
     return 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '")';
   }
-  root.style.setProperty('--terrain-light', tile('#4A6D5C', 0.30));
-  root.style.setProperty('--terrain-dark', tile('#ECE6D7', 0.10));
+  root.style.setProperty('--terrain-light', tile(0.75, 0.46));
+  root.style.setProperty('--terrain-dark', tile(0.40, 0.22));
   root.classList.add('has-terrain');
 })();
