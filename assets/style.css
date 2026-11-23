@@ -1240,3 +1240,32 @@ hr.thin {
   text-decoration: underline;
 }
 
+
+/* ---------- compact phone menu ----------
+   Phones: name + light/dark button on one row, the menu on one swipeable row
+   below it (instead of wrapping into 4–5 rows). Desktop is unchanged. */
+@media (max-width: 640px) {
+  header.site .container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    row-gap: .45rem;
+    padding-top: .7rem;
+    padding-bottom: .55rem;
+  }
+  header.site .header-right { display: contents; }
+  header.site .theme-toggle { grid-column: 2; grid-row: 1; width: 32px; height: 32px; }
+  nav.primary {
+    grid-column: 1 / -1; grid-row: 2;
+    margin: 0 calc(var(--pad-x) * -1);
+    overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--pad-x), #000 calc(100% - 28px), transparent 100%);
+            mask-image: linear-gradient(90deg, transparent 0, #000 var(--pad-x), #000 calc(100% - 28px), transparent 100%);
+  }
+  nav.primary::-webkit-scrollbar { display: none; }
+  nav.primary ul {
+    flex-wrap: nowrap; justify-content: flex-start;
+    gap: 1.15rem; padding: 0 var(--pad-x) .15rem; width: max-content;
+  }
+  nav.primary a { font-size: .9rem; white-space: nowrap; }
+}

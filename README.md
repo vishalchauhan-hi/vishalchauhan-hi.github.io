@@ -72,6 +72,30 @@ Merge the PR on GitHub once **Site checks** is green.
    The homepage wording is yours and is never overwritten. Remove the oldest item
    when the list gets longer than about five.
 
+### Write a blog post (with pictures)
+
+Posts are plain text files in `blog/` written in Markdown, so you never touch HTML.
+
+1. Copy the template: `cp blog/_template.md blog/my-trip.md`. The file name becomes the
+   web address: `blog-my-trip.html`. Files starting with `_` are never published.
+2. Put your photos in `assets/images/blog/my-trip/` and shrink them:
+   `python3 tools/optimize-images.py assets/images/blog/my-trip/*`
+3. Write. Fill in the header (`title`, `date`, `summary`, optional `tags` and `cover`).
+   Then use these marks:
+   - an empty line between paragraphs
+   - `## Heading` for a heading
+   - `**bold**`, `*italic*` and `[link](https://…)`
+   - `![caption](assets/images/blog/my-trip/photo.jpg)` for a picture, with the caption
+     shown under it. Put 2–3 picture lines right after each other and they sit side by side.
+   - `> quote` for a quote
+4. Build: `node scripts/build-blog.mjs`. This makes the post page and adds it to the
+   Blog list, newest first.
+5. Preview it (`python3 -m http.server 8000`, then open http://localhost:8000/blog.html),
+   then commit, open a PR, and merge when green.
+
+Always edit the `.md` file, never the generated `blog-*.html`. If you forget to build,
+the checks tell you.
+
 ### Add a publication
 
 1. Open `publications.html` and find the year (`<!-- ========== 2026 ========== -->`).
@@ -135,6 +159,7 @@ Then commit, open a PR, merge when green, and close the reminder issue.
 | Command | What it does |
 |---|---|
 | `node scripts/check-site.mjs` | Checks the whole site (same as the PR check). |
+| `node scripts/build-blog.mjs` | Turns `blog/*.md` posts into pages and updates the Blog list. |
 | `tools/update-cv.sh path/to/cv.pdf` | Puts a new CV PDF on the site; removes phone number and referees from the public copy. |
 | `python3 tools/optimize-images.py [files…]` | Shrinks images, keeps names, strips GPS/camera data. Safe to re-run. |
 
@@ -147,7 +172,7 @@ You need **Node** (already on this Mac) and **Pillow** for the image tool
 - A link to `page.html#section` where that section doesn't exist.
 - Images without `alt` text.
 - A page missing its title, description, the name in the header, the standard
-  menu (Research · Publications · CV · News · Moments · About · Contact), the
+  menu (Research · Publications · CV · News · Blog · Moments · About · Contact), the
   light/dark toggle or the footer. This keeps every page consistent.
 - Any image over **600 KB** or video over **6 MB**, so the site stays fast.
 - Broken JSON-LD (the profile data Google reads).
@@ -162,6 +187,8 @@ Each problem names the file and line and says how to fix it.
 index.html          Homepage: hero + street, about, news, research, service, teaching,
                     selected papers, field photos, working together, contact
 spiu.html           The Smart Pole Interaction Unit: scroll teardown + how it was built
+blog.html           Blog list (generated)    blog-*.html  Posts (generated)
+blog/               Your posts as .md files, the post template and page template
 publications.html   All papers, grouped by year
 news.html           All news, newest first
 moments.html        Event photo gallery
