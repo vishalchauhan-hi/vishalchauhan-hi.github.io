@@ -167,27 +167,48 @@
       gPole.innerHTML = poleBase + (walk ? walkFig : stopFig);
     }
 
-    /* --- car (local coords: x 0..100, y -20..20), re-drawn to "boil" --- */
-    var ehmiEl, alarmEl;
-    function drawCar() {
-      var h = '<rect class="fill-car" x="0" y="-20" width="' + CAR_L + '" height="40" rx="9"/>';
-      h += path(line(8, -20, 92, -20, 1) + line(92, 20, 8, 20, 1) +
+    /* --- car (local coords: x 0..100, y -20..20) ---
+       Built once; to "boil" like hand-drawn animation only the path shapes are
+       re-jittered (setAttribute), never re-created. */
+    var NS = 'http://www.w3.org/2000/svg';
+    function el(tag, attrs, parent) {
+      var e = document.createElementNS(NS, tag);
+      for (var k in attrs) e.setAttribute(k, attrs[k]);
+      if (parent) parent.appendChild(e);
+      return e;
+    }
+    var ehmiEl, alarmEl, carPaths;
+    function carShapes() {
+      return [line(8, -20, 92, -20, 1) + line(92, 20, 8, 20, 1) +
                 stroke(8, -20, 1, -12, 0.6) + line(0, -12, 0, 12, 0.8) + stroke(1, 12, 8, 20, 0.6) +
-                stroke(92, -20, 99, -12, 0.6) + line(100, -12, 100, 12, 0.8) + stroke(99, 12, 92, 20, 0.6));
-      h += path(stroke(66, -16, 73, 0, 0.6) + stroke(73, 0, 66, 16, 0.6) + line(20, -15, 20, 15, 0.6) +
-                line(28, -13, 60, -13, 0.6) + line(28, 13, 60, 13, 0.6), 'pencil soft');
-      h += path(line(14, -23, 30, -23, 0.4) + line(70, -23, 86, -23, 0.4) + line(14, 23, 30, 23, 0.4) + line(70, 23, 86, 23, 0.4));
-      h += '<line class="ehmi" x1="104" y1="-14" x2="104" y2="14"/>';
-      h += '<text class="alarm" x="112" y="-14" visibility="hidden">!</text>';
-      gCar.innerHTML = h;
-      ehmiEl = gCar.querySelector('.ehmi'); alarmEl = gCar.querySelector('.alarm');
+                stroke(92, -20, 99, -12, 0.6) + line(100, -12, 100, 12, 0.8) + stroke(99, 12, 92, 20, 0.6),
+              stroke(66, -16, 73, 0, 0.6) + stroke(73, 0, 66, 16, 0.6) + line(20, -15, 20, 15, 0.6) +
+                line(28, -13, 60, -13, 0.6) + line(28, 13, 60, 13, 0.6),
+              line(14, -23, 30, -23, 0.4) + line(70, -23, 86, -23, 0.4) + line(14, 23, 30, 23, 0.4) + line(70, 23, 86, 23, 0.4)];
+    }
+    function drawCar() {
+      var d = carShapes();
+      if (!carPaths) {
+        el('rect', { 'class': 'fill-car', x: 0, y: -20, width: CAR_L, height: 40, rx: 9 }, gCar);
+        carPaths = [el('path', { 'class': 'pencil' }, gCar), el('path', { 'class': 'pencil soft' }, gCar), el('path', { 'class': 'pencil' }, gCar)];
+        ehmiEl = el('line', { 'class': 'ehmi', x1: 104, y1: -14, x2: 104, y2: 14 }, gCar);
+        alarmEl = el('text', { 'class': 'alarm', x: 112, y: -14, visibility: 'hidden' }, gCar);
+        alarmEl.textContent = '!';
+      }
+      for (var i = 0; i < 3; i++) carPaths[i].setAttribute('d', d[i]);
     }
 
-    /* --- pedestrian (top-down head + shoulders), re-drawn to "boil" --- */
+    /* --- pedestrian (top-down head + shoulders), built once, re-jittered to "boil" --- */
+    var pedPaths;
     function drawPed() {
-      gPed.innerHTML = '<ellipse class="ped" cx="0" cy="0" rx="10" ry="6"/>' + path(ellipse(0, 0, 10, 6, 0.7)) +
-                       '<circle class="ped" cx="0" cy="0" r="5"/>' + path(ellipse(0, 0, 5, 5, 0.5)) +
-                       path(stroke(3, -2, 9, 0, 0.3) + stroke(9, 0, 3, 2, 0.3), 'pencil soft');
+      var d = [ellipse(0, 0, 10, 6, 0.7), ellipse(0, 0, 5, 5, 0.5), stroke(3, -2, 9, 0, 0.3) + stroke(9, 0, 3, 2, 0.3)];
+      if (!pedPaths) {
+        el('ellipse', { 'class': 'ped', cx: 0, cy: 0, rx: 10, ry: 6 }, gPed);
+        var p1 = el('path', { 'class': 'pencil' }, gPed);
+        el('circle', { 'class': 'ped', cx: 0, cy: 0, r: 5 }, gPed);
+        pedPaths = [p1, el('path', { 'class': 'pencil' }, gPed), el('path', { 'class': 'pencil soft' }, gPed)];
+      }
+      for (var i = 0; i < 3; i++) pedPaths[i].setAttribute('d', d[i]);
     }
 
     /* --- state --- */
@@ -281,37 +302,51 @@
       }
     }
 
+    /* live labels: created once, then only moved or shown/hidden */
+    var youTxt = el('text', { 'class': 'note-txt small' }, gLive); youTxt.textContent = 'you';
+    var aimPath = el('path', { 'class': 'pencil soft' }, gLive);
+    var ehmiTxt = el('text', { 'class': 'note-txt small', visibility: 'hidden' }, gLive); ehmiTxt.textContent = 'eHMI';
+    var gazePath = el('path', { 'class': 'gaze', visibility: 'hidden' }, gGaze);
+    var lastAim = '';
+    function show(node, on) { var v = on ? 'visible' : 'hidden'; if (node.getAttribute('visibility') !== v) node.setAttribute('visibility', v); }
+
     function render() {
       /* pedestrian */
       boilPed += 1;
       if (Math.hypot(ped.vx, ped.vy) > 12 && boilPed % 9 === 0) drawPed();
       gPed.setAttribute('transform', 'translate(' + f(ped.x) + ' ' + f(ped.y) + ') rotate(' + f(ped.heading * 180 / Math.PI) + ')');
-      var live = text(f(ped.x + 14), f(ped.y + 22), 'you', 'note-txt small');
-      if (aim && !touch) live += path(stroke(aim.x - 4, aim.y, aim.x + 4, aim.y, 0.3) + stroke(aim.x, aim.y - 4, aim.x, aim.y + 4, 0.3), 'pencil soft');
+      youTxt.setAttribute('x', f(ped.x + 14)); youTxt.setAttribute('y', f(ped.y + 22));
+      var aimKey = aim && !touch ? Math.round(aim.x) + ',' + Math.round(aim.y) : '';
+      if (aimKey !== lastAim) {               // re-draw the small cross only when the pointer moved
+        lastAim = aimKey;
+        if (aimKey) aimPath.setAttribute('d', stroke(aim.x - 4, aim.y, aim.x + 4, aim.y, 0.3) + stroke(aim.x, aim.y - 4, aim.x, aim.y + 4, 0.3));
+        show(aimPath, !!aimKey);
+      }
       /* car */
-      var walk = true;
+      var walk = true, ehmiOn = false, gazeOn = false;
       if (car) {
         boilCar += 1;
         if (car.v > 5 && boilCar % 8 === 0) drawCar();
         gCar.setAttribute('transform', 'translate(' + f(car.x) + ' ' + LANE + ')');
-        gCar.style.display = '';
-        var on = false;
-        if (car.state === 'yield') on = true;
-        else if (car.state === 'wait' && !crossed && car.noticed) on = Math.floor(t * 2.4) % 2 === 0;
-        else if (car.state === 'wait' && !crossed) on = true;
-        ehmiEl.classList.toggle('on', on);
-        alarmEl.setAttribute('visibility', car.state === 'emerg' ? 'visible' : 'hidden');
-        if (on) live += text(f(car.x + CAR_L + 10), LANE - 26, 'eHMI', 'note-txt small');
+        if (gCar.style.display) gCar.style.display = '';
+        if (car.state === 'yield') ehmiOn = true;
+        else if (car.state === 'wait' && !crossed && car.noticed) ehmiOn = Math.floor(t * 2.4) % 2 === 0;
+        else if (car.state === 'wait' && !crossed) ehmiOn = true;
+        ehmiEl.classList.toggle('on', ehmiOn);
+        show(alarmEl, car.state === 'emerg');
+        if (ehmiOn) { ehmiTxt.setAttribute('x', f(car.x + CAR_L + 10)); ehmiTxt.setAttribute('y', LANE - 26); }
         if ((car.state === 'yield' || car.state === 'wait') && car.noticed && !crossed) {
           var sx = car.x + 70, sy = LANE, ex = ped.x, ey = ped.y;
           var mx = (sx + ex) / 2 + 30, my = (sy + ey) / 2 - 10;
-          gGaze.innerHTML = '<path class="gaze" d="M' + f(sx) + ' ' + f(sy) + 'Q' + f(mx) + ' ' + f(my) + ' ' + f(ex) + ' ' + f(ey) + '"/>';
-        } else gGaze.innerHTML = '';
+          gazePath.setAttribute('d', 'M' + f(sx) + ' ' + f(sy) + 'Q' + f(mx) + ' ' + f(my) + ' ' + f(ex) + ' ' + f(ey));
+          gazeOn = true;
+        }
         var committed = car.state === 'yield' || car.state === 'wait';
         if (!committed && car.x < CW1 + 20 && car.x + CAR_L > 250) walk = false;
-      } else { gCar.style.display = 'none'; gGaze.innerHTML = ''; }
+      } else if (gCar.style.display !== 'none') gCar.style.display = 'none';
+      show(ehmiTxt, ehmiOn);
+      show(gazePath, gazeOn);
       setPole(walk);
-      gLive.innerHTML = live;
     }
 
     function loop(now) {
