@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" />
   <link rel="stylesheet" href="assets/style.css?v=49f7610b" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap" />
-  <link rel="stylesheet" href="assets/hci.css?v=1af4e7d6" />
+  <link rel="stylesheet" href="assets/hci.css?v=d3bf88bd" />
   <script src="assets/hci.js?v=db2c6dd1" defer></script>
   <link rel="icon" href="favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
@@ -1523,7 +1523,7 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
           #research .rs-signal-path{
             position:relative;
             display:grid;
-            grid-template-columns:repeat(3,minmax(0,1fr));
+            grid-template-columns:repeat(4,minmax(0,1fr));
             gap:clamp(1.3rem,3vw,2.5rem);
             touch-action:pan-y;
           }
@@ -1531,10 +1531,10 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
             content:"";
             position:absolute;
             top:75px;
-            left:15%;
-            right:15%;
+            left:12.5%;
+            right:12.5%;
             height:1px;
-            background:linear-gradient(90deg,var(--rs-green),var(--rs-teal),var(--rs-blue));
+            background:linear-gradient(90deg,var(--rs-green),var(--rs-teal),var(--rs-blue),var(--rs-orange));
             opacity:.5;
           }
           #research .rs-signal-pulse{
@@ -1587,6 +1587,7 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
           }
           #research .rs-domain:nth-of-type(2){--rs-domain:var(--rs-teal)}
           #research .rs-domain:nth-of-type(3){--rs-domain:var(--rs-blue)}
+          #research .rs-domain:nth-of-type(4){--rs-domain:var(--rs-orange)}
           #research .rs-domain:is(:hover,:focus-visible,.is-active){
             background:linear-gradient(180deg,color-mix(in srgb,var(--rs-domain) 5%,transparent),transparent 68%);
           }
@@ -2252,6 +2253,16 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
               <div class="rs-tags"><span>SPIU</span><span>V2X</span><span>urban interfaces</span><span>smart mobility</span></div>
             </div>
           </article>
+          <article class="rs-domain" data-index="3" data-state="04 / Design" data-question="How can design research turn ideas into experiences people trust?" tabindex="0" role="button" aria-pressed="false">
+            <span class="rs-domain-number">04</span>
+            <div class="rs-scene" aria-hidden="true"></div>
+            <div>
+              <p class="rs-scope">Designing intelligence</p>
+              <h3>Design &amp; prototyping</h3>
+              <p class="rs-domain-copy">How user research, sketching, prototyping, and evaluation turn ideas into experiences people can use and trust.</p>
+              <div class="rs-tags"><span>user research</span><span>UX / UI design</span><span>prototyping</span><span>evaluation</span></div>
+            </div>
+          </article>
         </div>
         <div class="rs-methods">
           <p class="rs-methods-title">Emerging technologies <span>The shared research foundation</span></p>
@@ -2280,7 +2291,7 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
         const question = section.querySelector('#rs-live-question');
         const state = section.querySelector('#rs-live-state');
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-        const positions = [15, 50, 84];
+        const positions = domains.map((_, i) => (i + .5) / domains.length * 100);
         let activeIndex = 0;
         let cycleTimer = null;
         let resumeTimer = null;
@@ -2329,7 +2340,7 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
           window.clearTimeout(resumeTimer);
           path.classList.add('is-pointer-exploring');
           const rect = path.getBoundingClientRect();
-          const ratio = Math.max(.15, Math.min(.84, (event.clientX - rect.left) / rect.width));
+          const ratio = Math.max(positions[0] / 100, Math.min(positions[positions.length - 1] / 100, (event.clientX - rect.left) / rect.width));
           const nearest = positions.reduce((best, position, index) =>
             Math.abs(position / 100 - ratio) < Math.abs(positions[best] / 100 - ratio) ? index : best, 0);
           activate(nearest, false);
@@ -2814,6 +2825,6 @@ a.kw.kw-live{text-decoration-color:var(--tansei)}
 </script>
 <script src="assets/nav.js?v=2a81084c" defer></script>
 <script src="assets/terrain.js?v=f633c43e" defer></script>
-<script src="assets/research-sketch.js?v=55e7b58f" defer></script>
+<script src="assets/research-sketch.js?v=2edea209" defer></script>
 </body>
 </html>
