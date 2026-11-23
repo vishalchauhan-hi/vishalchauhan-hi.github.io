@@ -307,3 +307,5 @@ html #research .rs-signal-pulse { display: none; }
   html #research .rs-domain::before { left: auto; right: 22px; margin-left: 0; width: 72px; }
 }
 @media (prefers-reduced-motion: reduce) { html #research .rs-domain { transition: none; } }
+/* number badges: dark text on the light dark-mode colours (readable) */
+[data-theme="dark"] #research .rs-domain-number { color: #15120e; }

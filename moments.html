@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" />
-  <link rel="stylesheet" href="assets/style.css?v=49f7610b" />
+  <link rel="stylesheet" href="assets/style.css?v=c895e369" />
   <link rel="icon" href="favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
@@ -114,7 +114,7 @@
         </p>
         <!-- ============ FEATURED LINKS ============ -->
         <div class="featured-block">
-          <h4>Featured on Tsukada Lab</h4>
+          <h2 class="h4">Featured on Tsukada Lab</h2>
           <ul class="featured-list">
             <li>
               <a href="https://tlab.hongo.wide.ad.jp/2026/03/10/two-of-our-papers-accepted-at-acm-chi-2026/" target="_blank" rel="noopener">Two papers accepted at ACM CHI 2026 — both Honourable Mention</a>
@@ -137,7 +137,7 @@
               <span class="featured-meta">— Tsukada Lab · September 2024</span>
             </li>
           </ul>
-          <h4 style="margin-top: 2rem;">Lab pages</h4>
+          <h2 class="h4" style="margin-top: 2rem;">Lab pages</h2>
           <ul class="featured-list">
             <li>
               <a href="https://tlab.hongo.wide.ad.jp/" target="_blank" rel="noopener">Tsukada Laboratory homepage</a>
@@ -174,7 +174,7 @@
           <!-- CIV Summer School 2026 · Miyazaki -->
           <figure class="moment-tile">
             <div class="moment-photo">
-              <img src="assets/images/CIV%203.jpg"
+              <img src="assets/images/tiles/civ-3.webp" data-full="assets/images/CIV%203.jpg" width="900" height="600" decoding="async"
                    alt="CIV Summer School 2026 participants and lecturers, Miyazaki"
                    loading="lazy" />
             </div>
@@ -193,7 +193,7 @@
           <!-- ACM CHI 2026 · Barcelona -->
           <figure class="moment-tile">
             <div class="moment-photo">
-              <img src="assets/images/chi2026-barcelona.jpg"
+              <img src="assets/images/tiles/chi2026-barcelona.webp" data-full="assets/images/chi2026-barcelona.jpg" width="900" height="675" decoding="async"
                    alt="ACM CHI 2026 in Barcelona"
                    loading="lazy" />
             </div>
@@ -226,7 +226,7 @@
           <!-- CIV Summer School 2025 · Blonay -->
           <figure class="moment-tile">
             <div class="moment-photo">
-              <img src="assets/images/civ-blonay.jpg"
+              <img src="assets/images/tiles/civ-blonay.webp" data-full="assets/images/civ-blonay.jpg" width="900" height="1200" decoding="async"
                    alt="CIV Summer School 2025 in Blonay, Switzerland"
                    loading="lazy" />
             </div>
@@ -256,7 +256,7 @@
           <!-- ACM AutoUI 2024 · Stanford -->
           <figure class="moment-tile">
             <div class="moment-photo">
-              <img src="assets/images/autoui-stanford.jpg"
+              <img src="assets/images/tiles/autoui-stanford.webp" data-full="assets/images/autoui-stanford.jpg" width="900" height="675" decoding="async"
                    alt="ACM AutoUI 2024 at Stanford"
                    loading="lazy" />
             </div>
@@ -269,7 +269,7 @@
           <!-- Tsukada Lab -->
           <figure class="moment-tile">
             <div class="moment-photo">
-              <img src="assets/images/tsukada-lab.jpg"
+              <img src="assets/images/tiles/tsukada-lab.webp" data-full="assets/images/tsukada-lab.jpg" width="900" height="785" decoding="async"
                    alt="Life in Tsukada Lab"
                    loading="lazy" />
             </div>
@@ -312,7 +312,7 @@
       <button class="lb-btn lb-prev" id="lbPrev" type="button" aria-label="Previous photo">
         <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
       </button>
-      <img loading="lazy" decoding="async" id="lbImg" src="" alt="" />
+      <img decoding="async" id="lbImg" alt="" />
       <button class="lb-btn lb-next" id="lbNext" type="button" aria-label="Next photo">
         <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
       </button>
@@ -337,7 +337,7 @@
         tile.querySelectorAll('.tile-gallery li').forEach(function (li) {
           list.push({ src: li.getAttribute('data-src'), cap: li.textContent.trim() });
         });
-        if (!list.length) list.push({ src: cover.getAttribute('src'), cap: cover.getAttribute('alt') || '' });
+        if (!list.length) list.push({ src: cover.getAttribute('data-full') || cover.getAttribute('src'), cap: cover.getAttribute('alt') || '' });
         tile._photos = list;
         var strong = tile.querySelector('figcaption strong');
         tile._title = strong ? strong.textContent : '';
@@ -349,6 +349,8 @@
         }
         photo.addEventListener('click', function () { open(tile, 0); });
         tile.setAttribute('tabindex', '0');
+        tile.setAttribute('role', 'button');
+        tile.setAttribute('aria-label', 'Open photos: ' + (tile._title || 'photo'));
         tile.addEventListener('keydown', function (e) {
           if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(tile, 0); }
         });
@@ -375,10 +377,18 @@
         lastFocus = document.activeElement;
         lb.classList.add('is-open');
         document.body.style.overflow = 'hidden';
+        setInert(true);
         show(i);
         document.getElementById('lbClose').focus();
       }
+      // while the viewer is open, keyboard focus stays inside it
+      function setInert(on) {
+        ['main', 'header.site', 'footer'].forEach(function (sel) {
+          var el = document.querySelector(sel); if (el) el.inert = on;
+        });
+      }
       function close() {
+        setInert(false);
         lb.classList.remove('is-open');
         document.body.style.overflow = '';
         img.removeAttribute('src');
