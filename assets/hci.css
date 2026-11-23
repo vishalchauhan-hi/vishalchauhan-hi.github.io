@@ -310,29 +310,8 @@ html #research .rs-signal-pulse { display: none; }
 /* number badges: dark text on the light dark-mode colours (readable) */
 [data-theme="dark"] #research .rs-domain-number { color: #15120e; }
 
-/* ── street life: trees, cars (assets/hci.js, "the street") ── */
-.street .tree-fill   { fill: #b9d7a8; }
-.street .tree-light  { fill: #e3f0d6; opacity: .7; }
-.street .flower { fill: #e8806a; } .street .flower.f2 { fill: #e8b43c; }
-.street .tree-shadow { fill: rgba(70, 60, 40, .10); }
-.street .tree-ink    { color: #3f6e48; }
-.street .car-body    { stroke: none; }
-.street .car-body.c0 { fill: #f6d4c7; }
-.street .car-body.c1 { fill: #cfe0f5; }
-.street .car-body.c2 { fill: #d4eadb; }
-.street .car-body.c3 { fill: #f5e5bb; }
-.street .car-glass   { fill: #b9d3ea; opacity: .75; }
-.street .car-hl      { fill: #f7e59a; }
-.street .car-tail    { fill: none; stroke: #d9502f; stroke-width: 2.2; stroke-linecap: round; opacity: .8; }
-.street .car-lidar   { fill: var(--paper); stroke: currentColor; stroke-width: 1; opacity: .9; }
-.street .car-lidar-dot { fill: currentColor; }
-.street .car-beam    { fill: none; stroke: var(--ehmi, #2fb8c8); stroke-width: 1.4; stroke-linecap: round; opacity: .7; }
-[data-theme="dark"] .street .tree-fill   { fill: #2f4631; }
-[data-theme="dark"] .street .tree-light  { fill: #46613f; opacity: .6; }
-[data-theme="dark"] .street .tree-shadow { fill: rgba(0, 0, 0, .3); }
-[data-theme="dark"] .street .tree-ink    { color: #9cc79f; }
-[data-theme="dark"] .street .car-body.c0 { fill: #5b3e34; }
-[data-theme="dark"] .street .car-body.c1 { fill: #2f4158; }
-[data-theme="dark"] .street .car-body.c2 { fill: #31473a; }
-[data-theme="dark"] .street .car-body.c3 { fill: #564a2b; }
-[data-theme="dark"] .street .car-glass   { fill: #3b5068; }
+/* ── street life (assets/hci.js, "the street"): pencil only, plus a light watercolour wash on the trees ── */
+.street .tree-wash { fill: #9cc48a; opacity: .28; }
+[data-theme="dark"] .street .tree-wash { fill: #7fae73; opacity: .16; }
+.street .car-lidar { fill: var(--paper); stroke: currentColor; stroke-width: 1; opacity: .75; }
+.street .car-beam  { fill: none; stroke: currentColor; stroke-width: 1; stroke-linecap: round; opacity: .55; }
