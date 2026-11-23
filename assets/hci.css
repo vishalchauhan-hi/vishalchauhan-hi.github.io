@@ -313,6 +313,11 @@ html #research .rs-signal-pulse { display: none; }
 /* ── street life (assets/hci.js, "the street"): pencil only, plus a light watercolour wash on the trees ── */
 .street .tree-wash { fill: #9cc48a; opacity: .28; }
 .street .awning-wash { fill: #e8957a; opacity: .22; }
+.street .sign-wash { fill: #7fa8d6; opacity: .22; }
+.street .noren-wash { fill: #4a5f8f; opacity: .28; }
+.street .lantern-wash { fill: #e8604a; opacity: .3; }
+.street .vend-wash { fill: #d9e4ee; opacity: .5; }
+.street .tactile-wash { fill: #e9c43a; opacity: .45; }
 [data-theme="dark"] .street .awning-wash { fill: #e8957a; opacity: .14; }
 [data-theme="dark"] .street .tree-wash { fill: #7fae73; opacity: .16; }
 .street .car-lidar { fill: var(--paper); stroke: currentColor; stroke-width: 1; opacity: .75; }
