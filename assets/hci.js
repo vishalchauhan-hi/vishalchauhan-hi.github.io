@@ -98,7 +98,7 @@
     svg.setAttribute('tabindex', '0');
     /* on a phone, frame just the crossing so the drawing stays legible */
     var narrow = window.matchMedia('(max-width: 640px)');
-    function frame() { svg.setAttribute('viewBox', narrow.matches ? '410 20 600 250' : '0 0 1000 260'); }
+    function frame() { svg.setAttribute('viewBox', narrow.matches ? '410 0 600 270' : '0 0 1000 260'); }
     frame();
     if (narrow.addEventListener) narrow.addEventListener('change', frame);
 
@@ -136,6 +136,60 @@
         h += path(d, 'pencil soft');
       }
       h += path(line(STOP_FRONT + 6, MID + 5, STOP_FRONT + 6, BOT - 4, 1), 'pencil');
+
+      /* --- street life (all static): paving, trees, a bench, planters, road marks --- */
+      d = '';                                              // paving joints on both pavements
+      for (x = 22; x < 1000; x += 44) {
+        d += stroke(x, TOP - 24, x - 1, TOP - 4, 0.3);
+        d += stroke(x + 22, BOT + 4, x + 21, BOT + 26, 0.3);
+      }
+      d += stroke(-10, TOP - 25, 1010, TOP - 25, 0.6) + stroke(-10, BOT + 27, 1010, BOT + 27, 0.6);
+      h += path(d, 'pencil hatch');
+      // manhole cover and lane arrows
+      h += path(ellipse(300, 94, 9, 9, 0.3) + stroke(293, 94, 307, 94, 0.2) + stroke(300, 87, 300, 101, 0.2), 'pencil soft');
+      h += path(line(392, LANE, 440, LANE, 0.5) + stroke(440, LANE, 430, LANE - 6, 0.3) + stroke(440, LANE, 430, LANE + 6, 0.3), 'pencil soft');
+      h += path(line(860, 94, 812, 94, 0.5) + stroke(812, 94, 822, 88, 0.3) + stroke(812, 94, 822, 100, 0.3), 'pencil soft');
+      // a bench and two planters on the far pavement
+      h += path(rect(318, 30, 40, 12, 0.5) + stroke(320, 36, 356, 36, 0.3), 'pencil');
+      [[858, 38], [214, 224]].forEach(function (p) {
+        h += path(rect(p[0], p[1] - 7, 22, 14, 0.4), 'pencil') +
+             path(ellipse(p[0] + 6, p[1], 3, 3, 0.3) + ellipse(p[0] + 13, p[1] - 2, 2.6, 2.6, 0.3) + ellipse(p[0] + 17, p[1] + 3, 2.4, 2.4, 0.3), 'pencil soft');
+      });
+      function tree(cx, cy, R) {
+        // an architect's tree: a loose loopy crown drawn twice, a light watercolour
+        // wash that doesn't quite line up, pencil-hatched shadow, a trunk cross
+        var n = Math.round(R / 3.2) + 5, ph = r() * 6.28, i, t0, t1, tm, d1 = '', d2 = '', wash = '';
+        for (var pass = 0; pass < 2; pass++) {
+          var d = '';
+          for (i = 0; i < n; i++) {
+            t0 = ph + i / n * Math.PI * 2; t1 = ph + (i + 1) / n * Math.PI * 2; tm = (t0 + t1) / 2;
+            var r0 = R * (0.86 + j(0.06)), r1 = R * (0.86 + j(0.06)), rc = R * (1.2 + j(0.08));
+            var x0 = cx + Math.cos(t0) * r0, y0 = cy + Math.sin(t0) * r0, x1 = cx + Math.cos(t1) * r1, y1 = cy + Math.sin(t1) * r1;
+            d += (i ? 'L' : 'M') + f(x0) + ' ' + f(y0) + 'Q' + f(cx + Math.cos(tm) * rc) + ' ' + f(cy + Math.sin(tm) * rc) + ' ' + f(x1) + ' ' + f(y1);
+          }
+          if (pass) d2 = d; else d1 = d;
+        }
+        for (i = 0; i <= 18; i++) {
+          t0 = i / 18 * Math.PI * 2;
+          var rw = R * (1.02 + j(0.09));
+          wash += (i ? 'L' : 'M') + f(cx + 3 + Math.cos(t0) * rw) + ' ' + f(cy + 2 + Math.sin(t0) * rw);
+        }
+        var shade = '';
+        for (t0 = -0.5; t0 < 2.1; t0 += 0.22) {
+          var hx = cx + Math.cos(t0) * (R + 3), hy = cy + Math.sin(t0) * (R + 3);
+          shade += stroke(hx, hy, hx + 4 + r() * 2, hy + 4 + r() * 2, 0.2);
+        }
+        var inner = '';
+        for (i = 0; i < 3; i++) {
+          var ia = r() * 6.28, ir = R * (0.3 + r() * 0.3), ix = cx + Math.cos(ia) * ir, iy = cy + Math.sin(ia) * ir;
+          inner += 'M' + f(ix - 3) + ' ' + f(iy) + 'Q' + f(ix) + ' ' + f(iy - 4) + ' ' + f(ix + 3) + ' ' + f(iy);
+        }
+        return '<path class="tree-wash" d="' + wash + 'Z"/>' + path(shade, 'pencil hatch') +
+               path(d1) + path(d2, 'pencil soft') + path(inner, 'pencil soft') +
+               path(stroke(cx - 2.5, cy, cx + 2.5, cy, 0.2) + stroke(cx, cy - 2.5, cx, cy + 2.5, 0.2));
+      }
+      [[272, 32, 22], [440, 28, 19], [770, 31, 25], [935, 28, 21],
+       [150, 228, 22], [338, 226, 24], [480, 230, 18], [962, 214, 16]].forEach(function (tr) { h += tree(tr[0], tr[1], tr[2]); });
       gStatic.innerHTML = h;
       // annotations
       var n = '';
@@ -177,20 +231,28 @@
       if (parent) parent.appendChild(e);
       return e;
     }
-    var ehmiEl, alarmEl, carPaths;
+    var ehmiEl, alarmEl, carPaths, carBody, lidarBeam;
+    /* a small self-driving car seen from above, in pencil: rounded body, windscreen
+       and rear window lightly hatched, mirrors, and the sensor dome on the roof */
+    var BODY = 'M10 -20H84Q99 -20 100 -8V8Q99 20 84 20H10Q0 20 0 10V-10Q0 -20 10 -20Z';
     function carShapes() {
-      return [line(8, -20, 92, -20, 1) + line(92, 20, 8, 20, 1) +
-                stroke(8, -20, 1, -12, 0.6) + line(0, -12, 0, 12, 0.8) + stroke(1, 12, 8, 20, 0.6) +
-                stroke(92, -20, 99, -12, 0.6) + line(100, -12, 100, 12, 0.8) + stroke(99, 12, 92, 20, 0.6),
-              stroke(66, -16, 73, 0, 0.6) + stroke(73, 0, 66, 16, 0.6) + line(20, -15, 20, 15, 0.6) +
-                line(28, -13, 60, -13, 0.6) + line(28, 13, 60, 13, 0.6),
-              line(14, -23, 30, -23, 0.4) + line(70, -23, 86, -23, 0.4) + line(14, 23, 30, 23, 0.4) + line(70, 23, 86, 23, 0.4)];
+      return [line(10, -20, 84, -20, 0.8) + stroke(84, -20, 98, -11, 0.5) + line(100, -9, 100, 9, 0.6) + stroke(98, 11, 84, 20, 0.5) +
+                line(84, 20, 10, 20, 0.8) + stroke(10, 20, 1, 12, 0.5) + line(0, 10, 0, -10, 0.6) + stroke(1, -12, 10, -20, 0.5),
+              stroke(62, -15, 77, -11, 0.4) + stroke(77, -11, 77, 11, 0.4) + stroke(77, 11, 62, 15, 0.4) + stroke(62, 15, 62, -15, 0.4) +
+                stroke(22, -14, 13, -11, 0.4) + stroke(13, -11, 13, 11, 0.4) + stroke(13, 11, 22, 14, 0.4) +
+                stroke(26, -15, 58, -15, 0.4) + stroke(26, 15, 58, 15, 0.4) +
+                stroke(65, -10, 69, -13, 0.2) + stroke(65, -2, 73, -9, 0.2) + stroke(65, 6, 75, -3, 0.2) + stroke(66, 13, 75, 5, 0.2) +
+                stroke(14, -4, 19, -11, 0.2) + stroke(14, 6, 20, -3, 0.2),
+              stroke(66, -20, 70, -25, 0.3) + stroke(70, -25, 75, -21, 0.3) + stroke(66, 20, 70, 25, 0.3) + stroke(70, 25, 75, 21, 0.3) +
+                line(14, -23, 30, -23, 0.4) + line(72, -23, 88, -23, 0.4) + line(14, 23, 30, 23, 0.4) + line(72, 23, 88, 23, 0.4)];
     }
     function drawCar() {
       var d = carShapes();
       if (!carPaths) {
-        el('rect', { 'class': 'fill-car', x: 0, y: -20, width: CAR_L, height: 40, rx: 9 }, gCar);
+        carBody = el('path', { 'class': 'fill-car', d: BODY }, gCar);
         carPaths = [el('path', { 'class': 'pencil' }, gCar), el('path', { 'class': 'pencil soft' }, gCar), el('path', { 'class': 'pencil' }, gCar)];
+        el('circle', { 'class': 'car-lidar', cx: 42, cy: 0, r: 4.5 }, gCar);
+        lidarBeam = el('path', { 'class': 'car-beam', d: 'M0 0L4 0' }, gCar);
         ehmiEl = el('line', { 'class': 'ehmi', x1: 104, y1: -14, x2: 104, y2: 14 }, gCar);
         alarmEl = el('text', { 'class': 'alarm', x: 112, y: -14, visibility: 'hidden' }, gCar);
         alarmEl.textContent = '!';
@@ -328,6 +390,7 @@
         boilCar += 1;
         if (car.v > 5 && boilCar % 8 === 0) drawCar();
         gCar.setAttribute('transform', 'translate(' + f(car.x) + ' ' + LANE + ')');
+        lidarBeam.setAttribute('transform', 'translate(42 0) rotate(' + Math.round(t * 400 % 360) + ')');   // the roof sensor keeps scanning
         if (gCar.style.display) gCar.style.display = '';
         if (car.state === 'yield') ehmiOn = true;
         else if (car.state === 'wait' && !crossed && car.noticed) ehmiOn = Math.floor(t * 2.4) % 2 === 0;
