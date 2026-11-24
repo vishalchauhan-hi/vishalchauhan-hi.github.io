@@ -2,8 +2,8 @@
    1. Reading progress bar + current-section highlight in the nav
    2. The street: a hand-drawn crossing where the visitor is the pedestrian.
       Self-driving cars notice you at the curb, brake with real deceleration
-      (v² = 2ad), light a cyan eHMI bar, and the smart pole (SPIU) swaps to a
-      walking figure. Everything is drawn with seeded pencil jitter; moving
+      (v² = 2ad), light a cyan eHMI bar, and the smart pole (SPIU) rolls out and crosses with you,
+      showing WALK. Everything is drawn with seeded pencil jitter; moving
       things "boil" a few times a second like hand-drawn animation.
    Nothing is stored or sent anywhere. No libraries. */
 
@@ -283,32 +283,92 @@
       gStatic.innerHTML = h;
       // annotations
       var n = '';
-      n += text(800, 252, 'the SPIU, from above');
-      n += path(stroke(800, 240, 778, 230, 1.2) + stroke(778, 230, 786, 228, 0.5) + stroke(778, 230, 784, 236, 0.5));
       n += text(14, 252, 'not to scale', 'note-txt small');
       n += text(14, 36, touch ? 'drag the figure to walk' : 'your cursor is the pedestrian', 'note-txt small');
       gNotes.innerHTML = n + '<g class="st-live"></g>';
     })();
     var gLive = gNotes.querySelector('.st-live');
 
-    /* --- pole: two frames, swapped instantly (real LEDs don't fade) --- */
-    /* top-down view of the real SPIU (configuration 4 drawing): a rounded-rectangle
-       ring, 606 × 393 mm, four spokes, the camera unit in the middle */
-    var PX = 688, PY = 226, RW = 23, RH = 15;
-    var ringD = 'M' + (PX - RW + 9) + ' ' + (PY - RH) + 'H' + (PX + RW - 9) + 'Q' + (PX + RW) + ' ' + (PY - RH) + ' ' + (PX + RW) + ' ' + (PY - RH + 9) +
-                'V' + (PY + RH - 9) + 'Q' + (PX + RW) + ' ' + (PY + RH) + ' ' + (PX + RW - 9) + ' ' + (PY + RH) + 'H' + (PX - RW + 9) +
-                'Q' + (PX - RW) + ' ' + (PY + RH) + ' ' + (PX - RW) + ' ' + (PY + RH - 9) + 'V' + (PY - RH + 9) + 'Q' + (PX - RW) + ' ' + (PY - RH) + ' ' + (PX - RW + 9) + ' ' + (PY - RH) + 'Z';
-    var poleBase = '<path class="fill-car" d="' + ringD + '"/>' +
-                   path(line(PX - RW + 3, PY, PX - 6, PY, .4) + line(PX + 6, PY, PX + RW - 3, PY, .4) + line(PX, PY - RH + 3, PX, PY - 6, .4) + line(PX, PY + 6, PX, PY + RH - 3, .4), 'pencil soft') +
-                   path(ellipse(PX, PY, 6, 6, .4) + ellipse(PX - 2, PY - 1, 2, 2, .2));
-    var walkFig = '<path class="ring walk" d="' + ringD + '"/>' + text(PX + 30, PY + 6, 'WALK', 'led walk');
-    var stopFig = '<path class="ring stop" d="' + ringD + '"/>' + text(PX + 30, PY + 6, 'STOP', 'led stop');
-    var poleState = '';
-    function setPole(walk) {
-      var s = walk ? 'walk' : 'stop';
-      if (s === poleState) return;
-      poleState = s;
-      gPole.innerHTML = poleBase + (walk ? walkFig : stopFig);
+    /* --- pole: the mobile SPIU, drawn standing up (like the fold-out shops) ---
+       Camera unit on top, the dark ring display with its LED word, bracket arms,
+       the pole and the wheeled base. It waits at the kerb; when someone wants to
+       cross it rolls up to the crossing, and rolls back home afterwards.
+       The LED swaps instantly (real LEDs don't fade). */
+    var POLE_HOME = 704, GY = 251, PS = 1.2;   // PS: drawing scale
+    var pole = { x: POLE_HOME, v: 0, spin: 0, idleSince: null, sig: '', drawn: '', boil: 0, at: false };
+    function wheel(cx, cy, rad, a) {
+      return '<circle class="fill-car" cx="' + cx + '" cy="' + cy + '" r="' + rad + '"/>' +
+             path(ellipse(cx, cy, rad, rad, .25) + ellipse(cx, cy, rad * .35, rad * .35, .1)) +
+             path(stroke(cx - Math.cos(a) * rad * .8, cy - Math.sin(a) * rad * .8, cx + Math.cos(a) * rad * .8, cy + Math.sin(a) * rad * .8, .1), 'pencil soft');
+    }
+    function drawPole() {
+      var walk = pole.sig === 'walk', a = pole.spin, h = '';
+      // back wheel, base box (front face + side), front wheels
+      h += wheel(13, -5, 3, a);
+      h += '<path class="fill-car" d="M-13 -17H9L14 -21V-8L9 -4H-13Z"/>' +
+           path(line(-13, -17, 9, -17, .4) + line(-13, -17, -13, -4, .4) + line(9, -17, 9, -4, .4) + line(-13, -4, 9, -4, .4) +
+                stroke(9, -17, 14, -21, .2) + stroke(14, -21, 14, -8, .2) + stroke(14, -8, 9, -4, .2) + stroke(-13, -17, -8, -21, .2) + stroke(-8, -21, 14, -21, .2)) +
+           path(stroke(-9, -14, 5, -14, .15), 'pencil soft');
+      h += wheel(-9, -2.5, 3.6, a) + wheel(6, -2.5, 3.6, a);
+      // pole
+      h += '<rect class="fill-car" x="-2" y="-40" width="4" height="22"/>' +
+           path(line(-2, -40, -2, -18, .2) + line(2, -40, 2, -18, .2) + ellipse(0, -19, 4, 1.2, .1));
+      // bracket arms, curling up to the ring
+      h += path(stroke(-2, -35, -7, -38, .25) + stroke(-7, -38, -10, -42, .25) + stroke(2, -35, 7, -38, .25) + stroke(7, -38, 10, -42, .25) +
+                stroke(-1, -37, -4, -42, .2) + stroke(1, -37, 4, -42, .2), 'pencil soft');
+      // ring display: a dark band with the LED word
+      h += '<path d="M-15 -49V-43A15 2.2 0 0 0 15 -43V-49A15 2.2 0 0 1 -15 -49Z" fill="#26241f"/>' +
+           path(ellipse(0, -49, 15, 2.2, .2) + line(-15, -49, -15, -43, .2) + line(15, -49, 15, -43, .2) + stroke(-15, -43, 0, -40.8, .2) + stroke(0, -40.8, 15, -43, .2)) +
+           text(0, -43.6, walk ? 'WALK' : 'STOP', 'led mini ' + (walk ? 'walk' : 'stop'), 'middle');
+      // camera unit with its lens
+      h += '<rect class="fill-car" x="-4.5" y="-60" width="9" height="10"/>' +
+           path(ellipse(0, -60, 4.5, 1.3, .15) + line(-4.5, -60, -4.5, -51, .2) + line(4.5, -60, 4.5, -51, .2)) +
+           path(ellipse(-1.5, -56, 1.8, 1.8, .1) + ellipse(-1.5, -56, .6, .6, .05));
+      // the readable word beside it, and its name underneath
+      h += text(-19, -40, walk ? 'WALK' : 'STOP', 'led ' + (walk ? 'walk' : 'stop'), 'end');   // on the left, clear of the person beside it
+      h += text(-17, 1, 'SPIU', 'note-txt small', 'end');
+      gPole.innerHTML = h;
+    }
+    function setPole(walk) { pole.sig = walk ? 'walk' : 'stop'; }
+    /* like SPIU "Mobility" in the field study: it waits at the kerb, then crosses
+       with you on the side the cars come from, waits on the far side until the
+       car has gone, and rolls back home */
+    pole.y = GY; pole.vy = 0; pole.mode = 'home';
+    function poleInLane() { return pole.y > MID - 10 && pole.y < BOT + 6; }
+    function movePole(dt, engaged) {
+      var road = inRoad();
+      if (road) pole.mode = 'escort';
+      else if (pole.mode === 'escort') { pole.mode = 'wait'; pole.since = t; }
+      else if (pole.mode === 'wait') {
+        if (t - pole.since > 1 && (!car || car.x > CW1 + 10)) pole.mode = 'back';
+      } else if (pole.mode === 'back') {
+        if (Math.abs(pole.y - GY) < 2) pole.mode = engaged ? 'kerb' : 'home';
+      } else pole.mode = engaged ? 'kerb' : 'home';
+
+      var tx = POLE_HOME, ty = GY, side = Math.max(CW0 + 4, Math.min(CW1 - 4, ped.x - 30));
+      if (pole.mode === 'kerb') tx = side;
+      else if (pole.mode === 'escort') { tx = side; ty = Math.max(TOP + 8, Math.min(GY, ped.y + 16)); }
+      else if (pole.mode === 'wait') { tx = pole.x; ty = ped.y <= TOP + 2 ? TOP + 6 : pole.y; }
+      else if (pole.mode === 'back') { tx = pole.x; ty = GY; }
+      else if (Math.abs(pole.x - POLE_HOME) > .5) {          // linger a moment before rolling home
+        if (pole.idleSince == null) pole.idleSince = t;
+        if (t - pole.idleSince < 1.6) tx = pole.x;
+      }
+      if (pole.mode !== 'home') pole.idleSince = null;
+
+      var dx = tx - pole.x, dy = ty - pole.y, dist = Math.hypot(dx, dy);
+      var sp = Math.min(140, dist * 3), k = Math.min(1, dt * 5);
+      pole.v += ((dist ? dx / dist * sp : 0) - pole.v) * k;
+      pole.vy += ((dist ? dy / dist * sp : 0) - pole.vy) * k;
+      pole.x += pole.v * dt; pole.y += pole.vy * dt;
+      pole.spin += Math.hypot(pole.v, pole.vy) * (pole.v < 0 ? -1 : 1) * dt / 3.6;
+      pole.at = (pole.mode === 'kerb' || pole.mode === 'escort') && dist < 6;
+    }
+    function renderPole() {
+      var moving = Math.hypot(pole.v, pole.vy) > 1;
+      pole.boil += 1;
+      if (pole.sig !== pole.drawn || (moving && pole.boil % 6 === 0)) { pole.drawn = pole.sig; drawPole(); }
+      gPole.setAttribute('transform', 'translate(' + f(pole.x) + ' ' + f(pole.y) + ') scale(' + PS + ')');
     }
 
     /* --- car (local coords: x 0..100, y -20..20) ---
@@ -411,6 +471,9 @@
         steppedOut = null; waitStart = null;
       }
 
+      /* the pole rolls up to the crossing while someone is crossing or about to */
+      movePole(dt, nearCurb() || intent || inRoad() || (car && car.noticed && (car.state === 'yield' || car.state === 'wait') && !crossed));
+
       /* cars */
       if (!car && t >= nextSpawn) spawn();
       if (car) {
@@ -422,7 +485,7 @@
             say('you stepped out first. it braked hard.');
           }
         }
-        if (car.state === 'cruise' && intent && front < STOP_FRONT - 4) {
+        if (car.state === 'cruise' && (intent || poleInLane()) && front < STOP_FRONT - 4) {
           var need = car.v * car.v / (2 * (STOP_FRONT - front));
           if (need <= A_MAX) {
             car.state = 'yield'; car.a = -need; car.noticed = true;
@@ -440,9 +503,9 @@
           var engaged = intent || inRoad();
           if (engaged) car.quietSince = null; else if (car.quietSince == null) car.quietSince = t;
           if (crossed && car.leaveAt == null) car.leaveAt = t + 0.5;
-          if ((car.leaveAt != null && t >= car.leaveAt) ||
+          if (!poleInLane() && ((car.leaveAt != null && t >= car.leaveAt) ||
               (car.quietSince != null && t - car.quietSince > 1.2 && !inRoad()) ||
-              (car.waitT > 8 && !inRoad())) {
+              (car.waitT > 8 && !inRoad()))) {
             if (car.waitT > 8 && !crossed) say('it waited eight seconds, then gave up.');
             car.state = 'go';
           }
@@ -499,7 +562,9 @@
       } else if (gCar.style.display !== 'none') gCar.style.display = 'none';
       show(ehmiTxt, ehmiOn);
       show(gazePath, gazeOn);
+      if (pole.mode === 'kerb' && !pole.at) walk = false;   // still on its way: not yet
       setPole(walk);
+      renderPole();
     }
 
     function loop(now) {
@@ -552,7 +617,7 @@
     document.addEventListener('visibilitychange', function () { visible = !document.hidden; kick(); });
 
     /* --- first frame --- */
-    drawPed(); setPole(true);
+    drawPed(); setPole(true); renderPole();
     if (touch) say('drag to the curb and wait. you are the pedestrian.');
     if (!running) { pauseBtn.textContent = 'play'; pauseBtn.setAttribute('aria-pressed', 'true'); render(); }
     kick();
