@@ -322,3 +322,5 @@ html #research .rs-signal-pulse { display: none; }
 [data-theme="dark"] .street .tree-wash { fill: #7fae73; opacity: .16; }
 .street .car-lidar { fill: var(--paper); stroke: currentColor; stroke-width: 1; opacity: .75; }
 .street .car-beam  { fill: none; stroke: currentColor; stroke-width: 1; stroke-linecap: round; opacity: .55; }
+/* the small LED word on the street pole's ring */
+.street .led.mini { font-size: 5px; letter-spacing: .04em; }
