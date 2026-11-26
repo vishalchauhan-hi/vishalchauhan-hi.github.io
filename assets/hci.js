@@ -129,6 +129,21 @@
         d += stroke(x, y, x + 7 + r() * 5, y - 6 - r() * 4, 0.3);
       }
       h += path(d, 'pencil hatch');
+      /* the shared space: around the crossing the road and both pavements are one
+         paved surface (block paving, a warm wash), with low bollards at its corners */
+      var SS0 = CW0 - 38, SS1 = CW1 + 38, row = 0;
+      h += '<rect class="share-wash" x="' + SS0 + '" y="' + (TOP - 25) + '" width="' + (SS1 - SS0) + '" height="' + (BOT - TOP + 52) + '"/>';
+      d = '';
+      for (y = TOP - 21; y < BOT + 25; y += 7, row++) {
+        var inRoadRow = y > TOP - 3 && y < BOT + 1;
+        for (x = SS0 + (row % 2 ? 2 : 8); x < SS1 - 4; x += 13) {
+          if (inRoadRow && x + 9 > CW0 && x < CW1) continue;           // the zebra keeps its own stripes
+          if (r() < 0.2) continue;                                      // a few gaps, as if drawn quickly
+          d += stroke(x, y, Math.min(x + 9, SS1 - 2), y, 0.25) + stroke(x, y, x, y + 2.6, 0.12);
+        }
+      }
+      h += path(d, 'pencil hatch');
+      h += path(stroke(SS0, TOP - 25, SS0, BOT + 27, 0.5) + stroke(SS1, TOP - 25, SS1, BOT + 27, 0.5), 'pencil soft');
       for (y = TOP + 9; y < BOT - 12; y += 17) {             // zebra stripes
         h += path(rect(CW0 + 4, y, CW1 - CW0 - 8, 9, 0.9));
         d = '';
@@ -150,7 +165,6 @@
       h += path(line(392, LANE, 440, LANE, 0.5) + stroke(440, LANE, 430, LANE - 6, 0.3) + stroke(440, LANE, 430, LANE + 6, 0.3), 'pencil soft');
       h += path(line(860, 94, 812, 94, 0.5) + stroke(812, 94, 822, 88, 0.3) + stroke(812, 94, 822, 100, 0.3), 'pencil soft');
       // a bench and a planter on the far pavement
-      h += path(rect(470, 30, 40, 12, 0.5) + stroke(472, 36, 508, 36, 0.3), 'pencil');
       [[868, 38]].forEach(function (p) {
         h += path(rect(p[0], p[1] - 7, 22, 14, 0.4), 'pencil') +
              path(ellipse(p[0] + 6, p[1], 3, 3, 0.3) + ellipse(p[0] + 13, p[1] - 2, 2.6, 2.6, 0.3) + ellipse(p[0] + 17, p[1] + 3, 2.4, 2.4, 0.3), 'pencil soft');
@@ -245,6 +259,87 @@
       [[700, 22], [712, 24], [724, 22]].forEach(function (b) {
         h += path(stroke(b[0], b[1] - 9, b[0], b[1] + 9, 0.15) + ellipse(b[0], b[1] - 7, 1.2, 4, 0.1) + ellipse(b[0], b[1] + 7, 1.2, 4, 0.1) + stroke(b[0] - 4, b[1] - 3, b[0] + 4, b[1] - 3, 0.1));
       });
+      /* --- people, drawn standing up like everything else on the pavements --- */
+      function box(x0, y0, w0, h0, a) {                   // a small box without the overshooting corners of rect()
+        return stroke(x0, y0, x0 + w0, y0, a) + stroke(x0 + w0, y0, x0 + w0, y0 + h0, a) + stroke(x0 + w0, y0 + h0, x0, y0 + h0, a) + stroke(x0, y0 + h0, x0, y0, a);
+      }
+      function figure(x, base, o) {
+        // o.pose: 'stand' | 'walk' | 'sit'   o.dir: 1 faces right, -1 left   o.s: size   o.wash: colour of the clothes
+        o = o || {};
+        var sc = o.s || 1, dir = o.dir || 1, pose = o.pose || 'stand', out = '', soft = '';
+        function X(v) { return x + v * sc * dir; }
+        function Y(v) { return base - v * sc; }
+        function seg(x1, y1, x2, y2, a) { return stroke(X(x1), Y(y1), X(x2), Y(y2), a == null ? 0.2 : a); }
+        var hip = pose === 'sit' ? 6.6 : 9.2, sh = hip + 7.2, headY = hip + 10.4, lean = pose === 'sit' ? 0.5 : pose === 'walk' ? 0.8 : 0;
+        if (o.wash) out += '<ellipse class="' + o.wash + '" cx="' + f(X(lean / 2 + 0.6)) + '" cy="' + f(Y(hip + 3.6) + 0.6) + '" rx="' + f(2.5 * sc) + '" ry="' + f(4.4 * sc) + '"/>';
+        var body = ellipse(X(lean + 0.2), Y(headY), 2.3 * sc, 2.5 * sc, 0.15) + seg(lean, sh + 0.9, 0, hip, 0.25);
+        if (pose === 'sit') {
+          body += seg(0, hip, 4.8, hip + 0.1) + seg(4.8, hip + 0.1, 5.3, 0) + seg(5.3, 0, 6.6, 0, 0.1);            // thigh, shin, foot
+          body += seg(lean, sh, 2.6, sh - 3.4) + seg(2.6, sh - 3.4, 5.4, sh - 3.2);                              // arm resting on the table
+          soft += seg(-2.4, hip - 0.5, 2.6, hip - 0.5, 0.15) + seg(-2.4, hip - 0.5, -3.3, hip + 8, 0.2) +          // chair seat and back
+                  seg(-2.4, hip - 0.5, -2.8, 0, 0.15) + seg(2.4, hip - 0.5, 2.7, 0, 0.15);
+        } else if (pose === 'walk') {
+          body += seg(0, hip, 2.9, hip / 2 + 0.3) + seg(2.9, hip / 2 + 0.3, 2.4, 0) + seg(2.4, 0, 3.8, 0, 0.1);    // leading leg
+          body += seg(0, hip, -1.6, hip / 2) + seg(-1.6, hip / 2, -3.6, 0.5) + seg(-3.6, 0.5, -2.6, 0, 0.1);       // trailing leg
+          body += seg(lean, sh, 2.4, sh - 3.6) + seg(2.4, sh - 3.6, 3.4, sh - 6.6) + seg(lean, sh, -2.2, sh - 3.4) + seg(-2.2, sh - 3.4, -2.6, sh - 6.4);
+        } else {
+          body += seg(0, hip, -1.5, 0) + seg(-1.5, 0, -0.4, 0, 0.1) + seg(0, hip, 1.5, 0) + seg(1.5, 0, 2.7, 0, 0.1);
+          body += seg(0, sh, -2.2, sh - 3.6) + seg(-2.2, sh - 3.6, -2.2, sh - 6.8) + seg(0, sh, 2.2, sh - 3.4) + seg(2.2, sh - 3.4, 3.2, sh - 6);
+        }
+        if (o.bag) soft += box(X(-3.8) - (dir < 0 ? 3.2 * sc : 0), Y(hip + 1.6), 3.2 * sc, 3.8 * sc, 0.15) + seg(-2.2, hip + 1.6, 0, sh, 0.15);
+        if (o.hair) body += seg(-2.3, headY + 0.6, -2.9, headY - 3.4, 0.25) + seg(-1.9, headY + 1.6, -2.6, headY - 2.6, 0.2);
+        return out + path(soft, 'pencil soft') + path(body);
+      }
+      function table(x, base, cups) {
+        var s2 = path(line(x - 5.4, base - 9.6, x + 5.4, base - 9.6, 0.25) + stroke(x, base - 9.6, x, base, 0.2) + stroke(x - 3.2, base, x + 3.2, base, 0.2));
+        var c = '', st = '';
+        (cups || []).forEach(function (cx2) {
+          c += box(x + cx2 - 0.9, base - 11.8, 1.8, 2.1, 0.08) + stroke(x + cx2 + 0.9, base - 11.2, x + cx2 + 1.8, base - 10.6, 0.06);
+          st += 'M' + f(x + cx2) + ' ' + f(base - 12.6) + 'q1.1 -1.3 0 -2.6q-1.1 -1.3 0 -2.6';                   // a little steam
+        });
+        return s2 + path(c) + path(st, 'pencil hatch');
+      }
+      function parasol(x, base) {
+        var top = base - 31, rim = base - 23, d2 = 'M' + f(x - 16) + ' ' + f(rim), k2;
+        for (k2 = 0; k2 < 4; k2++) d2 += 'q4 2.4 8 0';                                                           // scalloped edge
+        return '<path class="awning-wash" d="M' + f(x - 15) + ' ' + f(rim + 1) + 'Q' + f(x + 1) + ' ' + f(top - 4) + ' ' + f(x + 17) + ' ' + f(rim + 1) + 'Z"/>' +
+               path(stroke(x, base - 9.6, x, top + 1, 0.2), 'pencil soft') +
+               path('M' + f(x - 16) + ' ' + f(rim) + 'Q' + f(x) + ' ' + f(top - 6) + ' ' + f(x + 16) + ' ' + f(rim) + d2 +
+                    'M' + f(x - 8) + ' ' + f(rim + 0.6) + 'Q' + f(x - 5) + ' ' + f(top - 0.5) + ' ' + f(x) + ' ' + f(top - 2.6) + 'M' + f(x + 8) + ' ' + f(rim + 0.6) + 'Q' + f(x + 5) + ' ' + f(top - 0.5) + ' ' + f(x) + ' ' + f(top - 2.6));
+      }
+      // the café terrace: two tables under parasols, friends talking, someone with a laptop, a waiter
+      var TY = 38;
+      h += parasol(336, TY) + parasol(386, TY - 1);
+      h += figure(326, TY, { pose: 'sit', dir: 1, wash: 'sign-wash', hair: true }) + figure(346, TY, { pose: 'sit', dir: -1, wash: 'awning-wash' });
+      h += table(336, TY, [-2.6, 2.4]);
+      h += figure(376, TY - 1, { pose: 'sit', dir: 1, wash: 'tree-wash' }) + table(386, TY - 1, [3]);
+      h += path(box(382.6, TY - 14.4, 4.6, 3.6, 0.1) + stroke(381.6, TY - 10.8, 388.4, TY - 10.8, 0.1), 'pencil');       // laptop
+      h += path(stroke(394.6, TY - 7.5, 399.6, TY - 7.5, 0.15) + stroke(399.6, TY - 7.5, 400.6, TY - 15.6, 0.2) + stroke(394.8, TY - 7.5, 394.6, TY - 1, 0.15) + stroke(399.6, TY - 7.5, 399.9, TY - 1, 0.15), 'pencil soft');   // an empty chair
+      h += figure(361, TY + 9, { pose: 'walk', dir: -1, wash: 'noren-wash' }) +                                           // the waiter, with a tray
+           path(stroke(352.6, TY - 4.6, 358.4, TY - 4.9, 0.12) + box(354.4, TY - 6.9, 1.7, 2, 0.06) + box(356.6, TY - 6.6, 1.3, 1.7, 0.06));
+      // a bench by the crossing: one person reading, one looking at the street
+      var BY = 38;
+      h += path(line(468, BY - 6.4, 512, BY - 6.4, 0.3) + line(468, BY - 12, 512, BY - 12, 0.25) + line(468, BY - 14.6, 512, BY - 14.6, 0.25) +
+                stroke(470, BY - 15, 470, BY, 0.2) + stroke(510, BY - 15, 510, BY, 0.2) + stroke(476, BY - 6.4, 476, BY, 0.15) + stroke(504, BY - 6.4, 504, BY, 0.15), 'pencil soft');
+      h += figure(482, BY + 0.2, { pose: 'sit', dir: 1, wash: 'tactile-wash', hair: true }) + path(box(486, BY - 12.4, 3.4, 2.6, 0.08), 'pencil');
+      h += figure(499, BY + 0.2, { pose: 'sit', dir: 1, wash: 'sign-wash' });
+      // people on foot, sharing the space: a parent and child, a shopper, a dog walker, two friends
+      h += figure(632, 46, { pose: 'walk', dir: -1, wash: 'awning-wash', hair: true }) + figure(641, 46.5, { pose: 'walk', dir: -1, s: 0.62, wash: 'tactile-wash' }) +
+           path(stroke(635.4, 33.2, 639.2, 37.4, 0.1), 'pencil');                                                        // holding hands
+      h += figure(742, 30, { pose: 'stand', dir: -1, wash: 'tree-wash', bag: true });
+      h += figure(246, 236, { pose: 'walk', dir: 1, wash: 'sign-wash' }) +
+           path(stroke(249.4, 226.6, 262, 232.4, 0.15), 'pencil soft') +                                                 // the lead
+           path(ellipse(266.5, 232, 4.2, 2.1, 0.15) + ellipse(271.6, 229.6, 1.7, 1.5, 0.1) + stroke(272.4, 228.4, 273.2, 226.8, 0.08) +
+                stroke(263.4, 233.4, 263, 236, 0.08) + stroke(265.4, 233.8, 265.6, 236, 0.08) + stroke(268.4, 233.8, 268.6, 236, 0.08) + stroke(269.8, 233.4, 270.4, 236, 0.08) +
+                stroke(262.4, 231.4, 260.2, 229, 0.1));                                                                   // the dog
+      h += figure(826, 238, { pose: 'stand', dir: 1, wash: 'awning-wash', hair: true }) + figure(838, 238.4, { pose: 'stand', dir: -1, wash: 'noren-wash', bag: true });
+      // low bollards at the corners of the shared space
+      [[SS0, TOP - 2], [SS1, TOP - 2], [SS0, BOT + 12], [SS1, BOT + 12]].forEach(function (b) {
+        h += '<rect class="fill-car" x="' + (b[0] - 1.4) + '" y="' + (b[1] - 8) + '" width="2.8" height="8"/>' +
+             path(box(b[0] - 1.4, b[1] - 8, 2.8, 8, 0.12) + ellipse(b[0], b[1] - 8.6, 1.7, 1, 0.08) + stroke(b[0] - 1.4, b[1] - 5.6, b[0] + 1.4, b[1] - 5.6, 0.06));
+      });
+      h += text(SS1 + 10, TOP + 22, 'shared space', 'note-txt small') +
+           path(stroke(SS1 + 8, TOP + 16, SS1 - 6, TOP + 12, 0.8) + stroke(SS1 - 6, TOP + 12, SS1 + 0.5, TOP + 9.5, 0.3) + stroke(SS1 - 6, TOP + 12, SS1 - 1, TOP + 16.5, 0.3), 'pencil soft');
       function tree(cx, base, s, kind) {
         /* a street tree drawn standing up, like the shop fronts: a tapering trunk in
            its tree pit, forking branches, and a crown built from overlapping leaf
