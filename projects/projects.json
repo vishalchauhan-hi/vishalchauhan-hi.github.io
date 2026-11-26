@@ -1,0 +1,90 @@
+[
+  {
+    "slug": "spiu",
+    "title": "Smart Pole Interaction Unit (SPIU)",
+    "years": "2023 – 2026",
+    "tags": ["pedestrian–AV interaction", "eHMI", "shared spaces", "V2X", "VR", "field study"],
+    "image": "assets/images/thumb-chi.webp",
+    "imageAlt": "Mobile SPIU prototype with cameras and LED displays delivering WALK and STOP cues",
+    "summary": "The Smart Pole Interaction Unit is what my PhD is built around. It stands at the curb, watches the crossing, and tells people on foot when it is their turn, so each car does not have to.",
+    "facts": [
+      ["Years", "2023 – 2026"],
+      ["Where", "Tsukada Laboratory, The University of Tokyo · NTNU, Norway"],
+      ["Award", "CHI 2026 Honourable Mention"],
+      ["Code", "<a href=\"https://github.com/tlab-wide/Smartpole-VR-AWSIM\" target=\"_blank\" rel=\"noopener\">Smartpole-VR-AWSIM ↗</a>"]
+    ],
+    "links": [
+      { "label": "Try it on the street", "href": "index.html#street" },
+      { "label": "Take the pole apart", "href": "spiu.html" },
+      { "label": "Watch the video ↗", "href": "https://www.youtube.com/watch?v=PLmCgmTwsHQ" }
+    ],
+    "papersTitle": "From first idea to a real street",
+    "steps": [
+      { "id": "wfiot-2023", "stage": "the idea" },
+      { "id": "electronics-2023", "stage": "tested in VR" },
+      { "id": "autoui-2024", "stage": "think-tank" },
+      { "id": "icea-2024", "stage": "experts" },
+      { "id": "ijhcs-2025", "stage": "people and LLMs" },
+      { "id": "vrst-2025", "stage": "Japan and Norway" },
+      { "id": "chi-2026-spiu", "stage": "on a real street" }
+    ],
+    "gallery": [
+      { "src": "assets/images/making/ring-cad.jpg", "w": 1000, "h": 723, "caption": "the ring frame in CAD. radial ribs carry the curve." },
+      { "src": "assets/images/making/printed-ring.jpg", "w": 1100, "h": 620, "caption": "printed, with the flexible LED panel wrapped over the ribs." },
+      { "src": "assets/images/making/drawing-config4.png", "w": 1200, "h": 995, "caption": "configuration 4: 1650 mm tall, ring 606 × 393 mm, about 32 kg." }
+    ],
+    "galleryTitle": "How the pole was built"
+  },
+  {
+    "slug": "co-walker-robots",
+    "title": "Co-walker Robots for Japan’s Sidewalks",
+    "subtitle": "Designing Service Robots That Society Can Understand",
+    "years": "2026 – 2028",
+    "tags": ["human–robot interaction", "service robots", "sidewalks", "social navigation"],
+    "sketch": "robot",
+    "summary": "Right now I am building co-walker robots for Japan’s sidewalks: service robots whose intentions people can read at a glance.",
+    "facts": [
+      ["Years", "2026 – 2028"],
+      ["Funding", "<a href=\"https://www.jst.go.jp/pr/info/info1873/index.html\" target=\"_blank\" rel=\"noopener\">JST ACT-X Research Grant ↗</a>"],
+      ["Role", "Sole Principal Investigator"],
+      ["Budget", "¥6 million"],
+      ["Selection", "20 projects from 177 proposals"]
+    ],
+    "links": [
+      { "label": "Working together", "href": "index.html#collaborate" }
+    ],
+    "steps": []
+  },
+  {
+    "slug": "colored-shared-spaces",
+    "title": "Colored Shared Spaces (CSS)",
+    "years": "2026",
+    "tags": ["shared spaces", "visual design", "pedestrian experience", "trust"],
+    "image": "assets/images/thumb-css.webp",
+    "fromPaper": "hcii-2026-css",
+    "facts": [
+      ["Year", "2026"],
+      ["Where", "Tsukada Laboratory, The University of Tokyo"],
+      ["Study", "Two stages, N=224"]
+    ],
+    "links": [],
+    "papersTitle": "Publication",
+    "steps": [{ "id": "hcii-2026-css" }]
+  },
+  {
+    "slug": "vlm-personas",
+    "title": "VLM Personas for Embodied Studies",
+    "years": "2026",
+    "tags": ["VLM", "personas", "field studies", "autonomous vehicles"],
+    "image": "assets/images/thumb-vlm.webp",
+    "fromPaper": "chi-2026-vlm",
+    "facts": [
+      ["Year", "2026"],
+      ["Role", "Co-author"],
+      ["Award", "CHI 2026 Honourable Mention"]
+    ],
+    "links": [],
+    "papersTitle": "Publication",
+    "steps": [{ "id": "chi-2026-vlm" }]
+  }
+]

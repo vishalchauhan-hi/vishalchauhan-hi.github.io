@@ -150,6 +150,12 @@ if (existsSync(join(ROOT, 'scripts/build-blog.mjs'))) {
   if (r.status !== 0) for (const l of (r.stdout + r.stderr).trim().split('\n')) fail('blog', 1, l.replace(/^✗ /, ''));
 }
 
+/* ---------- project pages match projects/projects.json + publications.html ---------- */
+if (existsSync(join(ROOT, 'scripts/build-projects.mjs'))) {
+  const r = spawnSync(process.execPath, ['scripts/build-projects.mjs', '--check'], { cwd: ROOT, encoding: 'utf8' });
+  if (r.status !== 0) for (const l of (r.stdout + r.stderr).trim().split('\n')) fail('projects', 1, l.replace(/^✗ /, ''));
+}
+
 /* ---------- CSS/JS links carry the current version stamp ---------- */
 if (existsSync(join(ROOT, 'scripts/stamp-assets.mjs'))) {
   const r = spawnSync(process.execPath, ['scripts/stamp-assets.mjs', '--check'], { cwd: ROOT, encoding: 'utf8' });

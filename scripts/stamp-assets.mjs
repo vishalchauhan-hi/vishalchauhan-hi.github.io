@@ -14,7 +14,7 @@ import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 
 const check = process.argv.includes('--check');
-const pages = readdirSync('.').filter((f) => f.endsWith('.html')).concat(existsSync('blog/_page.html') ? ['blog/_page.html'] : []);
+const pages = readdirSync('.').filter((f) => f.endsWith('.html')).concat(existsSync('blog/_page.html') ? ['blog/_page.html'] : []).concat(existsSync('projects/_page.html') ? ['projects/_page.html'] : []);
 const hashes = {};
 const fp = (file) => (hashes[file] ??= createHash('sha256').update(readFileSync(file)).digest('hex').slice(0, 8));
 const RE = /((?:href|src)="\/?)(assets\/[\w./-]+\.(?:css|js))(?:\?v=([0-9a-f]+))?(")/g;
@@ -40,4 +40,5 @@ if (check) {
 } else {
   console.log(stale.length ? `✓ Updated ${stale.length} link(s).` : '✓ All version stamps already up to date.');
   if (existsSync('scripts/build-blog.mjs')) spawnSync(process.execPath, ['scripts/build-blog.mjs'], { stdio: 'inherit' });
+  if (existsSync('scripts/build-projects.mjs')) spawnSync(process.execPath, ['scripts/build-projects.mjs'], { stdio: 'inherit' });
 }
