@@ -330,15 +330,23 @@
       gPole.innerHTML = h;
     }
     function setPole(walk) { pole.sig = walk ? 'walk' : 'stop'; }
+    /* the four conditions of the field study: no pole at all, a pole that stays
+       at the kerb, a pole that crosses with you, and that pole plus a sign on the car */
+    var cond = 'ehmi', POLE_FIX = CW0 - 14;
     /* like SPIU "Mobility" in the field study: it waits at the kerb, then crosses
        with you on the side the cars come from, waits on the far side until the
        car has gone, and rolls back home */
     pole.y = GY; pole.vy = 0; pole.mode = 'home';
-    function poleInLane() { return pole.y > MID - 10 && pole.y < BOT + 6; }
+    function poleInLane() { return (cond === 'mobile' || cond === 'ehmi') && pole.y > MID - 10 && pole.y < BOT + 6; }
     function movePole(dt, engaged) {
+      if (cond === 'none' || cond === 'fixed') {
+        pole.mode = cond; pole.v = pole.vy = 0; pole.at = true; pole.idleSince = null;
+        if (cond === 'fixed') { pole.x = POLE_FIX; pole.y = GY; }
+        return;
+      }
       var road = inRoad();
       if (road) pole.mode = 'escort';
-      else if (pole.mode === 'escort') { pole.mode = 'wait'; pole.since = t; }
+      else if (pole.mode === 'escort') { pole.mode = ped.y <= TOP + 2 ? 'wait' : 'back'; pole.since = t; }   // you turned back: so does the pole
       else if (pole.mode === 'wait') {
         if (t - pole.since > 1 && (!car || car.x > CW1 + 10)) pole.mode = 'back';
       } else if (pole.mode === 'back') {
@@ -365,6 +373,8 @@
       pole.at = (pole.mode === 'kerb' || pole.mode === 'escort') && dist < 6;
     }
     function renderPole() {
+      var hide = cond === 'none' ? 'none' : '';
+      if (gPole.style.display !== hide) gPole.style.display = hide;
       var moving = Math.hypot(pole.v, pole.vy) > 1;
       pole.boil += 1;
       if (pole.sig !== pole.drawn || (moving && pole.boil % 6 === 0)) { pole.drawn = pole.sig; drawPole(); }
@@ -489,7 +499,7 @@
           var need = car.v * car.v / (2 * (STOP_FRONT - front));
           if (need <= A_MAX) {
             car.state = 'yield'; car.a = -need; car.noticed = true;
-            if (!inRoad()) say('it noticed you. cyan means: go ahead.');
+            if (!inRoad()) say(cond === 'ehmi' ? 'it noticed you. cyan means: go ahead.' : cond === 'none' ? 'it slowed down. is it waiting for you?' : 'it noticed you. the pole says walk.');
           } else if (!car.warned) {
             car.warned = true;
             if (!inRoad()) say('too close to stop smoothly. the pole says wait.');
@@ -500,13 +510,13 @@
           if (car.v <= 0) { car.v = 0; car.state = 'wait'; car.waitT = 0; }
         } else if (car.state === 'wait') {
           car.waitT += dt;
-          var engaged = intent || inRoad();
+          var engaged = intent || inRoad(), patience = cond === 'none' ? 3.5 : 8;
           if (engaged) car.quietSince = null; else if (car.quietSince == null) car.quietSince = t;
           if (crossed && car.leaveAt == null) car.leaveAt = t + 0.5;
           if (!poleInLane() && ((car.leaveAt != null && t >= car.leaveAt) ||
               (car.quietSince != null && t - car.quietSince > 1.2 && !inRoad()) ||
-              (car.waitT > 8 && !inRoad()))) {
-            if (car.waitT > 8 && !crossed) say('it waited eight seconds, then gave up.');
+              (car.waitT > patience && !inRoad()))) {
+            if (car.waitT > patience && !crossed) say(cond === 'none' ? 'nobody knew who goes first.' : 'it waited eight seconds, then gave up.');
             car.state = 'go';
           }
         } else if (car.state === 'go') {
@@ -521,6 +531,7 @@
     var youTxt = el('text', { 'class': 'note-txt small' }, gLive); youTxt.textContent = 'you';
     var aimPath = el('path', { 'class': 'pencil soft' }, gLive);
     var ehmiTxt = el('text', { 'class': 'note-txt small', visibility: 'hidden' }, gLive); ehmiTxt.textContent = 'eHMI';
+    var carWord = el('text', { 'class': 'led walk', visibility: 'hidden' }, gLive), carWordState = '';
     var gazePath = el('path', { 'class': 'gaze', visibility: 'hidden' }, gGaze);
     var lastAim = '';
     function show(node, on) { var v = on ? 'visible' : 'hidden'; if (node.getAttribute('visibility') !== v) node.setAttribute('visibility', v); }
@@ -538,7 +549,7 @@
         show(aimPath, !!aimKey);
       }
       /* car */
-      var walk = true, ehmiOn = false, gazeOn = false;
+      var walk = true, ehmiOn = false, gazeOn = false, wordOn = false;
       if (car) {
         boilCar += 1;
         if (car.v > 5 && boilCar % 8 === 0) drawCar();
@@ -550,7 +561,16 @@
         else if (car.state === 'wait' && !crossed) ehmiOn = true;
         ehmiEl.classList.toggle('on', ehmiOn);
         show(alarmEl, car.state === 'emerg');
-        if (ehmiOn) { ehmiTxt.setAttribute('x', f(car.x + CAR_L + 10)); ehmiTxt.setAttribute('y', LANE - 26); }
+        if (cond !== 'ehmi') ehmiOn = false;
+        ehmiEl.classList.toggle('on', ehmiOn);
+        /* SPIU + eHMI: the car also says it in words, like the screen on the test vehicle */
+        wordOn = cond === 'ehmi' && car.x + CAR_L > 150 && car.x < CW1 + 20;
+        if (wordOn) {
+          var cw = car.state === 'yield' || car.state === 'wait' ? 'WALK' : 'STOP';
+          if (cw !== carWordState) { carWordState = cw; carWord.textContent = cw; carWord.setAttribute('class', 'led ' + cw.toLowerCase()); }
+          ehmiTxt.setAttribute('x', f(car.x + 2)); ehmiTxt.setAttribute('y', LANE - 27);
+          carWord.setAttribute('x', f(car.x + 56)); carWord.setAttribute('y', LANE - 28);
+        }
         if ((car.state === 'yield' || car.state === 'wait') && car.noticed && !crossed) {
           var sx = car.x + 70, sy = LANE, ex = ped.x, ey = ped.y;
           var mx = (sx + ex) / 2 + 30, my = (sy + ey) / 2 - 10;
@@ -560,7 +580,7 @@
         var committed = car.state === 'yield' || car.state === 'wait';
         if (!committed && car.x < CW1 + 20 && car.x + CAR_L > 250) walk = false;
       } else if (gCar.style.display !== 'none') gCar.style.display = 'none';
-      show(ehmiTxt, ehmiOn);
+      show(ehmiTxt, wordOn); show(carWord, wordOn);
       show(gazePath, gazeOn);
       if (pole.mode === 'kerb' && !pole.at) walk = false;   // still on its way: not yet
       setPole(walk);
@@ -615,6 +635,23 @@
       new IntersectionObserver(function (en) { visible = en[0].isIntersecting; kick(); }).observe(fig);
     }
     document.addEventListener('visibilitychange', function () { visible = !document.hidden; kick(); });
+
+    /* --- the study conditions: four hand-written tabs under the street --- */
+    (function () {
+      var box = document.createElement('div');
+      box.className = 'street-conds'; box.setAttribute('role', 'group'); box.setAttribute('aria-label', 'Study condition');
+      [['none', 'Hesitation'], ['fixed', 'SPIU – Stationary'], ['mobile', 'SPIU – Mobility'], ['ehmi', 'SPIU + eHMI']].forEach(function (c) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.textContent = c[1]; b.setAttribute('aria-pressed', c[0] === cond ? 'true' : 'false');
+        b.addEventListener('click', function () {
+          cond = c[0];
+          box.querySelectorAll('button').forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+          if (!raf) { movePole(0, false); render(); }
+        });
+        box.appendChild(b);
+      });
+      fig.insertBefore(box, fig.querySelector('figcaption'));
+    })();
 
     /* --- first frame --- */
     drawPed(); setPole(true); renderPole();
