@@ -72,6 +72,16 @@ Merge the PR on GitHub once **Site checks** is green.
    The homepage wording is yours and is never overwritten. Remove the oldest item
    when the list gets longer than about five.
 
+### Add or change a project page
+
+Project pages (`projects.html` and `project-<name>.html`) are built from one file,
+`projects/projects.json`. Paper details come from `publications.html`, so add the paper
+there first, then list its id under the project's `steps`.
+
+1. Edit `projects/projects.json` (copy an existing entry for a new project).
+2. Build: `node scripts/build-projects.mjs`.
+3. Never edit the generated `project-*.html` files by hand.
+
 ### Write a blog post (with pictures)
 
 Posts are plain text files in `blog/` written in Markdown, so you never touch HTML.
