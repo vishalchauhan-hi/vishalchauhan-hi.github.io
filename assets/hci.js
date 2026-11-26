@@ -904,6 +904,30 @@
     if (!running) { pauseBtn.textContent = 'play'; pauseBtn.setAttribute('aria-pressed', 'true'); render(); }
     kick();
   })();
+  /* ---------- About: the field-study clip ----------
+     A short silent loop. It only loads and plays while it is on screen, pauses
+     when scrolled away, and a click (or the pause word) stops it. With reduced
+     motion it never starts by itself: the still frame and the controls show. */
+  (function () {
+    var fig = document.querySelector('.field-clip');
+    if (!fig) return;
+    var v = fig.querySelector('video'), btn = fig.querySelector('.field-clip__btn');
+    var stopped = reduceMotion, onScreen = false;
+    function sync() {
+      if (onScreen && !stopped) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } else v.pause();
+      btn.textContent = stopped ? 'play' : 'pause';
+      btn.setAttribute('aria-pressed', stopped ? 'true' : 'false');
+    }
+    function toggle() { stopped = !stopped; sync(); }
+    btn.addEventListener('click', toggle);
+    v.addEventListener('click', toggle);
+    if (reduceMotion) v.setAttribute('controls', '');
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (en) { onScreen = en[0].isIntersecting; sync(); }, { threshold: 0.4 }).observe(v);
+    } else { onScreen = true; }
+    sync();
+  })();
+
   /* ---------- 3. Fig. 2 — the smart pole, taken apart by scroll ----------
      A pencil elevation of the real SPIU: camera unit on top, a ring LED
      display, bracket arms, the pole, and a wheeled base. The pinned scroll

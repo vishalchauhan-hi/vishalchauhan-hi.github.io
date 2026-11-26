@@ -341,3 +341,14 @@ html #research .rs-signal-pulse { display: none; }
 [data-theme="dark"] .street .share-wash { fill: #d8a070; opacity: .1; }
 /* the cyclist's jacket: a light wash, like the clothes of the people on the pavement */
 .street .bike-wash { fill: #e8957a; opacity: .3; }
+/* About: a short silent clip from the field study */
+.field-clip { border: 1px solid var(--rule); border-radius: 14px; padding: 9px 9px 2px; background: var(--paper); }
+.field-clip__video { display: block; width: 100%; height: auto; border-radius: 8px; background: #2a2a28; cursor: pointer; }
+.field-clip__cap { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: .6rem .3rem .55rem; font-size: .92rem; color: var(--ink-soft); }
+.field-clip__cap b { color: var(--ink); }
+.field-clip__cap a { white-space: nowrap; }
+.field-clip__btn {
+  font: 600 1.15rem var(--hand); color: var(--ink-faint); background: none; border: 0; padding: 0 .2em; cursor: pointer;
+  text-decoration: underline; text-decoration-style: wavy; text-decoration-thickness: 1px; text-underline-offset: 4px; flex: none;
+}
+.field-clip__btn:hover { color: var(--ink); }
