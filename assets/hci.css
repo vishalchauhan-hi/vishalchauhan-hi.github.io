@@ -333,3 +333,6 @@ html #research .rs-signal-pulse { display: none; }
 .street-conds button:hover { color: var(--ink); }
 .street-conds button[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--ink-soft); }
 .street-conds + figcaption { margin-top: .5rem; }
+/* the car's tyres: dark rubber with lighter tread blocks that run as it drives */
+.street .car-tyre { fill: currentColor; opacity: .78; }
+.street .car-tread { fill: none; stroke: var(--paper); stroke-width: .9; stroke-linecap: round; opacity: .7; }

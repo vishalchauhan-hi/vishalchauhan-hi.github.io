@@ -98,7 +98,7 @@
     svg.setAttribute('tabindex', '0');
     /* on a phone, frame just the crossing so the drawing stays legible */
     var narrow = window.matchMedia('(max-width: 640px)');
-    function frame() { svg.setAttribute('viewBox', narrow.matches ? '410 -84 600 354' : '0 -84 1000 344'); }
+    function frame() { svg.setAttribute('viewBox', narrow.matches ? '410 -84 600 362' : '0 -84 1000 360'); }
     frame();
     if (narrow.addEventListener) narrow.addEventListener('change', frame);
 
@@ -245,41 +245,74 @@
       [[700, 22], [712, 24], [724, 22]].forEach(function (b) {
         h += path(stroke(b[0], b[1] - 9, b[0], b[1] + 9, 0.15) + ellipse(b[0], b[1] - 7, 1.2, 4, 0.1) + ellipse(b[0], b[1] + 7, 1.2, 4, 0.1) + stroke(b[0] - 4, b[1] - 3, b[0] + 4, b[1] - 3, 0.1));
       });
-      function tree(cx, cy, R) {
-        // an architect's tree: a loose loopy crown drawn twice, a light watercolour
-        // wash that doesn't quite line up, pencil-hatched shadow, a trunk cross
-        var n = Math.round(R / 3.2) + 5, ph = r() * 6.28, i, t0, t1, tm, d1 = '', d2 = '', wash = '';
-        for (var pass = 0; pass < 2; pass++) {
-          var d = '';
-          for (i = 0; i < n; i++) {
-            t0 = ph + i / n * Math.PI * 2; t1 = ph + (i + 1) / n * Math.PI * 2; tm = (t0 + t1) / 2;
-            var r0 = R * (0.86 + j(0.06)), r1 = R * (0.86 + j(0.06)), rc = R * (1.2 + j(0.08));
-            var x0 = cx + Math.cos(t0) * r0, y0 = cy + Math.sin(t0) * r0, x1 = cx + Math.cos(t1) * r1, y1 = cy + Math.sin(t1) * r1;
-            d += (i ? 'L' : 'M') + f(x0) + ' ' + f(y0) + 'Q' + f(cx + Math.cos(tm) * rc) + ' ' + f(cy + Math.sin(tm) * rc) + ' ' + f(x1) + ' ' + f(y1);
-          }
-          if (pass) d2 = d; else d1 = d;
-        }
-        for (i = 0; i <= 18; i++) {
-          t0 = i / 18 * Math.PI * 2;
-          var rw = R * (1.02 + j(0.09));
-          wash += (i ? 'L' : 'M') + f(cx + 3 + Math.cos(t0) * rw) + ' ' + f(cy + 2 + Math.sin(t0) * rw);
-        }
+      function tree(cx, base, s, kind) {
+        /* a street tree drawn standing up, like the shop fronts: a tapering trunk in
+           its tree pit, forking branches, and a crown built from overlapping leaf
+           masses: scalloped outline, leaf scribble on the shaded side, and a light
+           watercolour wash that doesn't quite line up.
+           kind 0: broad, vase-shaped (zelkova)   kind 1: tall and narrow (ginkgo) */
+        function X(x) { return cx + x * s; }
+        function Y(y) { return base + y * s; }
+        var blobs = kind ? [[0, -29, 7.5], [-4.5, -36, 7], [4.5, -38, 7], [-1, -45, 6.5], [1.5, -52, 4.6]]
+                         : [[-10.5, -31, 8.5], [9.5, -32, 9], [-1, -41, 10], [-3.5, -30, 6.5], [5, -27.5, 5.8], [8, -41, 6]];
+        blobs = blobs.map(function (q) { return [q[0] + j(1), q[1] + j(1), q[2] * (1 + j(0.07))]; });
+        var i, k, t0, out = '', leaf = '', back = '', wash = '';
+        // trunk, root flare, tree pit and a little cast shadow
+        var topY = kind ? -24 : -20;
+        var trunk = stroke(X(-2.6), Y(0), X(-1.5), Y(-9), 0.25) + stroke(X(-1.5), Y(-9), X(-1.1), Y(topY), 0.25) +
+                    stroke(X(2.6), Y(0), X(1.6), Y(-9), 0.25) + stroke(X(1.6), Y(-9), X(1.1), Y(topY), 0.25);
+        var bark = stroke(X(-0.4), Y(-3), X(-0.2), Y(-8), 0.2) + stroke(X(0.6), Y(-10), X(0.4), Y(-16), 0.2) + stroke(X(1), Y(-2), X(0.9), Y(-5), 0.15);
+        var limbs = kind
+          ? stroke(X(0), Y(topY), X(-0.5), Y(-40), 0.4) + stroke(X(0), Y(-27), X(-5), Y(-34), 0.3) + stroke(X(0), Y(-30), X(4.5), Y(-37), 0.3) + stroke(X(-0.3), Y(-36), X(-4), Y(-42), 0.3)
+          : stroke(X(-1), Y(topY), X(-8.5), Y(-30), 0.4) + stroke(X(1), Y(topY), X(8), Y(-31), 0.4) + stroke(X(0), Y(topY), X(-0.5), Y(-36), 0.4) +
+            stroke(X(-5), Y(-25.5), X(-3), Y(-33), 0.3) + stroke(X(4.6), Y(-25.6), X(4), Y(-34), 0.3) + stroke(X(-0.3), Y(-30), X(4), Y(-38), 0.3);
+        var pit = stroke(X(-8), Y(0), X(8), Y(0), 0.3) + stroke(X(-8), Y(0), X(-6.5), Y(1.8), 0.15) + stroke(X(8), Y(0), X(9.5), Y(1.8), 0.15) + stroke(X(-6.5), Y(1.8), X(9.5), Y(1.8), 0.25);
         var shade = '';
-        for (t0 = -0.5; t0 < 2.1; t0 += 0.22) {
-          var hx = cx + Math.cos(t0) * (R + 3), hy = cy + Math.sin(t0) * (R + 3);
-          shade += stroke(hx, hy, hx + 4 + r() * 2, hy + 4 + r() * 2, 0.2);
+        for (i = 0; i < 6; i++) shade += stroke(X(3 + i * 2.2), Y(0.4), X(6 + i * 2.2), Y(2.4), 0.15);
+        for (k = 0; k < blobs.length; k++) {
+          var bx = blobs[k][0], by = blobs[k][1], br = blobs[k][2];
+          // paper behind the leaves so the shop fronts don't show through, and the wash
+          back += '<circle class="fill-car" cx="' + f(X(bx)) + '" cy="' + f(Y(by)) + '" r="' + f(br * s * 0.98) + '"/>';
+          for (i = 0; i <= 14; i++) {
+            t0 = i / 14 * Math.PI * 2;
+            var rw = br * (1 + j(0.1));
+            wash += (i ? 'L' : 'M') + f(X(bx + 1.6 + Math.cos(t0) * rw)) + ' ' + f(Y(by + 1.1 + Math.sin(t0) * rw));
+          }
+          wash += 'Z';
+          // scalloped outline, only where this leaf mass is the outside of the crown
+          var n = Math.max(7, Math.round(br * 1.25)), ph = r() * 6.28;
+          for (i = 0; i < n; i++) {
+            var a0 = ph + i / n * 6.283, a1 = ph + (i + 1) / n * 6.283, am = (a0 + a1) / 2;
+            var mx = bx + Math.cos(am) * br, my = by + Math.sin(am) * br, hidden = false;
+            for (var o = 0; o < blobs.length; o++) {
+              if (o !== k && Math.hypot(mx - blobs[o][0], my - blobs[o][1]) < blobs[o][2] * 0.9) { hidden = true; break; }
+            }
+            var r0 = br * (0.97 + j(0.05)), r1 = br * (0.97 + j(0.05)), rc = br * (hidden ? 1.08 : 1.26 + j(0.08));
+            var seg = 'M' + f(X(bx + Math.cos(a0) * r0)) + ' ' + f(Y(by + Math.sin(a0) * r0)) +
+                      'Q' + f(X(bx + Math.cos(am) * rc)) + ' ' + f(Y(by + Math.sin(am) * rc)) + ' ' +
+                      f(X(bx + Math.cos(a1) * r1)) + ' ' + f(Y(by + Math.sin(a1) * r1));
+            if (!hidden) out += seg;
+            else if (r() < 0.45) leaf += seg;                 // a few soft edges inside, where masses overlap
+          }
+          // leaf scribble: small hooked strokes, thicker on the lower right (the shaded side)
+          var marks = Math.round(br * 1.5);
+          for (i = 0; i < marks; i++) {
+            var la = r() * 6.283, lr = br * 0.82 * Math.sqrt(r());
+            var lx = bx + Math.cos(la) * lr, ly = by + Math.sin(la) * lr;
+            var lit = (lx - bx) + (ly - by) < -br * 0.25;     // upper left catches the light: leave it open
+            if (lit && r() < 0.75) continue;
+            var w = 1.3 + r() * 1.3, dip = 0.9 + r() * 0.9;
+            leaf += 'M' + f(X(lx - w)) + ' ' + f(Y(ly)) + 'Q' + f(X(lx - w / 2)) + ' ' + f(Y(ly - dip)) + ' ' + f(X(lx)) + ' ' + f(Y(ly + 0.2)) +
+                    'Q' + f(X(lx + w / 2)) + ' ' + f(Y(ly - dip)) + ' ' + f(X(lx + w)) + ' ' + f(Y(ly));
+          }
         }
-        var inner = '';
-        for (i = 0; i < 3; i++) {
-          var ia = r() * 6.28, ir = R * (0.3 + r() * 0.3), ix = cx + Math.cos(ia) * ir, iy = cy + Math.sin(ia) * ir;
-          inner += 'M' + f(ix - 3) + ' ' + f(iy) + 'Q' + f(ix) + ' ' + f(iy - 4) + ' ' + f(ix + 3) + ' ' + f(iy);
-        }
-        return '<path class="tree-wash" d="' + wash + 'Z"/>' + path(shade, 'pencil hatch') +
-               path(d1) + path(d2, 'pencil soft') + path(inner, 'pencil soft') +
-               path(stroke(cx - 2.5, cy, cx + 2.5, cy, 0.2) + stroke(cx, cy - 2.5, cx, cy + 2.5, 0.2));
+        return path(shade, 'pencil hatch') + path(pit, 'pencil soft') +
+               '<path class="fill-car" d="M' + f(X(-2.6)) + ' ' + f(Y(0)) + 'L' + f(X(-1.1)) + ' ' + f(Y(topY)) + 'L' + f(X(1.1)) + ' ' + f(Y(topY)) + 'L' + f(X(2.6)) + ' ' + f(Y(0)) + 'Z"/>' +
+               path(trunk) + path(bark, 'pencil soft') + back + '<path class="tree-wash" d="' + wash + '"/>' +
+               path(limbs, 'pencil soft') + path(leaf, 'pencil soft') + path(out);
       }
-      [[262, 34, 20], [792, 32, 22], [940, 30, 20],
-       [150, 228, 22], [338, 226, 24], [480, 230, 18], [962, 214, 16]].forEach(function (tr) { h += tree(tr[0], tr[1], tr[2]); });
+      [[262, 59, 1.4, 0], [792, 59, 1.45, 1], [940, 58, 1.3, 0],
+       [150, 270, 1.45, 1], [338, 271, 1.5, 0], [436, 270, 1.3, 0], [962, 269, 1.35, 1]].forEach(function (tr) { h += tree(tr[0], tr[1], tr[2], tr[3]); });
       gStatic.innerHTML = h;
       // annotations
       var n = '';
@@ -391,9 +424,10 @@
       if (parent) parent.appendChild(e);
       return e;
     }
-    var ehmiEl, alarmEl, carPaths, carBody, lidarBeam;
-    /* a small self-driving car seen from above, in pencil: rounded body, windscreen
-       and rear window lightly hatched, mirrors, and the sensor dome on the roof */
+    var ehmiEl, alarmEl, carPaths, carBody, lidarBeam, treadEl, treadKey = -1;
+    /* a self-driving robotaxi seen from above, in pencil: rounded body, windscreen
+       and rear window lightly hatched, mirrors, sensor pods on the corners, and the
+       roof unit with its spinning dome */
     var BODY = 'M10 -20H84Q99 -20 100 -8V8Q99 20 84 20H10Q0 20 0 10V-10Q0 -20 10 -20Z';
     function carShapes() {
       return [line(10, -20, 84, -20, 0.8) + stroke(84, -20, 98, -11, 0.5) + line(100, -9, 100, 9, 0.6) + stroke(98, 11, 84, 20, 0.5) +
@@ -404,11 +438,21 @@
                 stroke(65, -10, 69, -13, 0.2) + stroke(65, -2, 73, -9, 0.2) + stroke(65, 6, 75, -3, 0.2) + stroke(66, 13, 75, 5, 0.2) +
                 stroke(14, -4, 19, -11, 0.2) + stroke(14, 6, 20, -3, 0.2),
               stroke(66, -20, 70, -25, 0.3) + stroke(70, -25, 75, -21, 0.3) + stroke(66, 20, 70, 25, 0.3) + stroke(70, 25, 75, 21, 0.3) +
-                line(14, -23, 30, -23, 0.4) + line(72, -23, 88, -23, 0.4) + line(14, 23, 30, 23, 0.4) + line(72, 23, 88, 23, 0.4)];
+                'M12 -20Q22 -23.4 32 -20M70 -20Q80 -23.4 90 -20M12 20Q22 23.4 32 20M70 20Q80 23.4 90 20' +
+                // a robotaxi's sensors: pods on the four corners, one on the nose and tail, and the roof unit around the dome
+                ellipse(90, -19.5, 3.2, 2.6, 0.2) + ellipse(90, 19.5, 3.2, 2.6, 0.2) + ellipse(8, -19, 2.8, 2.4, 0.2) + ellipse(8, 19, 2.8, 2.4, 0.2) +
+                ellipse(100.5, 0, 2, 3, 0.15) + ellipse(0, 0, 1.8, 2.8, 0.15) +
+                stroke(32, -9, 52, -9, 0.2) + stroke(52, -9, 55, 0, 0.2) + stroke(55, 0, 52, 9, 0.2) + stroke(52, 9, 32, 9, 0.2) + stroke(32, 9, 29, 0, 0.2) + stroke(29, 0, 32, -9, 0.2) +
+                ellipse(42, 0, 7, 7, 0.2)];
     }
     function drawCar() {
       var d = carShapes();
       if (!carPaths) {
+        // tyres first, so the body covers their inner half: dark rubber showing past the sills
+        [[13, -25.5], [71, -25.5], [13, 18.5], [71, 18.5]].forEach(function (w) {
+          el('rect', { 'class': 'car-tyre', x: w[0], y: w[1], width: 18, height: 7, rx: 2.4 }, gCar);
+        });
+        treadEl = el('path', { 'class': 'car-tread' }, gCar);
         carBody = el('path', { 'class': 'fill-car', d: BODY }, gCar);
         carPaths = [el('path', { 'class': 'pencil' }, gCar), el('path', { 'class': 'pencil soft' }, gCar), el('path', { 'class': 'pencil' }, gCar)];
         el('circle', { 'class': 'car-lidar', cx: 42, cy: 0, r: 4.5 }, gCar);
@@ -554,6 +598,18 @@
         boilCar += 1;
         if (car.v > 5 && boilCar % 8 === 0) drawCar();
         gCar.setAttribute('transform', 'translate(' + f(car.x) + ' ' + LANE + ')');
+        var roll = Math.round(((car.x % 3.6) + 3.6) % 3.6 * 5);          // tread blocks run backwards as the wheels turn
+        if (roll !== treadKey) {
+          treadKey = roll;
+          var td = '', off = 3.6 - roll / 5;
+          [13, 71].forEach(function (wx) {
+            for (var q = off; q < 17.4; q += 3.6) {
+              if (q < 0.8) continue;
+              td += 'M' + f(wx + q) + ' -25.2L' + f(wx + q - 0.9) + ' -21M' + f(wx + q) + ' 25.2L' + f(wx + q - 0.9) + ' 21';
+            }
+          });
+          treadEl.setAttribute('d', td);
+        }
         lidarBeam.setAttribute('transform', 'translate(42 0) rotate(' + Math.round(t * 400 % 360) + ')');   // the roof sensor keeps scanning
         if (gCar.style.display) gCar.style.display = '';
         if (car.state === 'yield') ehmiOn = true;
