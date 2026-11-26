@@ -341,17 +341,6 @@ html #research .rs-signal-pulse { display: none; }
 [data-theme="dark"] .street .share-wash { fill: #d8a070; opacity: .1; }
 /* the cyclist's jacket: a light wash, like the clothes of the people on the pavement */
 .street .bike-wash { fill: #e8957a; opacity: .3; }
-/* About: a short silent clip from the field study */
-.field-clip { border: 1px solid var(--rule); border-radius: 14px; padding: 9px 9px 2px; background: var(--paper); }
-.field-clip__video { display: block; width: 100%; height: auto; border-radius: 8px; background: #2a2a28; cursor: pointer; }
-.field-clip__cap { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: .6rem .3rem .55rem; font-size: .92rem; color: var(--ink-soft); }
-.field-clip__cap b { color: var(--ink); }
-.field-clip__cap a { white-space: nowrap; }
-.field-clip__btn {
-  font: 600 1.15rem var(--hand); color: var(--ink-faint); background: none; border: 0; padding: 0 .2em; cursor: pointer;
-  text-decoration: underline; text-decoration-style: wavy; text-decoration-thickness: 1px; text-underline-offset: 4px; flex: none;
-}
-.field-clip__btn:hover { color: var(--ink); }
 /* the research areas: pick one and its part of the street stays, the others fade */
 .street-areas { margin-top: .55rem; }
 .street-areas__row { display: flex; flex-wrap: wrap; align-items: baseline; gap: .1rem 1.2rem; }
@@ -372,15 +361,3 @@ html #research .rs-signal-pulse { display: none; }
 .street .pencil.signal { stroke: var(--ehmi); opacity: .8; }
 .street .v2x { fill: none; stroke: var(--ehmi); stroke-width: 1.2; stroke-dasharray: 2 4; stroke-linecap: round; opacity: .6; }
 @media (prefers-reduced-motion: reduce) { .street svg .ar-mobility, .street svg .ar-hri, .street svg .ar-urban, .street svg .ar-design { transition: none; } }
-/* About clip: a button that swaps the loop for the full study video */
-.field-clip { position: relative; }
-.field-clip__full {
-  position: absolute; left: 18px; top: 18px; display: inline-flex; align-items: center; gap: .5rem;
-  font: 600 .9rem var(--sans, inherit); color: #fff; background: rgba(20, 18, 16, .72); border: 1px solid rgba(255,255,255,.25);
-  border-radius: 99px; padding: .42rem .9rem .42rem .55rem; cursor: pointer; backdrop-filter: blur(4px); transition: background .2s;
-}
-.field-clip__full:hover, .field-clip__full:focus-visible { background: rgba(20, 18, 16, .88); }
-.field-clip__play { width: 1.35rem; height: 1.35rem; border-radius: 50%; background: #fff; position: relative; flex: none; }
-.field-clip__play::after { content: ""; position: absolute; left: 52%; top: 50%; transform: translate(-40%, -50%);
-  border-left: 7px solid #1a1916; border-top: 4.5px solid transparent; border-bottom: 4.5px solid transparent; }
-.field-clip__frame { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 8px; background: #000; }
