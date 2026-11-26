@@ -31,7 +31,7 @@ function paper(id) {
   const attr = (tag, name) => { const x = tag && tag.match(new RegExp(`\\s${name}="([^"]*)"`)); return x ? x[1] : ''; };
   const title = a.match(/<h3>\s*<a[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/);
   const links = [...(pick(/<div class="pub-actions">([\s\S]*?)<\/div>/) || '').matchAll(/<a[^>]*href="([^"]+)"[^>]*>([^<]+)<\/a>/g)]
-    .map((l) => ({ href: l[1], label: l[2].trim() }));
+    .map((l) => ({ href: l[1], label: l[2].trim() })).filter((l) => !l.href.startsWith('project-'));   // not the link back to the project itself
   return {
     id,
     img: img ? { src: attr(img[0], 'src'), alt: attr(img[0], 'alt'), w: attr(img[0], 'width'), h: attr(img[0], 'height') } : null,
