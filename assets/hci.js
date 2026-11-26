@@ -559,6 +559,55 @@
       for (var i = 0; i < 3; i++) carPaths[i].setAttribute('d', d[i]);
     }
 
+    /* --- cyclist, riding along the near pavement ---
+       Drawn from the side, standing up like the people and trees there (local
+       coords: ground at y 0, x 0..34 forward). Built once; the pencil lines boil,
+       and the spokes and legs are small paths moved every frame so they turn. */
+    var gBike = el('g', { 'class': 'st-bike' }), bikePaths, bikeSpin, bikeNear, bikeFar, BIKE_Y = BOT + 31, BIKE_V = 92;
+    svg.insertBefore(gBike, gCar);
+    gBike.style.display = 'none';
+    function drawBike() {
+      var d = [ // wheels and the frame: chain stay, seat tube, top tube, down tube, fork, bar, saddle
+                ellipse(7, -6.2, 6.2, 6.2, 0.2) + ellipse(27.4, -6.2, 6.2, 6.2, 0.2) +
+                stroke(7, -6.2, 15.8, -5.8, 0.15) + stroke(15.8, -5.8, 13.2, -15.4, 0.15) + stroke(13.2, -15.4, 23.8, -15.8, 0.15) +
+                stroke(23.8, -15.8, 15.8, -5.8, 0.15) + stroke(7, -6.2, 13.2, -15.4, 0.15) + stroke(23.4, -17.6, 27.4, -6.2, 0.15) +
+                stroke(23.4, -17.6, 25.4, -19.4, 0.1) + stroke(25.4, -19.4, 27.6, -18.6, 0.1) + stroke(11, -16.4, 15.4, -16.2, 0.12),
+                // rider: back, head, arm to the bar
+                stroke(13.6, -17.2, 19.4, -25.6, 0.25) + ellipse(21.6, -28.6, 2.5, 2.6, 0.15) +
+                stroke(19.2, -25, 23, -21.2, 0.2) + stroke(23, -21.2, 26.6, -19.2, 0.2),
+                // helmet rim, a small backpack, the ground shadow
+                stroke(19, -29.6, 24.2, -30.2, 0.12) + stroke(19.4, -30.6, 21.6, -31.6, 0.1) + stroke(21.6, -31.6, 24, -30.6, 0.1) +
+                stroke(12.6, -19.4, 15, -24.6, 0.15) + stroke(15, -24.6, 17.6, -23.4, 0.12) + stroke(12.6, -19.4, 15.2, -18.4, 0.12) +
+                stroke(2, 0.6, 33, 0.6, 0.3)];
+      if (!bikePaths) {
+        bikeSpin = el('path', { 'class': 'pencil soft' }, gBike);
+        bikeFar = el('path', { 'class': 'pencil soft' }, gBike);
+        el('ellipse', { 'class': 'bike-wash', cx: 17, cy: -20.8, rx: 2.9, ry: 5.2, transform: 'rotate(36 17 -20.8)' }, gBike);
+        bikePaths = [el('path', { 'class': 'pencil' }, gBike), el('path', { 'class': 'pencil' }, gBike), el('path', { 'class': 'pencil soft' }, gBike)];
+        bikeNear = el('path', { 'class': 'pencil' }, gBike);
+      }
+      for (var i = 0; i < 3; i++) bikePaths[i].setAttribute('d', d[i]);
+    }
+    function leg(ph) {                                    // hip -> knee -> foot on the pedal (two-bone leg)
+      var hx = 13.8, hy = -16.8, fx = 15.8 + Math.cos(ph) * 3.1, fy = -5.8 + Math.sin(ph) * 3.1, L1 = 7.4, L2 = 7.4;
+      var dx = fx - hx, dy = fy - hy, dd = Math.min(L1 + L2 - 0.05, Math.hypot(dx, dy));
+      var along = (L1 * L1 - L2 * L2 + dd * dd) / (2 * dd), off = Math.sqrt(Math.max(0, L1 * L1 - along * along));
+      var kx = hx + dx / dd * along + dy / dd * off, ky = hy + dy / dd * along - dx / dd * off;   // knee bends forward
+      return 'M' + f(hx) + ' ' + f(hy) + 'L' + f(kx) + ' ' + f(ky) + 'L' + f(fx) + ' ' + f(fy) + 'M' + f(fx - 1.4) + ' ' + f(fy + 0.5) + 'h3.2';
+    }
+    function drawBikeMotion(ph, roll) {
+      var sp = '';
+      [7, 27.4].forEach(function (wx) {
+        for (var k = 0; k < 3; k++) {
+          var a = roll + k * Math.PI / 3, cx2 = Math.cos(a) * 5.6, sy2 = Math.sin(a) * 5.6;
+          sp += 'M' + f(wx - cx2) + ' ' + f(-6.2 - sy2) + 'L' + f(wx + cx2) + ' ' + f(-6.2 + sy2);
+        }
+      });
+      bikeSpin.setAttribute('d', sp);
+      bikeFar.setAttribute('d', leg(ph + Math.PI));
+      bikeNear.setAttribute('d', leg(ph));
+    }
+
     /* --- pedestrian (top-down head + shoulders), built once, re-jittered to "boil" --- */
     var pedPaths;
     function drawPed() {
@@ -575,10 +624,10 @@
     /* --- state --- */
     var ped = { x: IDLE.x, y: IDLE.y, vx: 0, vy: 0, tx: IDLE.x, ty: IDLE.y, heading: -Math.PI / 2 };
     var aim = null;                 // pointer position (for the small cross)
-    var car = null, nextSpawn = 0.6;
+    var car = null, bike = null, nextSpawn = 0.6, nextBike = 2.5;
     var t = 0, last = 0, raf = 0, running = !reduceMotion, visible = true;
     var curbSince = null, intent = false, waitStart = null, steppedOut = null, crossed = false, lastNote = '';
-    var boilCar = 0, boilPed = 0;
+    var boilCar = 0, boilPed = 0, boilBike = 0;
 
     function say(s) { if (s !== lastNote) { lastNote = s; note.textContent = s; } }
     function inRoad() { return ped.y > TOP + 2 && ped.y < BOT - 2; }
@@ -664,6 +713,20 @@
         car.x += car.v * dt;
         if (car.x > 1040) { car = null; nextSpawn = t + 1.2 + Math.random() * 1.6; }
       }
+      /* the cyclist rides along the near pavement, and waits for anyone (or the
+         pole) crossing its path, the way people do in a shared space */
+      if (!bike && t >= nextBike) { bike = { x: -50, v: BIKE_V, ph: 0, waitT: 0 }; drawBike(); }
+      if (bike) {
+        var bf = bike.x + 34, lineY = BIKE_Y - 12;
+        var pedAheadOfBike = Math.abs(ped.y - lineY) < 13 && ped.x > bf - 4 && ped.x < bf + 46;
+        var poleAhead = (cond === 'mobile' || cond === 'ehmi') && pole.y < BIKE_Y + 6 && pole.y > BOT - 4 && pole.x > bf - 4 && pole.x < bf + 46;
+        var blocked = (pedAheadOfBike || poleAhead) && bike.waitT < 4;
+        bike.v += ((blocked ? 0 : BIKE_V) - bike.v) * Math.min(1, dt * (blocked ? 7 : 2.2));
+        if (blocked && bike.v < 4) bike.waitT += dt; else if (!pedAheadOfBike && !poleAhead) bike.waitT = 0;
+        bike.x += bike.v * dt;
+        bike.ph += bike.v * dt / 11;
+        if (bike.x > 1030) { bike = null; nextBike = t + 5 + Math.random() * 6; }
+      }
     }
 
     /* live labels: created once, then only moved or shown/hidden */
@@ -732,6 +795,14 @@
         if (!committed && car.x < CW1 + 20 && car.x + CAR_L > 250) walk = false;
       } else if (gCar.style.display !== 'none') gCar.style.display = 'none';
       show(ehmiTxt, wordOn); show(carWord, wordOn);
+      /* cyclist */
+      if (bike) {
+        boilBike += 1;
+        if (bike.v > 5 && boilBike % 8 === 0) drawBike();
+        drawBikeMotion(bike.ph, bike.x / 6.2);
+        gBike.setAttribute('transform', 'translate(' + f(bike.x) + ' ' + BIKE_Y + ')');
+        if (gBike.style.display) gBike.style.display = '';
+      } else if (gBike.style.display !== 'none') gBike.style.display = 'none';
       show(gazePath, gazeOn);
       if (pole.mode === 'kerb' && !pole.at) walk = false;   // still on its way: not yet
       setPole(walk);
