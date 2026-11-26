@@ -117,3 +117,6 @@
   .pj-list { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { .pj-card { transition: none; } .pj-card:hover { transform: none; } }
+.pj-sketch .pj-hand { font: 600 15px var(--hand); fill: var(--ink-soft); }
+.pj-sketch .pj-hand.big { font-size: 25px; fill: var(--ink); }
+.pj-sketch .pj-hand.small { font-size: 13.5px; }
