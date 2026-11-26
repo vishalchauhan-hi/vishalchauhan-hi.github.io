@@ -336,3 +336,6 @@ html #research .rs-signal-pulse { display: none; }
 /* the car's tyres: dark rubber with lighter tread blocks that run as it drives */
 .street .car-tyre { fill: currentColor; opacity: .78; }
 .street .car-tread { fill: none; stroke: var(--paper); stroke-width: .9; stroke-linecap: round; opacity: .7; }
+/* the shared space around the crossing: one paved surface, a warm wash */
+.street .share-wash { fill: #e3a877; opacity: .16; }
+[data-theme="dark"] .street .share-wash { fill: #d8a070; opacity: .1; }
