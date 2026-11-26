@@ -27,6 +27,16 @@
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <style>
+    /* CV PDF card */
+    .cv-pdf { display: flex; gap: 1.4rem; align-items: center; margin: 1.6rem 0 2.4rem; padding: 1rem; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface-soft); max-width: 640px; }
+    .cv-pdf-thumb { flex: none; line-height: 0; }
+    .cv-pdf-thumb img { width: 120px; height: auto; border: 1px solid var(--rule); box-shadow: 0 6px 14px -10px rgba(0,0,0,.4); background: #fff; }
+    .cv-pdf-title { margin: 0 0 .2rem; font-weight: 600; color: var(--ink); }
+    .cv-pdf-meta { margin: 0 0 .8rem; font-size: .88rem; color: var(--ink-faint); }
+    .cv-pdf-actions { margin: 0; display: flex; flex-wrap: wrap; gap: .6rem 1.1rem; align-items: center; font-size: .92rem; }
+    .cv-pdf-btn { display: inline-block; padding: .5em 1em; border-radius: 4px; background: var(--ink); color: var(--paper); text-decoration: none; }
+    .cv-pdf-btn:hover { background: var(--accent); color: var(--paper); }
+    @media (max-width: 480px) { .cv-pdf { align-items: flex-start; } .cv-pdf-thumb img { width: 84px; } }
     .cv-section { margin: 2rem 0 2.5rem; }
     .cv-section h2 {
       font-family: var(--serif);
@@ -155,6 +165,20 @@
           &nbsp;·&nbsp;
           <a href="https://tlab.hongo.wide.ad.jp/">Tsukada Lab</a>
         </p>
+
+        <!-- ============ CV PDF (updated with tools/update-cv.sh) ============ -->
+        <div class="cv-pdf">
+          <a class="cv-pdf-thumb" href="assets/cv/Vishal_Chauhan_CV.pdf" target="_blank" rel="noopener" aria-label="Open the full CV as a PDF">
+            <img width="424" height="600" src="assets/cv/cv-preview.jpg" alt="First page of Vishal Chauhan's CV" />
+          </a>
+          <div class="cv-pdf-text">
+            <p class="cv-pdf-title">Full CV (PDF)</p>
+            <p class="cv-pdf-meta"><span data-cv-pages>6</span> pages · updated <span data-cv-updated>Nov 2026</span></p>
+            <p class="cv-pdf-actions">
+              <a class="cv-pdf-btn" href="assets/cv/Vishal_Chauhan_CV.pdf" target="_blank" rel="noopener">View CV ↗</a>
+            </p>
+          </div>
+        </div>
 
         <!-- ============ SUMMARY ============ -->
         <div class="cv-section">
