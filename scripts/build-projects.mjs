@@ -47,8 +47,8 @@ function paper(id) {
 }
 
 /* ---------- a small pencil sketch for a project that has no photo yet ---------- */
-function robotSketch() {
-  let seed = 41;
+function pencilKit(seedStart) {
+  let seed = seedStart;
   const r = () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
   const j = (a) => (r() - 0.5) * 2 * a, f = (n) => Math.round(n * 10) / 10;
   const st = (x1, y1, x2, y2, a = 1) => {
@@ -59,6 +59,10 @@ function robotSketch() {
   const E = (cx, cy, rx, ry, a = .8) => { let d = ''; const s0 = r() * 6.28; for (let i = 0; i <= 24; i++) { const t = s0 + i / 22 * 6.283; d += (i ? 'L' : 'M') + f(cx + Math.cos(t) * (rx + j(a))) + ' ' + f(cy + Math.sin(t) * (ry + j(a))); } return d; };
   const R = (x, y, w, h, a = 1) => L(x - 2, y, x + w + 2, y, a) + L(x + w, y - 2, x + w, y + h + 2, a) + L(x + w + 2, y + h, x - 2, y + h, a) + L(x, y + h + 2, x, y - 2, a);
   const P = (d, c = 'pj-ink') => `<path class="${c}" d="${d}"/>`;
+  return { r, j, f, st, L, E, R, P };
+}
+function robotSketch() {
+  const { r, j, f, st, L, E, R, P } = pencilKit(41);
   let h = '';
   // pavement: ground line, joints, kerb and a strip of tactile paving
   h += P(L(20, 250, 700, 250, 1.4)) + P(L(20, 262, 700, 262, 1), 'pj-ink soft');
@@ -92,7 +96,48 @@ function robotSketch() {
   h += P(`M${rx - 44} 96Q${rx - 58} 112 ${rx - 46} 128M${rx - 56} 88Q${rx - 76} 112 ${rx - 58} 136`, 'pj-ink soft');
   return `<svg class="pj-sketch" viewBox="0 18 720 256" role="img" aria-label="Pencil sketch: a person walking on a sidewalk with a small wheeled robot beside them, signalling which way it will go">${h}</svg>`;
 }
-const SKETCHES = { robot: robotSketch };
+function agentLoopSketch() {
+  /* EmbodiedMind's loop, drawn in pencil: five steps around a small Minecraft scene */
+  const { r, j, f, st, L, E, R, P } = pencilKit(77);
+  const T = (x, y, s, c = 'pj-hand', anchor = 'middle') => `<text class="${c}" x="${x}" y="${y}" text-anchor="${anchor}">${s}</text>`;
+  const cx = 360, cy = 150, rx = 250, ry = 104;
+  const steps = [
+    ['see', 'VLM perceiver', -90, 'blue'],
+    ['remember', 'episodic memory', -18, 'green'],
+    ['plan', 'LLM planner', 54, 'orange'],
+    ['act', 'action executor', 126, 'teal'],
+    ['reflect', 'writes a lesson', 198, 'yellow']
+  ];
+  let h = '';
+  // the loop: hand-drawn arcs between the steps, each with an arrowhead
+  steps.forEach((s, i) => {
+    const a0 = (s[2] + 15) * Math.PI / 180, a1 = (steps[(i + 1) % 5][2] - 15 + (i === 4 ? 360 : 0)) * Math.PI / 180;
+    let d = '';
+    for (let k = 0; k <= 16; k++) { const t = a0 + (a1 - a0) * k / 16; d += (k ? 'L' : 'M') + f(cx + Math.cos(t) * (rx + j(1.2))) + ' ' + f(cy + Math.sin(t) * (ry + j(1.2))); }
+    const ex = cx + Math.cos(a1) * rx, ey = cy + Math.sin(a1) * ry, tx = -Math.sin(a1) * rx, ty = Math.cos(a1) * ry, tl = Math.hypot(tx, ty);
+    const ux = tx / tl, uy = ty / tl;
+    d += st(ex, ey, ex - ux * 11 - uy * 6, ey - uy * 11 + ux * 6, .4) + st(ex, ey, ex - ux * 11 + uy * 6, ey - uy * 11 - ux * 6, .4);
+    h += P(d, 'pj-ink soft');
+  });
+  // the steps: a washed blob, a bold handwritten verb, and what does it underneath
+  steps.forEach((s) => {
+    const a = s[2] * Math.PI / 180, x = cx + Math.cos(a) * rx, y = cy + Math.sin(a) * ry;
+    h += `<ellipse class="pj-wash ${s[3]}" cx="${f(x + 3)}" cy="${f(y + 2)}" rx="62" ry="27"/>` + P(E(x, y, 60, 25, 1.1));
+    h += T(x, y + 2, s[0], 'pj-hand big') + T(x, y + 18, s[1], 'pj-hand small');
+  });
+  // in the middle: the world it acts in, a blocky tree and a little agent
+  const bx = cx - 34, by = cy + 30;
+  h += `<rect class="pj-wash green" x="${bx + 6}" y="${by - 52}" width="36" height="30"/>`;
+  h += P(R(bx + 4, by - 54, 36, 30, .5) + R(bx + 16, by - 24, 12, 24, .5) + L(bx - 30, by, bx + 100, by, .8));
+  h += P(st(bx + 10, by - 46, bx + 20, by - 46, .2) + st(bx + 26, by - 36, bx + 34, by - 36, .2) + st(bx + 20, by - 15, bx + 24, by - 15, .2), 'pj-ink soft');
+  const ax = bx + 70;
+  h += `<rect class="pj-wash blue" x="${ax - 5}" y="${by - 26}" width="12" height="14"/>`;
+  h += P(R(ax - 6, by - 38, 12, 12, .3) + R(ax - 6, by - 26, 12, 14, .3) + R(ax - 6, by - 12, 5, 12, .2) + R(ax + 1, by - 12, 5, 12, .2));
+  h += P(st(ax - 3, by - 33, ax - 1, by - 33, .1) + st(ax + 2, by - 33, ax + 4, by - 33, .1) + st(ax + 6, by - 22, ax + 16, by - 30, .4), 'pj-ink soft');
+  h += T(cx, by + 20, 'MineDojo', 'pj-hand small');
+  return `<svg class="pj-sketch" viewBox="36 14 648 276" role="img" aria-label="Diagram of the EmbodiedMind loop: see with a vision-language model, remember similar past episodes, plan subgoals with a language model, act in the game, and reflect, around a small Minecraft scene with a blocky tree and an agent">${h}</svg>`;
+}
+const SKETCHES = { robot: robotSketch, agentLoop: agentLoopSketch };
 
 /* ---------- pieces ---------- */
 function resolve(p) {
@@ -158,7 +203,7 @@ ${p.steps.length ? `
         <ol class="pj-steps${p.steps.length > 1 ? ' is-timeline' : ''}">
 ${p.steps.map(paperCard).join('\n')}
         </ol>` : `
-        <p class="pj-soon">Started in 2026. Papers and field results will be added here as they are published.</p>`}
+        <p class="pj-soon">${esc(p.note || 'Started in 2026. Papers and field results will be added here as they are published.')}</p>`}
 ${p.gallery ? `
         <h2 class="pj-h2">${esc(p.galleryTitle || 'Gallery')}</h2>
         <div class="pj-gallery">${p.gallery.map((g) => `
