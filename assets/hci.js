@@ -117,6 +117,9 @@
     /* --- static scene: drawn once --- */
     (function drawStatic() {
       var h = '';
+      /* parts of the scene are grouped by research area (ar-mobility, ar-urban,
+         ar-hri, ar-design) so one area can be picked out and the rest faded */
+      h += '<g class="ar-mobility">';
       h += '<rect class="fill-road" x="0" y="' + TOP + '" width="1000" height="' + (BOT - TOP) + '"/>';
       h += path(line(-10, TOP, 1010, TOP, 1.6)) + path(line(-10, BOT, 1010, BOT, 1.6));
       h += path(line(-10, TOP + 5, 1010, TOP + 5, 1.2), 'pencil soft') + path(line(-10, BOT - 5, 1010, BOT - 5, 1.2), 'pencil soft');
@@ -130,6 +133,7 @@
         d += stroke(x, y, x + 7 + r() * 5, y - 6 - r() * 4, 0.3);
       }
       h += path(d, 'pencil hatch');
+      h += '</g><g class="ar-urban">';
       /* the shared space: around the crossing the road and both pavements are one
          paved surface (block paving, a warm wash), with low bollards at its corners */
       var SS0 = CW0 - 38, SS1 = CW1 + 38, row = 0;
@@ -152,6 +156,7 @@
         h += path(d, 'pencil soft');
       }
       h += path(line(STOP_FRONT + 6, MID + 5, STOP_FRONT + 6, BOT - 4, 1), 'pencil');
+      h += '</g>';
 
       /* --- street life (all static): paving, trees, a bench, planters, road marks --- */
       d = '';                                              // paving joints on both pavements
@@ -211,6 +216,23 @@
           for (xx = x + 6; xx < x + w - 18; xx += 2.6) spines += stroke(xx, G - 7, xx + j(0.3), G - 12 - r() * 2, 0.1);
           s += path(spines + line(x + 5, G - 6.5, x + w - 17, G - 6.5, 0.1), 'pencil soft');
           s += wash('sign-wash', x + w + 1, top + 10, 7, 22) + path(rect(x + w + 1, top + 10, 7, 22, 0.2));
+        } else if (kind === 'studio') {                    // the design studio: through the window, the work in progress
+          var wx = x + 5, wy = G - 18;
+          s += path(box(wx, wy, 57, 18, 0.3)) + path(box(x + w - 18, G - 17, 11, 17, 0.25) + stroke(x + w - 9.6, G - 9, x + w - 9.6, G - 7.6, 0.05));
+          var notes = '', washes = ['tactile-wash', 'awning-wash', 'sign-wash', 'tree-wash'], nx, ny, q = 0;
+          for (ny = 0; ny < 2; ny++) for (nx = 0; nx < 5; nx++, q++) {      // sticky notes on the wall
+            if (q === 3 || q === 8) continue;
+            var sx = wx + 3 + nx * 3.7 + j(0.25), sy = wy + 2.4 + ny * 3.9 + j(0.25);
+            s += '<rect class="' + washes[q % 4] + '" x="' + f(sx) + '" y="' + f(sy) + '" width="2.8" height="2.8"/>';
+            notes += box(sx, sy, 2.8, 2.8, 0.06);
+          }
+          s += path(notes, 'pencil soft');
+          s += figure(wx + 30, G - 0.6, { s: 0.74, pose: 'stand', dir: 1, wash: 'tree-wash' }) +               // someone testing in a headset
+               '<rect class="car-tyre" x="' + f(wx + 28.2) + '" y="' + f(G - 15.7) + '" width="4.4" height="2" rx="0.6"/>' +
+               path(stroke(wx + 32.6, G - 14.8, wx + 30.4, G - 14.2, 0.05), 'pencil soft');
+          s += path(line(wx + 39, G - 5, wx + 55, G - 5, 0.15) + stroke(wx + 41, G - 5, wx + 41, G, 0.1) + stroke(wx + 53, G - 5, wx + 53, G, 0.1), 'pencil soft') +   // workbench
+               path(box(wx + 43.6, G - 8.6, 5.4, 3.6, 0.08) + stroke(wx + 46.3, G - 8.6, wx + 46.3, G - 14.6, 0.08) + ellipse(wx + 46.3, G - 15, 3.4, 0.9, 0.06) +     // a half-built pole
+                    stroke(wx + 51, G - 5.2, wx + 54, G - 6.4, 0.06) + stroke(wx + 52.4, G - 5.2, wx + 51.4, G - 7.4, 0.06));
         } else {                                           // a plain office front
           s += path(rect(x + w / 2 - 7, G - 16, 14, 16, 0.3) + rect(x + 4, G - 12, w / 2 - 14, 8, 0.2) + rect(x + w / 2 + 10, G - 12, w / 2 - 14, 8, 0.2), 'pencil soft');
         }
@@ -232,7 +254,7 @@
       h += building(232, 64, 1, 'house');
       h += building(312, 92, 2, 'cafe', 'café');
       h += vending(408);
-      h += building(436, 86, 3, 'office');
+      h += '<g class="ar-design">' + building(436, 86, 3, 'studio', 'studio') + '</g>';
       h += building(668, 90, 1, 'konbini', '24h');
       h += building(764, 66, 2, 'books', 'books');
       h += building(850, 72, 2, 'house');
@@ -250,12 +272,14 @@
       wires += 'M' + (-10) + ' ' + (G - 50) + 'Q50 ' + (G - 42) + ' 118 ' + (G - 60) + 'M660 ' + (G - 60) + 'Q840 ' + (G - 40) + ' 1010 ' + (G - 54);
       h += path(wires, 'pencil soft');
       // yellow tactile paving at both kerbs of the crossing (warning dots), as at real Japanese crossings
+      h += '<g class="ar-urban">';
       [TOP - 9, BOT + 2].forEach(function (yy) {
         h += '<rect class="tactile-wash" x="' + (CW0 + 4) + '" y="' + yy + '" width="' + (CW1 - CW0 - 8) + '" height="7"/>';
         var dts = '';
         for (var tx = CW0 + 8; tx < CW1 - 6; tx += 5) dts += ellipse(tx, yy + 3.5, 0.8, 0.8, 0.05);
         h += path(dts, 'pencil soft');
       });
+      h += '</g>';
       // parked bicycles outside the convenience store (seen from above)
       [[700, 22], [712, 24], [724, 22]].forEach(function (b) {
         h += path(stroke(b[0], b[1] - 9, b[0], b[1] + 9, 0.15) + ellipse(b[0], b[1] - 7, 1.2, 4, 0.1) + ellipse(b[0], b[1] + 7, 1.2, 4, 0.1) + stroke(b[0] - 4, b[1] - 3, b[0] + 4, b[1] - 3, 0.1));
@@ -335,13 +359,40 @@
                 stroke(263.4, 233.4, 263, 236, 0.08) + stroke(265.4, 233.8, 265.6, 236, 0.08) + stroke(268.4, 233.8, 268.6, 236, 0.08) + stroke(269.8, 233.4, 270.4, 236, 0.08) +
                 stroke(262.4, 231.4, 260.2, 229, 0.1));                                                                   // the dog
       front += figure(826, 238, { pose: 'stand', dir: 1, wash: 'awning-wash', hair: true }) + figure(838, 238.4, { pose: 'stand', dir: -1, wash: 'noren-wash', bag: true });
+      function delivery(x, base, dir) {                    // a small six-wheeled delivery robot with its flag
+        var s3 = '<rect class="sign-wash" x="' + f(x - 6.4) + '" y="' + f(base - 10.4) + '" width="13.6" height="7.6"/>';
+        s3 += path('M' + f(x - 7) + ' ' + f(base - 3.2) + 'V' + f(base - 9) + 'Q' + f(x - 7) + ' ' + f(base - 11.4) + ' ' + f(x - 4.6) + ' ' + f(base - 11.4) + 'H' + f(x + 4.6) +
+                   'Q' + f(x + 7) + ' ' + f(base - 11.4) + ' ' + f(x + 7) + ' ' + f(base - 9) + 'V' + f(base - 3.2) + 'Z' +
+                   ellipse(x - 4.6, base - 1.8, 1.8, 1.8, 0.08) + ellipse(x, base - 1.8, 1.8, 1.8, 0.08) + ellipse(x + 4.6, base - 1.8, 1.8, 1.8, 0.08));
+        s3 += path(stroke(x - 7, base - 8.6, x + 7, base - 8.6, 0.1) + stroke(x - 4 * dir, base - 11.4, x - 4.6 * dir, base - 20, 0.1) +
+                   stroke(x - 4.6 * dir, base - 20, x - 1 * dir, base - 18.8, 0.06) + stroke(x - 1 * dir, base - 18.8, x - 4.5 * dir, base - 17.4, 0.06) +
+                   ellipse(x + 4.8 * dir, base - 6.4, 0.7, 0.9, 0.04) + ellipse(x + 2.4 * dir, base - 6.4, 0.7, 0.9, 0.04), 'pencil soft');
+        // it is waiting: two small arcs of light towards the people it lets pass
+        s3 += '<path class="pencil signal" d="M' + f(x + 9.4 * dir) + ' ' + f(base - 9.6) + 'q' + f(2.2 * dir) + ' 3 0 6M' + f(x + 12.4 * dir) + ' ' + f(base - 11) + 'q' + f(3.2 * dir) + ' 4.4 0 8.8"/>';
+        return s3;
+      }
+      function companion(x, base, dir) {                   // a co-walker: wheeled base, short mast, a round head with a face
+        var s4 = '<rect class="awning-wash" x="' + f(x - 3.6) + '" y="' + f(base - 9.6) + '" width="8.6" height="6.6"/>';
+        s4 += path(box(x - 4.4, base - 10, 8.8, 7, 0.12) + ellipse(x - 2.6, base - 1.7, 1.7, 1.7, 0.08) + ellipse(x + 2.6, base - 1.7, 1.7, 1.7, 0.08) +
+                   stroke(x - 0.8, base - 10, x - 0.8, base - 13.4, 0.08) + stroke(x + 0.8, base - 10, x + 0.8, base - 13.4, 0.08));
+        s4 += '<ellipse class="fill-car" cx="' + f(x) + '" cy="' + f(base - 16) + '" rx="3.7" ry="3"/>' +
+              path(ellipse(x, base - 16, 3.7, 3, 0.12) + ellipse(x - 1.3 + dir * 0.5, base - 16.5, 0.45, 0.6, 0.03) + ellipse(x + 1.3 + dir * 0.5, base - 16.5, 0.45, 0.6, 0.03) +
+                   'M' + f(x - 1.2 + dir * 0.5) + ' ' + f(base - 14.9) + 'q1.2 0.9 2.4 0' + stroke(x, base - 19, x, base - 20.6, 0.05));
+        // it shows where it is about to go: a short arrow of light on the ground ahead
+        s4 += '<path class="pencil signal" d="M' + f(x + 7 * dir) + ' ' + f(base - 0.6) + 'h' + f(8 * dir) + 'm' + f(-2.6 * dir) + ' -1.8l' + f(2.6 * dir) + ' 1.8l' + f(-2.6 * dir) + ' 1.8"/>';
+        return s4;
+      }
+      h += '<g class="ar-hri">' + delivery(661, 47.5, -1) + '</g>';                                    // waits for the parent and child
+      front += '<g class="ar-hri">' + figure(770, 241, { pose: 'walk', dir: 1, wash: 'tactile-wash', hair: true }) + companion(783, 241.4, 1) + '</g>';
       // low bollards at the corners of the shared space
+      h += '<g class="ar-urban">';
       [[SS0, TOP - 2], [SS1, TOP - 2], [SS0, BOT + 12], [SS1, BOT + 12]].forEach(function (b) {
         h += '<rect class="fill-car" x="' + (b[0] - 1.4) + '" y="' + (b[1] - 8) + '" width="2.8" height="8"/>' +
              path(box(b[0] - 1.4, b[1] - 8, 2.8, 8, 0.12) + ellipse(b[0], b[1] - 8.6, 1.7, 1, 0.08) + stroke(b[0] - 1.4, b[1] - 5.6, b[0] + 1.4, b[1] - 5.6, 0.06));
       });
       h += text(SS1 + 10, TOP + 22, 'shared space', 'note-txt small') +
            path(stroke(SS1 + 8, TOP + 16, SS1 - 6, TOP + 12, 0.8) + stroke(SS1 - 6, TOP + 12, SS1 + 0.5, TOP + 9.5, 0.3) + stroke(SS1 - 6, TOP + 12, SS1 - 1, TOP + 16.5, 0.3), 'pencil soft');
+      h += '</g>';
       function tree(cx, base, s, kind) {
         /* a street tree drawn standing up, like the shop fronts: a tapering trunk in
            its tree pit, forking branches, and a crown built from overlapping leaf
@@ -488,7 +539,12 @@
 
       var tx = POLE_HOME, ty = GY, side = Math.max(CW0 + 4, Math.min(CW1 - 4, ped.x - 30));
       if (pole.mode === 'kerb') tx = side;
-      else if (pole.mode === 'escort') { tx = side; ty = Math.max(TOP + 8, Math.min(GY, ped.y + 16)); }
+      else if (pole.mode === 'escort') {
+        tx = side; ty = Math.max(TOP + 8, Math.min(GY, ped.y + 16));
+        // a car that has not committed to stopping and is still before the crossing: the pole holds at the kerb
+        var unsafe = car && car.state !== 'yield' && car.state !== 'wait' && car.x + CAR_L < tx + 30 && car.x + CAR_L > tx - 260;
+        if (unsafe && pole.y > BOT - 2) ty = Math.max(ty, GY);
+      }
       else if (pole.mode === 'wait') { tx = pole.x; ty = ped.y <= TOP + 2 ? TOP + 6 : pole.y; }
       else if (pole.mode === 'back') { tx = pole.x; ty = GY; }
       else if (Math.abs(pole.x - POLE_HOME) > .5) {          // linger a moment before rolling home
@@ -731,7 +787,12 @@
         } else if (car.state === 'go') {
           car.v = Math.min(V, car.v + A_GO * dt);
         }
+        if (poleInLane() && pole.x > car.x && car.v > 0) {                  // the pole is in the lane ahead
+          var room = pole.x - 26 - (car.x + CAR_L);
+          if (room < car.v * car.v / (2 * A_MAX) + 8 && car.state !== 'emerg' && car.state !== 'wait') { car.state = 'emerg'; car.a = -A_EMERG; }
+        }
         car.x += car.v * dt;
+        if (poleInLane() && pole.x > car.x && car.x + CAR_L > pole.x - 26) { car.x = pole.x - 26 - CAR_L; car.v = 0; if (car.state !== 'wait') { car.state = 'wait'; car.waitT = 0; } }
         if (car.x > 1040) { car = null; nextSpawn = t + 1.2 + Math.random() * 1.6; }
       }
       /* the cyclist rides along the near pavement, and waits for anyone (or the
@@ -739,9 +800,9 @@
       if (!bike && t >= nextBike) { bike = { x: -50, v: BIKE_V, ph: 0, waitT: 0 }; drawBike(); }
       if (bike) {
         var bf = bike.x + 34, lineY = bikeY(bike.x + 17) - 12;
-        var pedAheadOfBike = Math.abs(ped.y - lineY) < 13 && ped.x > bf - 4 && ped.x < bf + 46;
+        var pedAheadOfBike = ped.y > BOT && Math.abs(ped.y - lineY) < 26 && ped.x > bf - 8 && ped.x < bf + 54;
         var poleAhead = (cond === 'mobile' || cond === 'ehmi') && pole.y < lineY + 18 && pole.y > BOT - 4 && pole.x > bf - 4 && pole.x < bf + 46;
-        var blocked = (pedAheadOfBike || poleAhead) && bike.waitT < 4;
+        var blocked = pedAheadOfBike || poleAhead;          // it waits as long as someone is in its way
         bike.v += ((blocked ? 0 : BIKE_V) - bike.v) * Math.min(1, dt * (blocked ? 7 : 2.2));
         if (blocked && bike.v < 4) bike.waitT += dt; else if (!pedAheadOfBike && !poleAhead) bike.waitT = 0;
         bike.x += bike.v * dt;
@@ -756,6 +817,10 @@
     var ehmiTxt = el('text', { 'class': 'note-txt small', visibility: 'hidden' }, gLive); ehmiTxt.textContent = 'eHMI';
     var carWord = el('text', { 'class': 'led walk', visibility: 'hidden' }, gLive), carWordState = '';
     var gazePath = el('path', { 'class': 'gaze', visibility: 'hidden' }, gGaze);
+    gCar.classList.add('ar-mobility'); gGaze.classList.add('ar-mobility'); gPole.classList.add('ar-urban');
+    /* V2X: the pole and the car talk to each other, drawn as faint dotted pencil arcs */
+    var v2x = el('path', { 'class': 'v2x', visibility: 'hidden' }, gGaze);
+    v2x.parentNode.insertBefore(el('g', { 'class': 'ar-urban' }), v2x).appendChild(v2x);
     var lastAim = '';
     function show(node, on) { var v = on ? 'visible' : 'hidden'; if (node.getAttribute('visibility') !== v) node.setAttribute('visibility', v); }
 
@@ -816,6 +881,12 @@
         if (!committed && car.x < CW1 + 20 && car.x + CAR_L > 250) walk = false;
       } else if (gCar.style.display !== 'none') gCar.style.display = 'none';
       show(ehmiTxt, wordOn); show(carWord, wordOn);
+      var talk = car && cond !== 'none' && car.x + CAR_L > 150 && car.x < pole.x + 20;
+      if (talk) {
+        var ax = car.x + 42, ay = LANE - 4, bx = pole.x, by = pole.y - 56;
+        v2x.setAttribute('d', 'M' + f(ax) + ' ' + f(ay) + 'Q' + f((ax + bx) / 2) + ' ' + f(Math.min(ay, by) - 34) + ' ' + f(bx) + ' ' + f(by));
+      }
+      show(v2x, !!talk);
       /* cyclist */
       if (bike) {
         boilBike += 1;
@@ -881,6 +952,42 @@
     }
     document.addEventListener('visibilitychange', function () { visible = !document.hidden; kick(); });
 
+    /* --- the research areas: four headings that pick their part of the street out ---
+       The names and lines are the four Research areas on this page. */
+    (function () {
+      var AREAS = [
+        ['mobility', 'Autonomous mobility', 'How pedestrians and passengers understand and respond to vehicle intent.'],
+        ['hri', 'Human–robot interaction', 'How robots communicate, navigate, and cooperate with people in everyday environments.'],
+        ['urban', 'Intelligent urban environments', 'How interactive infrastructure coordinates people and machines across future cities.'],
+        ['design', 'Design & prototyping', 'How user research, sketching, prototyping, and evaluation turn ideas into experiences people can use and trust.']
+      ];
+      var wrap = document.createElement('div');
+      wrap.className = 'street-areas';
+      var row = document.createElement('div');
+      row.className = 'street-areas__row'; row.setAttribute('role', 'group'); row.setAttribute('aria-label', 'Research areas');
+      var line = document.createElement('p');
+      line.className = 'street-areas__line'; line.setAttribute('aria-live', 'polite');
+      var lead = document.createElement('span');
+      lead.className = 'street-areas__lead'; lead.textContent = 'my research, on this street:';
+      row.appendChild(lead);
+      var current = null;
+      function pick(key) {
+        current = current === key ? null : key;
+        if (current) svg.setAttribute('data-focus', current); else svg.removeAttribute('data-focus');
+        row.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-area') === current ? 'true' : 'false'); });
+        var a = AREAS.filter(function (x) { return x[0] === current; })[0];
+        line.textContent = a ? a[2] : '';
+      }
+      AREAS.forEach(function (a) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.textContent = a[1]; b.setAttribute('data-area', a[0]); b.setAttribute('aria-pressed', 'false');
+        b.addEventListener('click', function () { pick(a[0]); });
+        row.appendChild(b);
+      });
+      wrap.appendChild(row); wrap.appendChild(line);
+      fig.insertBefore(wrap, fig.querySelector('figcaption'));
+    })();
+
     /* --- the study conditions: four hand-written tabs under the street --- */
     (function () {
       var box = document.createElement('div');
@@ -922,6 +1029,19 @@
     btn.addEventListener('click', toggle);
     v.addEventListener('click', toggle);
     if (reduceMotion) v.setAttribute('controls', '');
+    /* the full study video: YouTube is only contacted after a click, then it plays in place */
+    var full = fig.querySelector('.field-clip__full');
+    if (full) full.addEventListener('click', function () {
+      var f2 = document.createElement('iframe');
+      f2.className = 'field-clip__frame';
+      f2.src = 'https://www.youtube-nocookie.com/embed/' + full.getAttribute('data-yt') + '?autoplay=1&rel=0';
+      f2.title = 'Smart Pole Interaction Unit with Mobility: study video (CHI 2026)';
+      f2.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      f2.setAttribute('allowfullscreen', '');
+      stopped = true; v.pause();
+      v.replaceWith(f2); full.remove(); btn.remove();
+      f2.focus();
+    });
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (en) { onScreen = en[0].isIntersecting; sync(); }, { threshold: 0.4 }).observe(v);
     } else { onScreen = true; }
