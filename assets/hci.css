@@ -339,3 +339,5 @@ html #research .rs-signal-pulse { display: none; }
 /* the shared space around the crossing: one paved surface, a warm wash */
 .street .share-wash { fill: #e3a877; opacity: .16; }
 [data-theme="dark"] .street .share-wash { fill: #d8a070; opacity: .1; }
+/* the cyclist's jacket: a light wash, like the clothes of the people on the pavement */
+.street .bike-wash { fill: #e8957a; opacity: .3; }
