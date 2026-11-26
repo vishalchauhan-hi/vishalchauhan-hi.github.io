@@ -352,3 +352,35 @@ html #research .rs-signal-pulse { display: none; }
   text-decoration: underline; text-decoration-style: wavy; text-decoration-thickness: 1px; text-underline-offset: 4px; flex: none;
 }
 .field-clip__btn:hover { color: var(--ink); }
+/* the research areas: pick one and its part of the street stays, the others fade */
+.street-areas { margin-top: .55rem; }
+.street-areas__row { display: flex; flex-wrap: wrap; align-items: baseline; gap: .1rem 1.2rem; }
+.street-areas__lead { font: 600 1.05rem var(--hand); color: var(--ink-faint); }
+.street-areas__row button {
+  font: 600 1.15rem var(--hand); color: var(--ink-soft); background: none; border: 0; cursor: pointer; padding: .05em .1em 0;
+  border-bottom: 2px dotted color-mix(in srgb, var(--ink-faint) 60%, transparent);
+}
+.street-areas__row button:hover { color: var(--ink); }
+.street-areas__row button[aria-pressed="true"] { color: var(--ink); border-bottom: 2px solid var(--ink-soft); }
+.street-areas__line { font-size: .92rem; color: var(--ink-soft); margin: .3rem 0 0; min-height: 1.4em; max-width: 64ch; }
+.street svg .ar-mobility, .street svg .ar-hri, .street svg .ar-urban, .street svg .ar-design { transition: opacity .35s; }
+.street svg[data-focus] .ar-mobility, .street svg[data-focus] .ar-hri, .street svg[data-focus] .ar-urban, .street svg[data-focus] .ar-design { opacity: .16; }
+.street svg[data-focus="mobility"] .ar-mobility, .street svg[data-focus="hri"] .ar-hri,
+.street svg[data-focus="urban"] .ar-urban, .street svg[data-focus="design"] .ar-design { opacity: 1; }
+.street svg[data-focus] .st-static > path, .street svg[data-focus] .st-front > path, .street svg[data-focus] .st-bike { opacity: .55; transition: opacity .35s; }
+/* signals: the robots' arcs of light and the V2X link */
+.street .pencil.signal { stroke: var(--ehmi); opacity: .8; }
+.street .v2x { fill: none; stroke: var(--ehmi); stroke-width: 1.2; stroke-dasharray: 2 4; stroke-linecap: round; opacity: .6; }
+@media (prefers-reduced-motion: reduce) { .street svg .ar-mobility, .street svg .ar-hri, .street svg .ar-urban, .street svg .ar-design { transition: none; } }
+/* About clip: a button that swaps the loop for the full study video */
+.field-clip { position: relative; }
+.field-clip__full {
+  position: absolute; left: 18px; top: 18px; display: inline-flex; align-items: center; gap: .5rem;
+  font: 600 .9rem var(--sans, inherit); color: #fff; background: rgba(20, 18, 16, .72); border: 1px solid rgba(255,255,255,.25);
+  border-radius: 99px; padding: .42rem .9rem .42rem .55rem; cursor: pointer; backdrop-filter: blur(4px); transition: background .2s;
+}
+.field-clip__full:hover, .field-clip__full:focus-visible { background: rgba(20, 18, 16, .88); }
+.field-clip__play { width: 1.35rem; height: 1.35rem; border-radius: 50%; background: #fff; position: relative; flex: none; }
+.field-clip__play::after { content: ""; position: absolute; left: 52%; top: 50%; transform: translate(-40%, -50%);
+  border-left: 7px solid #1a1916; border-top: 4.5px solid transparent; border-bottom: 4.5px solid transparent; }
+.field-clip__frame { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 8px; background: #000; }
