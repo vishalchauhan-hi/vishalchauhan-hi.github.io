@@ -424,7 +424,7 @@
       if (parent) parent.appendChild(e);
       return e;
     }
-    var ehmiEl, alarmEl, carPaths, carBody, lidarBeam;
+    var ehmiEl, alarmEl, carPaths, carBody, lidarBeam, treadEl, treadKey = -1;
     /* a self-driving robotaxi seen from above, in pencil: rounded body, windscreen
        and rear window lightly hatched, mirrors, sensor pods on the corners, and the
        roof unit with its spinning dome */
@@ -438,7 +438,7 @@
                 stroke(65, -10, 69, -13, 0.2) + stroke(65, -2, 73, -9, 0.2) + stroke(65, 6, 75, -3, 0.2) + stroke(66, 13, 75, 5, 0.2) +
                 stroke(14, -4, 19, -11, 0.2) + stroke(14, 6, 20, -3, 0.2),
               stroke(66, -20, 70, -25, 0.3) + stroke(70, -25, 75, -21, 0.3) + stroke(66, 20, 70, 25, 0.3) + stroke(70, 25, 75, 21, 0.3) +
-                line(14, -23, 30, -23, 0.4) + line(72, -23, 88, -23, 0.4) + line(14, 23, 30, 23, 0.4) + line(72, 23, 88, 23, 0.4) +
+                'M12 -20Q22 -23.4 32 -20M70 -20Q80 -23.4 90 -20M12 20Q22 23.4 32 20M70 20Q80 23.4 90 20' +
                 // a robotaxi's sensors: pods on the four corners, one on the nose and tail, and the roof unit around the dome
                 ellipse(90, -19.5, 3.2, 2.6, 0.2) + ellipse(90, 19.5, 3.2, 2.6, 0.2) + ellipse(8, -19, 2.8, 2.4, 0.2) + ellipse(8, 19, 2.8, 2.4, 0.2) +
                 ellipse(100.5, 0, 2, 3, 0.15) + ellipse(0, 0, 1.8, 2.8, 0.15) +
@@ -448,6 +448,11 @@
     function drawCar() {
       var d = carShapes();
       if (!carPaths) {
+        // tyres first, so the body covers their inner half: dark rubber showing past the sills
+        [[13, -25.5], [71, -25.5], [13, 18.5], [71, 18.5]].forEach(function (w) {
+          el('rect', { 'class': 'car-tyre', x: w[0], y: w[1], width: 18, height: 7, rx: 2.4 }, gCar);
+        });
+        treadEl = el('path', { 'class': 'car-tread' }, gCar);
         carBody = el('path', { 'class': 'fill-car', d: BODY }, gCar);
         carPaths = [el('path', { 'class': 'pencil' }, gCar), el('path', { 'class': 'pencil soft' }, gCar), el('path', { 'class': 'pencil' }, gCar)];
         el('circle', { 'class': 'car-lidar', cx: 42, cy: 0, r: 4.5 }, gCar);
@@ -593,6 +598,18 @@
         boilCar += 1;
         if (car.v > 5 && boilCar % 8 === 0) drawCar();
         gCar.setAttribute('transform', 'translate(' + f(car.x) + ' ' + LANE + ')');
+        var roll = Math.round(((car.x % 3.6) + 3.6) % 3.6 * 5);          // tread blocks run backwards as the wheels turn
+        if (roll !== treadKey) {
+          treadKey = roll;
+          var td = '', off = 3.6 - roll / 5;
+          [13, 71].forEach(function (wx) {
+            for (var q = off; q < 17.4; q += 3.6) {
+              if (q < 0.8) continue;
+              td += 'M' + f(wx + q) + ' -25.2L' + f(wx + q - 0.9) + ' -21M' + f(wx + q) + ' 25.2L' + f(wx + q - 0.9) + ' 21';
+            }
+          });
+          treadEl.setAttribute('d', td);
+        }
         lidarBeam.setAttribute('transform', 'translate(42 0) rotate(' + Math.round(t * 400 % 360) + ')');   // the roof sensor keeps scanning
         if (gCar.style.display) gCar.style.display = '';
         if (car.state === 'yield') ehmiOn = true;
