@@ -28,8 +28,8 @@
   <link rel="stylesheet" href="assets/style.css?v=c895e369" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap" media="print" onload="this.media='all'" />
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap" /></noscript>
-  <link rel="stylesheet" href="assets/hci.css?v=06279c4d" />
-  <script src="assets/hci.js?v=a884ba67" defer></script>
+  <link rel="stylesheet" href="assets/hci.css?v=18e8e74b" />
+  <script src="assets/hci.js?v=5ca1f8c1" defer></script>
   <link rel="icon" href="favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
@@ -72,18 +72,9 @@
   --trainG:#5FAF3C; --trainB:#3A414C; --trainW:#5E7A93;
   --cloud:#2E3648; --wood:#7E5C3B;
 }
-/* ---- layout: sticky sketch ---- */
-.about-grid{
-  display:grid;
-  grid-template-columns:minmax(0,1.05fr) minmax(300px,.95fr);
-  gap:clamp(2.2rem,5vw,4.5rem);
-  align-items:start;
-}
-.about-visual{position:sticky;top:92px}
-@media (max-width:920px){
-  .about-grid{grid-template-columns:1fr}
-  .about-visual{position:static;order:-1;max-width:560px;margin-inline:auto}
-}
+/* ---- layout: the About text on its own ---- */
+.about-grid{display:block}
+.about-text{max-width:46rem}
 /* the university link keeps its blue dotted underline */
 .about-uni{color:var(--tansei);text-decoration:underline dotted;text-decoration-color:color-mix(in srgb, var(--tansei) 75%, transparent);text-decoration-thickness:2px;text-underline-offset:3px}
 .about-uni:hover,.about-uni:focus-visible{text-decoration-style:solid}
@@ -405,22 +396,6 @@
           working with their engineering team.
         </p>
         <p class="cv-line"><a class="cv-link" href="cv.html">Full CV →</a></p>
-      </div>
-      <div class="about-visual">
-        <figure class="field-clip" style="margin:0">
-          <video class="field-clip__video" muted loop playsinline preload="none" width="960" height="590"
-                 poster="assets/images/field/spiu-field-poster.jpg"
-                 aria-label="Field study clip: the Smart Pole Interaction Unit shows WALK on its ring display and rolls across the road beside a pedestrian while a small autonomous vehicle waits behind them.">
-            <source src="assets/images/field/spiu-field.mp4" type="video/mp4" />
-          </video>
-          <button class="field-clip__full" type="button" data-yt="PLmCgmTwsHQ">
-            <span class="field-clip__play" aria-hidden="true"></span>Watch the full study video
-          </button>
-          <figcaption class="field-clip__cap">
-            <span><b>The SPIU in the field.</b> It says WALK and crosses with you. <a href="project-spiu.html">The project →</a> · <a href="#collaborate">Work with us →</a></span>
-            <button class="field-clip__btn" type="button" aria-pressed="false">pause</button>
-          </figcaption>
-        </figure>
       </div>
     </div>
   </div>
