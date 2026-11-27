@@ -8,6 +8,7 @@
 //   data-note="CHI ’26, Barcelona"            the handwritten caption on the homepage
 //   data-note-img="assets/images/notes/…jpg"  the photo for the homepage (default: the tile photo)
 //   data-note-alt="…"                         its description, when that photo is not the tile photo
+//   id="chi-2027"                              required: the homepage photo links to moments.html#chi-2027
 // Tiles must be newest first (by the "· Month YYYY" line); tiles without a date go last.
 // The homepage shows the first SHOW tiles.
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -28,7 +29,7 @@ const tiles = [...moments.matchAll(/<figure class="moment-tile"[^>]*>[\s\S]*?<\/
   const d = when.match(/([A-Za-z]+)\s+(\d{4})\s*$/);
   const mi = d ? MONTHS.indexOf(d[1].toLowerCase()) : -1;
   return {
-    name, when, date: d && mi >= 0 ? Number(d[2]) * 12 + mi : null,
+    id: attr(open, 'id'), name, when, date: d && mi >= 0 ? Number(d[2]) * 12 + mi : null,
     note: attr(open, 'data-note'), noteImg: attr(open, 'data-note-img'),
     src: attr(img, 'src'), alt: attr(open, 'data-note-alt') || attr(img, 'alt') || name,
   };
@@ -48,9 +49,12 @@ const notes = tiles.slice(0, SHOW).map((t, i) => {
   const src = t.noteImg || t.src;
   if (!src) errors.push(`moments.html: "${t.name}" has no photo for the homepage`);
   const cap = t.note || t.name;
+  if (!t.id) errors.push(`moments.html: "${t.name}" needs an id on its <figure> (the homepage photo links to it)`);
   return `          <figure class="note" style="--tilt:${TILTS[i % TILTS.length]}">
-            <img loading="lazy" decoding="async" src="${src}" alt="${esc(t.alt)}" />
-            <figcaption>${cap}</figcaption>
+            <a class="note-link" href="moments.html#${t.id}" aria-label="See the photos: ${esc(t.name.replace(/<[^>]+>/g, ''))}">
+              <img loading="lazy" decoding="async" src="${src}" alt="${esc(t.alt)}" />
+              <figcaption>${cap}</figcaption>
+            </a>
           </figure>`;
 }).join('\n');
 
