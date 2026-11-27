@@ -702,7 +702,7 @@
         flyPuffs = el('path', { 'class': 'pencil soft' }, gFly);
         flyPaths = [el('path', { 'class': 'pencil' }, gFly), el('path', { 'class': 'pencil soft' }, gFly)];
         var lab = el('text', { 'class': 'note-txt', x: -11, y: 3, 'text-anchor': 'end', style: 'font-size:7.5px' }, gFly);
-        lab.textContent = 'someday';
+        lab.textContent = 'someday, Lalu';
       }
       flyPaths[0].setAttribute('d', body);
       flyPaths[1].setAttribute('d', jet);
