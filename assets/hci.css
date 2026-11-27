@@ -412,3 +412,38 @@ html #research .rs-signal-pulse { display: none; }
 [data-theme="dark"] .street .fly-flame { opacity: 1; }
 .street .st-fly .pencil { stroke-width: .62; }
 .street .st-fly .pencil.soft { stroke-width: .5; }
+
+/* the rose garden and the tulips */
+.street .bed-wood { fill: #c79a6b; opacity: .45; }
+.street .leaf { fill: #7fae73; fill-opacity: .55; stroke: currentColor; stroke-width: .35; stroke-opacity: .35; }
+.street .rose-red    { fill: #d9455f; }
+.street .rose-pink   { fill: #f08fb0; }
+.street .rose-coral  { fill: #f08a5d; }
+.street .rose-yellow { fill: #f2c94c; }
+.street .rose-white  { fill: #fff6ea; }
+.street .rose-lilac  { fill: #b98ad6; }
+.street .st-garden .sway { transform-box: fill-box; transform-origin: 50% 100%; animation: st-sway 4.2s ease-in-out infinite alternate; }
+.street .st-garden .sway.s1 { animation-duration: 3.6s; animation-delay: -1.2s; }
+.street .st-garden .sway.s2 { animation-duration: 4.8s; animation-delay: -2.4s; }
+@keyframes st-sway { from { transform: rotate(-4deg); } to { transform: rotate(4deg); } }
+@media (prefers-reduced-motion: reduce) { .street .st-garden .sway { animation: none; } }
+[data-theme="dark"] .street .bed-wood { fill: #8a6a48; opacity: .45; }
+[data-theme="dark"] .street .leaf { fill: #6f9a66; fill-opacity: .4; }
+[data-theme="dark"] .street .st-garden [class^="rose-"] { opacity: .8; }
+.street .bush-back { fill: #5e8f58; opacity: .22; }
+[data-theme="dark"] .street .bush-back { fill: #4f7a4a; opacity: .3; }
+/* the butterfly: a slow loop over the roses, wings beating */
+.street .butterfly { animation: st-bf-path 14s ease-in-out infinite; }
+.street .bf-wings { transform-box: fill-box; transform-origin: 50% 50%; animation: st-bf-flap .32s ease-in-out infinite alternate; }
+@keyframes st-bf-path {
+  0%   { transform: translate(858px, 228px) rotate(-8deg); }
+  25%  { transform: translate(884px, 218px) rotate(6deg); }
+  50%  { transform: translate(916px, 230px) rotate(-4deg); }
+  75%  { transform: translate(934px, 216px) rotate(8deg); }
+  100% { transform: translate(858px, 228px) rotate(-8deg); }
+}
+@keyframes st-bf-flap { from { transform: scaleX(1); } to { transform: scaleX(.25); } }
+@media (prefers-reduced-motion: reduce) {
+  .street .butterfly { animation: none; transform: translate(896px, 224px); }
+  .street .bf-wings { animation: none; }
+}
