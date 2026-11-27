@@ -880,7 +880,7 @@
     svg.insertBefore(gFront, gCar);
     /* --- a rose garden on the near pavement, and tulips across the street ---
        A wooden raised bed between the two friends and the last tree, full of
-       rose bushes in red, pink, coral, yellow, white and lilac; across the
+       rose bushes in red, pink, coral, yellow, white and lilac (no label); across the
        street a strip of tulips in front of the house. The flowers sway a
        little in the breeze (CSS, so reduced motion keeps them still). */
     var gGarden = el('g', { 'class': 'st-garden ar-urban' });
@@ -930,7 +930,6 @@
            '<path class="rose-yellow" d="M0 0Q-4.4 -5.4 -6 -1.6Q-5 1.6 0 0.4Z"/><path class="rose-coral" d="M0 0.4Q-3.6 3.6 -2.4 4.6Q0.2 3.4 0 0.4Z"/>' +
            '<path class="rose-yellow" d="M0 0Q4.4 -5.4 6 -1.6Q5 1.6 0 0.4Z"/><path class="rose-coral" d="M0 0.4Q3.6 3.6 2.4 4.6Q-0.2 3.4 0 0.4Z"/>' +
            '</g>' + path(stroke(0, -1.6, 0, 3.4, 0.05) + stroke(0, -1.6, -1.4, -3.6, 0.05) + stroke(0, -1.6, 1.4, -3.6, 0.05)) + '</g>';
-      g += '<text class="note-txt" x="' + (B0 + 2) + '" y="' + (BB + 9) + '" style="font-size:12px">rose garden</text>';
       // tulips across the street, in front of the house (x 850..922)
       var tul = '', tst = '', TC = ['rose-red', 'rose-yellow', 'rose-pink', 'rose-coral', 'rose-lilac', 'rose-white'];
       for (var q = 0; q < 12; q++) {
