@@ -29,7 +29,7 @@
       ],
       [
         "Code",
-        "<a href=\"https://github.com/tlab-wide/Smartpole-VR-AWSIM\" target=\"_blank\" rel=\"noopener\">Smartpole-VR-AWSIM ↗</a>"
+        "<a href=\"https://github.com/tlab-wide/Smartpole-VR-AWSIM\" target=\"_blank\" rel=\"noopener\">Smartpole-VR-AWSIM ↗</a> · <a href=\"https://github.com/vishalchauhan-hi/VR-Scenario-AWSIM\" target=\"_blank\" rel=\"noopener\">VR-Scenario-AWSIM ↗</a>"
       ]
     ],
     "links": [
@@ -132,12 +132,24 @@
       [
         "Selection",
         "20 projects from 177 proposals"
+      ],
+      [
+        "Research area",
+        "AI 共生社会を拓くサイバーインフラストラクチャ (JST ACT-X)"
+      ],
+      [
+        "Research supervisor",
+        "Prof. Shinji Shimojo"
       ]
     ],
     "links": [
       {
         "label": "Working together",
         "href": "index.html#collaborate"
+      },
+      {
+        "label": "JST selection list ↗",
+        "href": "https://www.jst.go.jp/kisoken/act-x/application/2026/260917/260917act-x.pdf"
       }
     ],
     "steps": []
