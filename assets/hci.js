@@ -638,22 +638,34 @@
     /* a self-driving robotaxi seen from above, in pencil: rounded body, windscreen
        and rear window lightly hatched, mirrors, sensor pods on the corners, and the
        roof unit with its spinning dome */
-    var BODY = 'M10 -20H84Q99 -20 100 -8V8Q99 20 84 20H10Q0 20 0 10V-10Q0 -20 10 -20Z';
+    /* the car, seen from above: a premium electric SUV (no badge or copied grille).
+       Local coords: rear at x 0, nose at x 100, sides at y ±19.5. A long bonnet
+       with two creases, a raked windscreen, a panoramic glass roof between roof
+       rails, a rear window, door mirrors, slim wrap-around headlights and a
+       full-width light bar at the back. Being self-driving, it keeps a small
+       sensor dome on the roof. */
+    var BODY = 'M9 -19.5Q3 -19.4 1.4 -15.6Q1 0 1.4 15.6Q3 19.4 9 19.5H83Q95.4 19.4 98.8 15Q100.4 0 98.8 -15Q95.4 -19.4 83 -19.5Z';
+    var GLASS = 'M62 -15.6L71.5 -16.8Q73.2 0 71.5 16.8L62 15.6Z' +                 // windscreen
+                'M24 -11.8H58Q60.2 -11.8 60.2 -9.6V9.6Q60.2 11.8 58 11.8H24Q21.8 11.8 21.8 9.6V-9.6Q21.8 -11.8 24 -11.8Z' +   // glass roof
+                'M8.6 -14.2L17.4 -14.8V14.8L8.6 14.2Q7.4 0 8.6 -14.2Z';            // rear window
     function carShapes() {
-      return [line(10, -20, 84, -20, 0.8) + stroke(84, -20, 98, -11, 0.5) + line(100, -9, 100, 9, 0.6) + stroke(98, 11, 84, 20, 0.5) +
-                line(84, 20, 10, 20, 0.8) + stroke(10, 20, 1, 12, 0.5) + line(0, 10, 0, -10, 0.6) + stroke(1, -12, 10, -20, 0.5),
-              stroke(62, -15, 77, -11, 0.4) + stroke(77, -11, 77, 11, 0.4) + stroke(77, 11, 62, 15, 0.4) + stroke(62, 15, 62, -15, 0.4) +
-                stroke(22, -14, 13, -11, 0.4) + stroke(13, -11, 13, 11, 0.4) + stroke(13, 11, 22, 14, 0.4) +
-                stroke(26, -15, 58, -15, 0.4) + stroke(26, 15, 58, 15, 0.4) +
-                stroke(65, -10, 69, -13, 0.2) + stroke(65, -2, 73, -9, 0.2) + stroke(65, 6, 75, -3, 0.2) + stroke(66, 13, 75, 5, 0.2) +
-                stroke(14, -4, 19, -11, 0.2) + stroke(14, 6, 20, -3, 0.2),
-              stroke(66, -20, 70, -25, 0.3) + stroke(70, -25, 75, -21, 0.3) + stroke(66, 20, 70, 25, 0.3) + stroke(70, 25, 75, 21, 0.3) +
-                'M12 -20Q22 -23.4 32 -20M70 -20Q80 -23.4 90 -20M12 20Q22 23.4 32 20M70 20Q80 23.4 90 20' +
-                // a robotaxi's sensors: pods on the four corners, one on the nose and tail, and the roof unit around the dome
-                ellipse(90, -19.5, 3.2, 2.6, 0.2) + ellipse(90, 19.5, 3.2, 2.6, 0.2) + ellipse(8, -19, 2.8, 2.4, 0.2) + ellipse(8, 19, 2.8, 2.4, 0.2) +
-                ellipse(100.5, 0, 2, 3, 0.15) + ellipse(0, 0, 1.8, 2.8, 0.15) +
-                stroke(32, -9, 52, -9, 0.2) + stroke(52, -9, 55, 0, 0.2) + stroke(55, 0, 52, 9, 0.2) + stroke(52, 9, 32, 9, 0.2) + stroke(32, 9, 29, 0, 0.2) + stroke(29, 0, 32, -9, 0.2) +
-                ellipse(42, 0, 7, 7, 0.2)];
+      return [// the body outline, mirrors and wheel arches
+              line(9, -19.5, 83, -19.5, 0.7) + stroke(83, -19.5, 95.6, -18.4, 0.3) + stroke(95.6, -18.4, 99.2, -14, 0.25) + line(99.6, -14.4, 99.6, 14.4, 0.5) +
+                stroke(99.2, 14, 95.6, 18.4, 0.25) + stroke(95.6, 18.4, 83, 19.5, 0.3) + line(83, 19.5, 9, 19.5, 0.7) +
+                stroke(9, 19.5, 3.2, 18.6, 0.25) + stroke(3.2, 18.6, 1.4, 14.6, 0.2) + line(1.1, 15, 1.1, -15, 0.5) + stroke(1.4, -14.6, 3.2, -18.6, 0.2) + stroke(3.2, -18.6, 9, -19.5, 0.25) +
+                stroke(62.5, -19.4, 64.6, -23.6, 0.12) + stroke(64.6, -23.6, 68.4, -23, 0.12) + stroke(68.4, -23, 67.2, -19.4, 0.12) +     // door mirrors
+                stroke(62.5, 19.4, 64.6, 23.6, 0.12) + stroke(64.6, 23.6, 68.4, 23, 0.12) + stroke(68.4, 23, 67.2, 19.4, 0.12) +
+                'M12 -19.5Q22 -22.8 32 -19.5M70 -19.5Q80 -22.8 90 -19.5M12 19.5Q22 22.8 32 19.5M70 19.5Q80 22.8 90 19.5',
+              // soft details: bonnet creases, glass edges and reflections, door cuts, roof rails
+              stroke(74, -10.5, 95.5, -7, 0.2) + stroke(74, 10.5, 95.5, 7, 0.2) +
+                stroke(62, -15.6, 71.5, -16.8, 0.15) + stroke(71.5, -16.8, 72.6, 0, 0.15) + stroke(72.6, 0, 71.5, 16.8, 0.15) + stroke(71.5, 16.8, 62, 15.6, 0.15) + stroke(62, 15.6, 62, -15.6, 0.15) +
+                stroke(64.5, -9, 68.6, -13.4, 0.1) + stroke(64.6, -1, 69.8, -7.6, 0.1) +                                     // windscreen glare
+                stroke(26, -7.5, 33, -11, 0.1) + stroke(27.5, 1.5, 41, -9.5, 0.1) + stroke(40, 4, 52, -6, 0.1) +            // roof glare
+                stroke(8.6, -14.2, 17.4, -14.8, 0.12) + stroke(17.4, -14.8, 17.4, 14.8, 0.12) + stroke(17.4, 14.8, 8.6, 14.2, 0.12) +
+                stroke(40.4, -19.5, 40.4, -16.6, 0.08) + stroke(40.4, 19.5, 40.4, 16.6, 0.08) + stroke(59, -19.5, 59.4, -16.6, 0.08) + stroke(59, 19.5, 59.4, 16.6, 0.08),
+              // firm details: roof rails and their feet
+              line(21, -14.6, 61, -14.6, 0.15) + line(21, 14.6, 61, 14.6, 0.15) +
+                stroke(21, -15.8, 21, -13.4, 0.06) + stroke(61, -15.8, 61, -13.4, 0.06) + stroke(21, 15.8, 21, 13.4, 0.06) + stroke(61, 15.8, 61, 13.4, 0.06)];
     }
     function drawCar() {
       var d = carShapes();
@@ -665,8 +677,11 @@
         treadEl = el('path', { 'class': 'car-tread' }, gCar);
         el('path', { 'class': 'headlight night-only', d: 'M101 -11L176 -27L180 -3L101 -5ZM101 5L180 3L176 27L101 11Z' }, gCar);
         carBody = el('path', { 'class': 'fill-car', d: BODY }, gCar);
+        el('path', { 'class': 'car-glass', d: GLASS }, gCar);
         carPaths = [el('path', { 'class': 'pencil' }, gCar), el('path', { 'class': 'pencil soft' }, gCar), el('path', { 'class': 'pencil' }, gCar)];
-        el('circle', { 'class': 'car-lidar', cx: 42, cy: 0, r: 4.5 }, gCar);
+        el('path', { 'class': 'car-light front', d: 'M92.4 -17.6Q98 -16.2 99.4 -9.6M92.4 17.6Q98 16.2 99.4 9.6' }, gCar);   // slim headlights
+        el('path', { 'class': 'car-light rear', d: 'M1.6 -14.2V14.2' }, gCar);                                                // full-width light bar
+        el('circle', { 'class': 'car-lidar', cx: 42, cy: 0, r: 3.6 }, gCar);
         lidarBeam = el('path', { 'class': 'car-beam', d: 'M0 0L4 0' }, gCar);
         ehmiEl = el('line', { 'class': 'ehmi', x1: 104, y1: -14, x2: 104, y2: 14 }, gCar);
         alarmEl = el('text', { 'class': 'alarm', x: 112, y: -14, visibility: 'hidden' }, gCar);
@@ -690,22 +705,43 @@
        it hangs still above the books shop. */
     var gFly = el('g', { 'class': 'st-fly ar-mobility' }), flyPaths = null, flyPuffs, FLY_Y = -84, FLY_V = 40, FLY_GAP = 1120 / 48 + 3.5;   // the gap is the air taxi's turn
     svg.insertBefore(gFly, gCar);
+    /* the flyer, side-on and flying to the right (nose at +x): a flight suit with
+       some volume, a round helmet with a tinted visor, one fist reaching ahead,
+       legs stretched out behind with small boots, a jet pack with a flickering
+       flame, and a scarf that ripples in the wind. Pencil lines boil a few
+       times a second; flame, scarf and trail move every frame. */
+    var flyFlame, flyFlameIn, flyScarf, flyTrail;
+    var SUIT = 'M13 -5.2Q15.6 -3.4 13.6 -1.2L4.2 0.4Q2.4 0.2 2.6 -1.6L3.4 -3.6Q3.8 -4.8 5.2 -4.9Z';   // torso, filled
     function drawFly() {
-      var body = ellipse(14.2, -3.2, 2.4, 2.4, 0.12) +                                  // head
-                 stroke(12, -2.6, 3, -1.4, 0.2) + stroke(11.6, -1.4, 3.4, -0.4, 0.15) +    // back and belly
-                 stroke(3.2, -1.2, -5.6, -0.4, 0.2) + stroke(3.2, -0.6, -5, 1.4, 0.2) +    // two legs, stretched out
-                 stroke(-5.6, -0.4, -7.2, -1.4, 0.1) + stroke(-5, 1.4, -6.8, 1, 0.1) +     // feet
-                 stroke(11, -2.2, 18.6, -5.4, 0.18);                                     // arm reaching ahead
-      var jet = stroke(3.6, -2.8, 9.8, -3.4, 0.12) + stroke(9.8, -3.4, 9.6, -6.6, 0.12) + stroke(9.6, -6.6, 3.8, -6, 0.12) +
-                stroke(3.8, -6, 3.6, -2.8, 0.12) + stroke(3.6, -4.2, 1.2, -4.6, 0.12) + stroke(3.6, -5.6, 1.4, -5.8, 0.1);   // the pack and its nozzle
+      var body = ellipse(16, -3.6, 2.7, 2.6, 0.1) +                                           // helmet
+                 stroke(13, -5.2, 5.2, -4.9, 0.15) + stroke(13.6, -1.2, 4.2, 0.4, 0.15) +       // back and chest
+                 stroke(12.4, -4.4, 18.4, -7.2, 0.15) + stroke(13.2, -2.6, 19.4, -5.8, 0.15) +  // reaching arm (two edges)
+                 ellipse(20.2, -7, 1.3, 1.2, 0.08) +                                            // fist
+                 stroke(11, -1.8, 6.8, -0.2, 0.12) +                                            // other arm, along the side
+                 stroke(3.6, -3.4, -5.2, -3.8, 0.15) + stroke(3, -1.2, -5, -1.8, 0.15) +         // upper leg
+                 stroke(-5.2, -3.8, -8.6, -3.2, 0.12) + stroke(-5, -1.8, -8.4, -1.6, 0.12) +      // boot
+                 stroke(3.4, -0.4, -2.6, 1.8, 0.14) + stroke(-2.6, 1.8, -6.2, 0.8, 0.14) +        // lower leg, bent at the knee
+                 stroke(-6.2, 0.8, -8, 1.6, 0.1);
+      var pack = stroke(4.6, -5.2, 10.4, -5.8, 0.1) + stroke(10.4, -5.8, 10.8, -8.8, 0.1) + stroke(10.8, -8.8, 5, -8.6, 0.1) +
+                 stroke(5, -8.6, 4.6, -5.2, 0.1) + stroke(5.4, -7, 10, -7.3, 0.06) +                        // the pack, with a seam
+                 stroke(4.6, -6.2, 2.8, -6.6, 0.08) + stroke(4.6, -7.8, 2.8, -7.9, 0.08) + stroke(2.8, -6.4, 2.8, -8.1, 0.06) +   // nozzle
+                 stroke(15.4, -2.4, 18.4, -3.6, 0.06);                                                      // visor edge
       if (!flyPaths) {
+        flyTrail = el('path', { 'class': 'fly-trail' }, gFly);
         flyPuffs = el('path', { 'class': 'pencil soft' }, gFly);
+        flyFlame = el('path', { 'class': 'fly-flame' }, gFly);
+        flyFlameIn = el('path', { 'class': 'fly-flame-in' }, gFly);
+        el('path', { 'class': 'fly-suit', d: SUIT }, gFly);
+        el('path', { 'class': 'fly-pack', d: 'M4.6 -5.2L10.4 -5.8L10.8 -8.8L5 -8.6Z' }, gFly);
+        flyScarf = el('path', { 'class': 'fly-scarf' }, gFly);          // over the pack, so it streams back in view
+        el('ellipse', { 'class': 'fly-helmet', cx: 16, cy: -3.6, rx: 2.7, ry: 2.6 }, gFly);
+        el('path', { 'class': 'fly-visor', d: 'M16.6 -5.6Q19.4 -4.8 18.6 -2.4Q17 -2 16.2 -3Z' }, gFly);
         flyPaths = [el('path', { 'class': 'pencil' }, gFly), el('path', { 'class': 'pencil soft' }, gFly)];
-        var lab = el('text', { 'class': 'note-txt', x: -11, y: 3, 'text-anchor': 'end', style: 'font-size:7.5px' }, gFly);
+        var lab = el('text', { 'class': 'note-txt', x: -13, y: 3, 'text-anchor': 'end', style: 'font-size:7.5px' }, gFly);
         lab.textContent = 'someday, Lalu';
       }
       flyPaths[0].setAttribute('d', body);
-      flyPaths[1].setAttribute('d', jet);
+      flyPaths[1].setAttribute('d', pack);
     }
     function renderFly() {
       var period = (1120 / FLY_V) + FLY_GAP, u = reduceMotion ? null : (t + 3) % period;
@@ -714,9 +750,25 @@
       if (gFly.style.display) gFly.style.display = '';
       if (!flyPaths || (!reduceMotion && Math.floor(t * 6) !== renderFly.k)) { renderFly.k = Math.floor(t * 6); drawFly(); }
       var tt = u == null ? 0 : t, y = FLY_Y + Math.sin(tt * 1.7) * 2.2, tilt = Math.sin(tt * 1.7 + 0.8) * 3;
+      // the flame flickers: a long outer tongue and a short bright core
+      var fl = 5.2 + Math.sin(tt * 31) * 1.1 + Math.sin(tt * 17) * 0.7;
+      flyFlame.setAttribute('d', 'M2.8 -8.2Q' + f(1 - fl * 0.35) + ' -7.9 ' + f(2.8 - fl) + ' ' + f(-6.6 + Math.sin(tt * 23) * 0.5) + 'Q' + f(1 - fl * 0.35) + ' -5.6 2.8 -6.3Z');
+      flyFlameIn.setAttribute('d', 'M2.8 -7.7Q2 -7.4 ' + f(2.8 - fl * 0.45) + ' -7.1Q2 -6.8 2.8 -6.7Z');
+      // the scarf ripples back from the neck in a travelling wave
+      var top = '', bot = '', n = 6;
+      for (var i = 0; i <= n; i++) {
+        var sx = 13.8 - i * 2.4, w = Math.sin(tt * 9 - i * 1.1) * (0.3 + i * 0.3), th = 1.4 - i * 0.13;
+        top += (i ? 'L' : 'M') + f(sx) + ' ' + f(-6.2 + w - i * 0.62);
+        bot = 'L' + f(sx) + ' ' + f(-6.2 + w - i * 0.62 + th) + bot;
+      }
+      flyScarf.setAttribute('d', top + bot + 'Z');
+      // a dotted trail behind the jet, drifting back
+      var off = (tt * 24) % 4, td = '';
+      for (var dx = 2 + off; dx < 34; dx += 4) td += 'M' + f(-dx) + ' ' + f(-7.2 + dx * 0.05) + 'L' + f(-dx - 1.4) + ' ' + f(-7.2 + dx * 0.05);
+      flyTrail.setAttribute('d', td);
       var pd = '';                                    // three puffs drifting back from the nozzle, growing and thinning
       for (var q = 0; q < 3; q++) {
-        var k = ((tt * 1.6 + q / 3) % 1), px = 0 - k * 16, py = -5 + k * 3, pr = 0.8 + k * 2.2;
+        var k = ((tt * 1.6 + q / 3) % 1), px = -2 - k * 16, py = -7.2 + k * 3, pr = 0.8 + k * 2.2;
         if (k < .9) pd += ellipse(px, py, pr, pr * 0.8, 0.12);
       }
       flyPuffs.setAttribute('d', pd);
