@@ -685,10 +685,10 @@
     /* --- someday: a person flying over the rooftops with a backpack jet ---
        A nod to where mobility may go next. Drawn lying flat, arm reaching
        ahead, the jet on the back; local coords: nose of the flyer to the right.
-       It drifts across the strip of sky above the shop signs every minute or so,
+       It crosses the strip of sky above the shop signs, then the air taxi takes its turn,
        bobbing gently, with small puffs trailing from the jet. Reduced motion:
        it hangs still above the books shop. */
-    var gFly = el('g', { 'class': 'st-fly ar-mobility' }), flyPaths = null, flyPuffs, FLY_Y = -84, FLY_V = 30, FLY_GAP = 28;
+    var gFly = el('g', { 'class': 'st-fly ar-mobility' }), flyPaths = null, flyPuffs, FLY_Y = -84, FLY_V = 40, FLY_GAP = 1120 / 48 + 3.5;   // the gap is the air taxi's turn
     svg.insertBefore(gFly, gCar);
     function drawFly() {
       var body = ellipse(14.2, -3.2, 2.4, 2.4, 0.12) +                                  // head
@@ -722,6 +722,107 @@
       flyPuffs.setAttribute('d', pd);
       gFly.setAttribute('transform', 'translate(' + f(x) + ' ' + f(y) + ') rotate(' + f(tilt) + ') scale(2.2)');
     }
+    /* --- more of the future, all things being trialled today ---
+       1. an electric air taxi crosses the same strip of sky, right to left, in
+          the gap while the jet-pack flyer is away (so the sky never crowds);
+       2. a delivery drone hovers over the 24h shop and lowers a parcel on a
+          line, then winds it back up (Japanese konbini have trialled this);
+       3. a charging lane: coils under one stretch of the road charge a car as it
+          drives over them; a small bolt shows it, and at night the coils glow.
+       Reduced motion: the taxi waits over the café, the drone holds the parcel
+       half-way, and the coils stay as drawn. */
+    var gTaxi = el('g', { 'class': 'st-taxi ar-mobility' }), taxiPaths = null, taxiRotors, TAXI_V = 48;
+    svg.insertBefore(gTaxi, gCar);
+    gTaxi.style.display = 'none';
+    function drawTaxi() {                                // local coords: nose to the left, body around (0, 0)
+      var body = ellipse(0, 0, 13, 4.6, 0.15) +                                            // the cabin pod
+                 stroke(-9.6, -2.4, -4, -4.2, 0.12) + stroke(-4, -4.2, 1.6, -4.2, 0.1) +      // canopy
+                 stroke(-12.4, 1.2, 12.4, 1.2, 0.08) +                                     // belly seam
+                 stroke(-8, -4.4, -8, -8.6, 0.1) + stroke(8, -4.4, 8, -8.6, 0.1) +           // rotor masts
+                 stroke(-8, 4.4, -10, 7.4, 0.1) + stroke(8, 4.4, 10, 7.4, 0.1) + stroke(-11.6, 7.4, -7.4, 7.4, 0.08) + stroke(7.4, 7.4, 11.6, 7.4, 0.08);   // skids
+      var win = ellipse(-5, -1, 2.4, 1.6, 0.08) + ellipse(1.2, -1, 2.4, 1.6, 0.08);
+      if (!taxiPaths) {
+        el('ellipse', { 'class': 'fill-car', cx: 0, cy: 0, rx: 13, ry: 4.6 }, gTaxi);
+        taxiPaths = [el('path', { 'class': 'pencil' }, gTaxi), el('path', { 'class': 'pencil soft' }, gTaxi)];
+        taxiRotors = el('path', { 'class': 'pencil soft' }, gTaxi);
+        el('circle', { 'class': 'nav-light red night-only', cx: 12.6, cy: 0, r: 1.1 }, gTaxi);
+        el('circle', { 'class': 'nav-light green night-only', cx: -12.6, cy: 0, r: 1.1 }, gTaxi);
+        var lab = el('text', { 'class': 'note-txt', x: 17, y: 3, style: 'font-size:7.5px' }, gTaxi);
+        lab.textContent = 'air taxi';
+      }
+      taxiPaths[0].setAttribute('d', body);
+      taxiPaths[1].setAttribute('d', win);
+    }
+    function renderTaxi() {
+      var period = (1120 / FLY_V) + FLY_GAP, u = reduceMotion ? null : (t + 3) % period, start = 1120 / FLY_V + 1.5;
+      var x = u == null ? 380 : 1060 - (u - start) * TAXI_V;
+      if (u != null && (u < start || x < -60)) { if (gTaxi.style.display !== 'none') gTaxi.style.display = 'none'; return; }
+      if (gTaxi.style.display) gTaxi.style.display = '';
+      if (!taxiPaths || (u != null && Math.floor(t * 5) !== renderTaxi.k)) { renderTaxi.k = Math.floor(t * 5); drawTaxi(); }
+      var tt = u == null ? 0 : t, rd = '';
+      [-8, 8].forEach(function (rx, i) {                 // two rotors, blades blurring as they spin
+        var w = 7 * Math.abs(Math.cos(tt * 23 + i * 1.3)) + 1.5;
+        rd += 'M' + f(rx - w) + ' -8.9L' + f(rx + w) + ' -8.9';
+        rd += ellipse(rx, -8.9, 7.6, 1.1, 0.1);
+      });
+      taxiRotors.setAttribute('d', rd);
+      var y = -86 + Math.sin(tt * 1.3) * 1.6;
+      gTaxi.setAttribute('transform', 'translate(' + f(x) + ' ' + f(y) + ') rotate(' + f(-2 + Math.sin(tt * 1.3 + 1) * 1.2) + ') scale(1.9)');
+    }
+
+    var DRONE_X = 742, DRONE_Y = -68;
+    var gDrone = el('g', { 'class': 'st-drone ar-mobility' }), droneBody, droneRotors, droneLine, droneBox;
+    svg.insertBefore(gDrone, gCar);
+    (function () {
+      droneLine = el('path', { 'class': 'drone-line' }, gDrone);
+      droneBox = el('g', {}, gDrone);
+      el('rect', { 'class': 'fill-car', x: -3.4, y: 0, width: 6.8, height: 5.2 }, droneBox);
+      el('path', { 'class': 'pencil', d: stroke(-3.4, 0, 3.4, 0, 0.08) + stroke(3.4, 0, 3.4, 5.2, 0.08) + stroke(3.4, 5.2, -3.4, 5.2, 0.08) + stroke(-3.4, 5.2, -3.4, 0, 0.08) + stroke(0, 0, 0, 5.2, 0.05) }, droneBox);
+      droneBody = el('path', { 'class': 'pencil', d: ellipse(0, 0, 4.2, 1.8, 0.1) + stroke(-4, -0.6, -11, -2.6, 0.08) + stroke(4, -0.6, 11, -2.6, 0.08) +
+                                                     stroke(-2, 1.8, -3.4, 3.8, 0.06) + stroke(2, 1.8, 3.4, 3.8, 0.06) }, gDrone);
+      droneRotors = el('path', { 'class': 'pencil soft' }, gDrone);
+      el('circle', { 'class': 'nav-light green night-only', cx: 0, cy: 0.4, r: 0.9 }, gDrone);
+      var lab = el('text', { 'class': 'note-txt', x: 15, y: 1, style: 'font-size:7.5px' }, gDrone);
+      lab.textContent = 'drone drop';
+    })();
+    function renderDrone() {
+      var tt = reduceMotion ? 0 : t;
+      var cyc = reduceMotion ? 0.5 : (tt % 14) / 14;          // 14 s: lower, hold, wind back up, rest
+      var drop = cyc < 0.35 ? cyc / 0.35 : cyc < 0.5 ? 1 : cyc < 0.85 ? 1 - (cyc - 0.5) / 0.35 : 0;
+      drop = drop * drop * (3 - 2 * drop);
+      var len = 6 + drop * 30, hy = Math.sin(tt * 2.1) * 0.9;
+      var rd = '';
+      [-11, 11].forEach(function (rx, i) {
+        var w = 4.4 * Math.abs(Math.cos(tt * 29 + i)) + 1;
+        rd += 'M' + f(rx - w) + ' -3.6L' + f(rx + w) + ' -3.6' + ellipse(rx, -3.6, 4.8, 0.8, 0.08);
+      });
+      droneRotors.setAttribute('d', rd);
+      droneLine.setAttribute('d', 'M0 1.8L' + f(Math.sin(tt * 1.4) * 0.6) + ' ' + f(len));
+      droneBox.setAttribute('transform', 'translate(' + f(Math.sin(tt * 1.4) * 0.6) + ' ' + f(len) + ')');
+      gDrone.setAttribute('transform', 'translate(' + DRONE_X + ' ' + f(DRONE_Y + hy) + ') scale(1.5)');
+    }
+
+    var CH0 = 130, CH1 = 410;                                // the stretch of charging lane
+    var gCharge = el('g', { 'class': 'st-charge ar-urban' });
+    svg.insertBefore(gCharge, gStatic.nextSibling);
+    (function () {
+      var d = '';
+      for (var cx = CH0 + 16; cx < CH1; cx += 34) d += ellipse(cx, LANE, 12, 4.2, 0.12) + ellipse(cx, LANE, 7, 2.2, 0.08);
+      el('path', { 'class': 'charge-coil', d: d }, gCharge);
+      el('path', { 'class': 'pencil soft', d: stroke(CH0, LANE + 21, CH1, LANE + 21, 0.2) + stroke(CH0, LANE + 17, CH0, LANE + 25, 0.1) + stroke(CH1, LANE + 17, CH1, LANE + 25, 0.1) }, gCharge);
+      var lab = el('text', { 'class': 'note-txt', x: CH0 + 4, y: LANE + 31, style: 'font-size:13px' }, gCharge);
+      lab.textContent = 'charging lane';
+    })();
+    var carBolt = null;
+    function renderCharge() {
+      var mid = car ? car.x + 50 : -999, on = mid > CH0 && mid < CH1;
+      gCharge.classList.toggle('on', on);
+      if (!carBolt && car) {
+        carBolt = el('path', { 'class': 'bolt', d: 'M48 -34L43 -26L47.5 -26L44 -18L52 -28L47.5 -28L50.5 -34Z' }, gCar);
+      }
+      if (carBolt) carBolt.style.display = on && car ? '' : 'none';
+    }
+
     var gFront = el('g', { 'class': 'st-front' });        // near-side trees and people: drawn over the cyclist
     gFront.innerHTML = frontHTML;
     svg.insertBefore(gFront, gCar);
@@ -993,7 +1094,7 @@
         if (gBike.style.display) gBike.style.display = '';
       } else if (gBike.style.display !== 'none') gBike.style.display = 'none';
       show(gazePath, gazeOn);
-      renderFly();
+      renderFly(); renderTaxi(); renderDrone(); renderCharge();
       if (pole.mode === 'kerb' && !pole.at) walk = false;   // still on its way: not yet
       setPole(walk);
       renderPole();

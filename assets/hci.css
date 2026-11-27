@@ -379,3 +379,13 @@ html #research .rs-signal-pulse { display: none; }
 .street .lamp-bulb { fill: #ffe3a0; }
 .street .star { stroke: #e9dfc6; stroke-width: .7; stroke-linecap: round; opacity: .55; fill: none; }
 .street .headlight { fill: #ffe7a6; opacity: .13; }
+
+/* future mobility on the street: air taxi, delivery drone, charging lane */
+.street .nav-light.red { fill: #ff6b5a; }
+.street .nav-light.green { fill: #5ee08a; }
+.street .drone-line { fill: none; stroke: currentColor; stroke-width: .6; stroke-dasharray: 1.4 1.6; opacity: .55; }
+.street .charge-coil { fill: none; stroke: currentColor; stroke-width: .9; opacity: .18; transition: opacity .4s, stroke .4s; }
+.street .st-charge.on .charge-coil { stroke: var(--ehmi); opacity: .55; }
+.street .bolt { fill: #e9b92a; stroke: none; }
+[data-theme="dark"] .street .charge-coil { stroke: #7fd3e0; opacity: .22; }
+[data-theme="dark"] .street .st-charge.on .charge-coil { opacity: .75; }
