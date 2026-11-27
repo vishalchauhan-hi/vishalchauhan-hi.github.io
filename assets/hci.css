@@ -389,3 +389,26 @@ html #research .rs-signal-pulse { display: none; }
 .street .bolt { fill: #e9b92a; stroke: none; }
 [data-theme="dark"] .street .charge-coil { stroke: #7fd3e0; opacity: .22; }
 [data-theme="dark"] .street .st-charge.on .charge-coil { opacity: .75; }
+
+/* the car: tinted glass and its lights */
+.street .car-glass { fill: #9fb3c4; opacity: .28; }
+.street .car-light { fill: none; stroke-linecap: round; }
+.street .car-light.front { stroke: #e8dcae; stroke-width: 1.8; }
+.street .car-light.rear { stroke: #d9502f; stroke-width: 2; opacity: .85; }
+[data-theme="dark"] .street .car-glass { fill: #4d6070; opacity: .55; }
+[data-theme="dark"] .street .car-light.front { stroke: #fff1c4; }
+
+/* the flyer: flight suit, helmet, visor, jet pack, flame, scarf and trail */
+.street .fly-suit   { fill: #5d7fa3; opacity: .55; }
+.street .fly-helmet { fill: var(--paper); }
+.street .fly-visor  { fill: #7fd3e0; opacity: .85; }
+.street .fly-pack   { fill: #b9b2a1; opacity: .6; }
+.street .fly-flame  { fill: #f3a64a; opacity: .85; }
+.street .fly-flame-in { fill: #ffe08a; }
+.street .fly-scarf  { fill: #d9502f; opacity: .85; }
+.street .fly-trail  { fill: none; stroke: currentColor; stroke-width: .5; stroke-linecap: round; opacity: .35; }
+[data-theme="dark"] .street .fly-suit { fill: #7fa3c9; opacity: .5; }
+[data-theme="dark"] .street .fly-helmet { fill: #2a2722; }
+[data-theme="dark"] .street .fly-flame { opacity: 1; }
+.street .st-fly .pencil { stroke-width: .62; }
+.street .st-fly .pencil.soft { stroke-width: .5; }
