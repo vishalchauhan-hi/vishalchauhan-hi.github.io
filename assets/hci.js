@@ -181,9 +181,13 @@
       function wash(cls, x, y, w, hh) { return '<rect class="' + cls + '" x="' + f(x + 1.5) + '" y="' + f(y + 1) + '" width="' + f(w) + '" height="' + f(hh) + '"/>'; }
       function windows(x, w, floors, top) {
         var s = '', n = Math.max(2, Math.round(w / 22)), gap = w / n, k, fl;
-        for (fl = 0; fl < floors; fl++) for (k = 0; k < n; k++)
+        var glow = '';                                     // at night some windows are lit (see .win-glow)
+        for (fl = 0; fl < floors; fl++) for (k = 0; k < n; k++) {
           s += rect(x + k * gap + gap * 0.25, top + fl * UP + 3, gap * 0.5, UP - 7, 0.25);
-        return path(s, 'pencil soft');
+          if ((Math.round(x) * 3 + k * 7 + fl * 5) % 5 < 3)
+            glow += '<rect class="win-glow" x="' + f(x + k * gap + gap * 0.25) + '" y="' + f(top + fl * UP + 3) + '" width="' + f(gap * 0.5) + '" height="' + (UP - 7) + '"/>';
+        }
+        return glow + path(s, 'pencil soft');
       }
       function building(x, w, floors, kind, label) {
         var hh = FL + floors * UP, top = G - hh, s = '';
@@ -463,6 +467,22 @@
        [150, 270, 1.45, 1], [338, 271, 1.5, 0], [436, 270, 1.3, 0], [962, 269, 1.35, 1]].forEach(function (tr) {
         if (tr[1] > BOT) front += tree(tr[0], tr[1], tr[2], tr[3]); else h += tree(tr[0], tr[1], tr[2], tr[3]);
       });
+      /* night (dark mode only): lamps on the utility poles with pools of light on
+         the pavement, and a few stars above the rooftops. Drawn last, so the
+         pencil wobble of everything above is the same as in daylight. */
+      var night = '<g class="night-only">';
+      [118, 540, 660].forEach(function (px) {
+        night += '<ellipse class="lamp-pool" cx="' + (px + 10) + '" cy="' + (G + 34) + '" rx="34" ry="12"/>' +
+                 '<circle class="lamp-halo" cx="' + (px + 12) + '" cy="' + (G - 61) + '" r="9"/>' +
+                 path(stroke(px, G - 64, px + 9, G - 66, 0.15) + stroke(px + 9, G - 66, px + 13, G - 62, 0.12) + stroke(px + 9.6, G - 61.4, px + 14.6, G - 61.4, 0.1)) +
+                 '<circle class="lamp-bulb" cx="' + (px + 12) + '" cy="' + (G - 61) + '" r="1.6"/>';
+      });
+      [[34, -94], [96, -78], [205, -96], [290, -86], [402, -97], [520, -90], [606, -80], [720, -95], [812, -84], [905, -97], [968, -82]].forEach(function (sx, i) {
+        var rr = i % 3 === 0 ? 1.1 : 0.7;
+        night += '<path class="star" d="M' + sx[0] + ' ' + (sx[1] - rr * 2) + 'L' + sx[0] + ' ' + (sx[1] + rr * 2) + 'M' + (sx[0] - rr * 2) + ' ' + sx[1] + 'L' + (sx[0] + rr * 2) + ' ' + sx[1] + '"/>';
+      });
+      night += '</g>';
+      h += night;
       gStatic.innerHTML = h;
       frontHTML = front;
       // annotations
@@ -643,6 +663,7 @@
           el('rect', { 'class': 'car-tyre', x: w[0], y: w[1], width: 18, height: 7, rx: 2.4 }, gCar);
         });
         treadEl = el('path', { 'class': 'car-tread' }, gCar);
+        el('path', { 'class': 'headlight night-only', d: 'M101 -11L176 -27L180 -3L101 -5ZM101 5L180 3L176 27L101 11Z' }, gCar);
         carBody = el('path', { 'class': 'fill-car', d: BODY }, gCar);
         carPaths = [el('path', { 'class': 'pencil' }, gCar), el('path', { 'class': 'pencil soft' }, gCar), el('path', { 'class': 'pencil' }, gCar)];
         el('circle', { 'class': 'car-lidar', cx: 42, cy: 0, r: 4.5 }, gCar);
