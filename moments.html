@@ -169,11 +169,17 @@
                     photo, data-src = the file, the text = caption shown under it.
                     Put the cover photo as the first <li>.
                 An event with 1 photo just has 1 <li> (or no <ol> at all).
+             4. On the <figure> line, set data-note = the short handwritten caption
+                for the homepage, and data-note-img = the photo to use there
+                (or leave data-note-img out to use the cover photo).
+             5. Run: node scripts/stamp-assets.mjs
+                The homepage "From the field" then shows the 5 newest events.
+                Site checks fail if the events here are not newest first.
              ============================================= -->
         <div class="moments-grid">
 
           <!-- Tsukada Lab farewell and welcome night · Nezu -->
-          <figure class="moment-tile">
+          <figure class="moment-tile" data-note="farewell + welcome night, Nezu" data-note-img="assets/images/notes/tlab-farewell-26.jpg">
             <div class="moment-photo">
               <img src="assets/images/tiles/tlab-farewell-welcome-2026.webp" data-full="assets/images/tlab-farewell-welcome-2026.jpg" width="900" height="506" decoding="async"
                    alt="Tsukada Lab members around the tables at a restaurant in Nezu, raising drinks and thumbs up"
@@ -191,7 +197,7 @@
           </figure>
 
           <!-- CIV Summer School 2026 · Miyazaki -->
-          <figure class="moment-tile">
+          <figure class="moment-tile" data-note="giving “who goes first?”, CIV ’26 Miyazaki" data-note-img="assets/images/notes/civ26-talk.jpg" data-note-alt="Giving “Who goes first?” at the CIV Summer School 2026 in Miyazaki">
             <div class="moment-photo">
               <img src="assets/images/tiles/civ-3.webp" data-full="assets/images/CIV%203.jpg" width="900" height="600" decoding="async"
                    alt="CIV Summer School 2026 participants and lecturers, Miyazaki"
@@ -210,7 +216,7 @@
           </figure>
 
           <!-- ACM CHI 2026 · Barcelona -->
-          <figure class="moment-tile">
+          <figure class="moment-tile" data-note="CHI ’26, Barcelona" data-note-img="assets/images/notes/chi26-barcelona.jpg" data-note-alt="At CHI 2026 in Barcelona">
             <div class="moment-photo">
               <img src="assets/images/tiles/chi2026-barcelona.webp" data-full="assets/images/chi2026-barcelona.jpg" width="900" height="675" decoding="async"
                    alt="ACM CHI 2026 in Barcelona"
@@ -227,7 +233,7 @@
           </figure>
 
           <!-- ACM VRST 2025 · Montréal -->
-          <figure class="moment-tile">
+          <figure class="moment-tile" data-note="VRST ’25, Montréal" data-note-img="assets/images/vrst2025-montreal.jpg">
             <div class="moment-photo">
               <img src="assets/images/vrst2025-montreal.jpg" width="1600" height="1200" decoding="async"
                    alt="Presenting at ACM VRST 2025 in Montréal"
@@ -243,7 +249,7 @@
           </figure>
 
           <!-- CIV Summer School 2025 · Blonay -->
-          <figure class="moment-tile">
+          <figure class="moment-tile" data-note="CIV ’25, above Blonay" data-note-img="assets/images/notes/civ25-blonay.jpg" data-note-alt="Above Blonay, Switzerland, at the CIV Summer School 2025">
             <div class="moment-photo">
               <img src="assets/images/tiles/civ-blonay.webp" data-full="assets/images/civ-blonay.jpg" width="900" height="1200" decoding="async"
                    alt="CIV Summer School 2025 in Blonay, Switzerland"
@@ -256,7 +262,7 @@
           </figure>
 
           <!-- OzCHI 2024 · Brisbane -->
-          <figure class="moment-tile">
+          <figure class="moment-tile" data-note="OzCHI ’24 finalists, Brisbane" data-note-img="assets/images/ozchi2024-award.jpg">
             <div class="moment-photo">
               <img src="assets/images/ozchi2024-award.jpg" width="1200" height="1600" decoding="async"
                    alt="OzCHI 2024 Student Design Challenge Finalist Award, Brisbane"
@@ -273,7 +279,7 @@
           </figure>
 
           <!-- ACM AutoUI 2024 · Stanford -->
-          <figure class="moment-tile">
+          <figure class="moment-tile" data-note="AutoUI ’24 at Stanford. had to." data-note-img="assets/images/notes/autoui24-stanford.jpg" data-note-alt="Sitting in a DeLorean at AutomotiveUI 2024, Stanford">
             <div class="moment-photo">
               <img src="assets/images/tiles/autoui-stanford.webp" data-full="assets/images/autoui-stanford.jpg" width="900" height="675" decoding="async"
                    alt="ACM AutoUI 2024 at Stanford"
@@ -286,7 +292,7 @@
           </figure>
 
           <!-- Tsukada Lab -->
-          <figure class="moment-tile">
+          <figure class="moment-tile" data-note="lab dinner" data-note-img="assets/images/notes/lab-dinner.jpg" data-note-alt="Dinner with the lab">
             <div class="moment-photo">
               <img src="assets/images/tiles/tsukada-lab.webp" data-full="assets/images/tsukada-lab.jpg" width="900" height="785" decoding="async"
                    alt="Life in Tsukada Lab"
