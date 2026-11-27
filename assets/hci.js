@@ -98,7 +98,7 @@
     svg.setAttribute('tabindex', '0');
     /* on a phone, frame just the crossing so the drawing stays legible */
     var narrow = window.matchMedia('(max-width: 640px)');
-    function frame() { svg.setAttribute('viewBox', narrow.matches ? '410 -84 600 362' : '0 -84 1000 360'); }
+    function frame() { svg.setAttribute('viewBox', narrow.matches ? '410 -100 600 378' : '0 -100 1000 376'); }   // a strip of sky on top for the flyer
     frame();
     if (narrow.addEventListener) narrow.addEventListener('change', frame);
 
@@ -181,9 +181,13 @@
       function wash(cls, x, y, w, hh) { return '<rect class="' + cls + '" x="' + f(x + 1.5) + '" y="' + f(y + 1) + '" width="' + f(w) + '" height="' + f(hh) + '"/>'; }
       function windows(x, w, floors, top) {
         var s = '', n = Math.max(2, Math.round(w / 22)), gap = w / n, k, fl;
-        for (fl = 0; fl < floors; fl++) for (k = 0; k < n; k++)
+        var glow = '';                                     // at night some windows are lit (see .win-glow)
+        for (fl = 0; fl < floors; fl++) for (k = 0; k < n; k++) {
           s += rect(x + k * gap + gap * 0.25, top + fl * UP + 3, gap * 0.5, UP - 7, 0.25);
-        return path(s, 'pencil soft');
+          if ((Math.round(x) * 3 + k * 7 + fl * 5) % 5 < 3)
+            glow += '<rect class="win-glow" x="' + f(x + k * gap + gap * 0.25) + '" y="' + f(top + fl * UP + 3) + '" width="' + f(gap * 0.5) + '" height="' + (UP - 7) + '"/>';
+        }
+        return glow + path(s, 'pencil soft');
       }
       function building(x, w, floors, kind, label) {
         var hh = FL + floors * UP, top = G - hh, s = '';
@@ -463,6 +467,22 @@
        [150, 270, 1.45, 1], [338, 271, 1.5, 0], [436, 270, 1.3, 0], [962, 269, 1.35, 1]].forEach(function (tr) {
         if (tr[1] > BOT) front += tree(tr[0], tr[1], tr[2], tr[3]); else h += tree(tr[0], tr[1], tr[2], tr[3]);
       });
+      /* night (dark mode only): lamps on the utility poles with pools of light on
+         the pavement, and a few stars above the rooftops. Drawn last, so the
+         pencil wobble of everything above is the same as in daylight. */
+      var night = '<g class="night-only">';
+      [118, 540, 660].forEach(function (px) {
+        night += '<ellipse class="lamp-pool" cx="' + (px + 10) + '" cy="' + (G + 34) + '" rx="34" ry="12"/>' +
+                 '<circle class="lamp-halo" cx="' + (px + 12) + '" cy="' + (G - 61) + '" r="9"/>' +
+                 path(stroke(px, G - 64, px + 9, G - 66, 0.15) + stroke(px + 9, G - 66, px + 13, G - 62, 0.12) + stroke(px + 9.6, G - 61.4, px + 14.6, G - 61.4, 0.1)) +
+                 '<circle class="lamp-bulb" cx="' + (px + 12) + '" cy="' + (G - 61) + '" r="1.6"/>';
+      });
+      [[34, -94], [96, -78], [205, -96], [290, -86], [402, -97], [520, -90], [606, -80], [720, -95], [812, -84], [905, -97], [968, -82]].forEach(function (sx, i) {
+        var rr = i % 3 === 0 ? 1.1 : 0.7;
+        night += '<path class="star" d="M' + sx[0] + ' ' + (sx[1] - rr * 2) + 'L' + sx[0] + ' ' + (sx[1] + rr * 2) + 'M' + (sx[0] - rr * 2) + ' ' + sx[1] + 'L' + (sx[0] + rr * 2) + ' ' + sx[1] + '"/>';
+      });
+      night += '</g>';
+      h += night;
       gStatic.innerHTML = h;
       frontHTML = front;
       // annotations
@@ -643,6 +663,7 @@
           el('rect', { 'class': 'car-tyre', x: w[0], y: w[1], width: 18, height: 7, rx: 2.4 }, gCar);
         });
         treadEl = el('path', { 'class': 'car-tread' }, gCar);
+        el('path', { 'class': 'headlight night-only', d: 'M101 -11L176 -27L180 -3L101 -5ZM101 5L180 3L176 27L101 11Z' }, gCar);
         carBody = el('path', { 'class': 'fill-car', d: BODY }, gCar);
         carPaths = [el('path', { 'class': 'pencil' }, gCar), el('path', { 'class': 'pencil soft' }, gCar), el('path', { 'class': 'pencil' }, gCar)];
         el('circle', { 'class': 'car-lidar', cx: 42, cy: 0, r: 4.5 }, gCar);
@@ -661,6 +682,46 @@
     var gBike = el('g', { 'class': 'st-bike' }), bikePaths, bikeSpin, bikeNear, bikeFar, BIKE_V = 92;
     svg.insertBefore(gBike, gCar);
     gBike.style.display = 'none';
+    /* --- someday: a person flying over the rooftops with a backpack jet ---
+       A nod to where mobility may go next. Drawn lying flat, arm reaching
+       ahead, the jet on the back; local coords: nose of the flyer to the right.
+       It drifts across the strip of sky above the shop signs every minute or so,
+       bobbing gently, with small puffs trailing from the jet. Reduced motion:
+       it hangs still above the books shop. */
+    var gFly = el('g', { 'class': 'st-fly ar-mobility' }), flyPaths = null, flyPuffs, FLY_Y = -84, FLY_V = 30, FLY_GAP = 28;
+    svg.insertBefore(gFly, gCar);
+    function drawFly() {
+      var body = ellipse(14.2, -3.2, 2.4, 2.4, 0.12) +                                  // head
+                 stroke(12, -2.6, 3, -1.4, 0.2) + stroke(11.6, -1.4, 3.4, -0.4, 0.15) +    // back and belly
+                 stroke(3.2, -1.2, -5.6, -0.4, 0.2) + stroke(3.2, -0.6, -5, 1.4, 0.2) +    // two legs, stretched out
+                 stroke(-5.6, -0.4, -7.2, -1.4, 0.1) + stroke(-5, 1.4, -6.8, 1, 0.1) +     // feet
+                 stroke(11, -2.2, 18.6, -5.4, 0.18);                                     // arm reaching ahead
+      var jet = stroke(3.6, -2.8, 9.8, -3.4, 0.12) + stroke(9.8, -3.4, 9.6, -6.6, 0.12) + stroke(9.6, -6.6, 3.8, -6, 0.12) +
+                stroke(3.8, -6, 3.6, -2.8, 0.12) + stroke(3.6, -4.2, 1.2, -4.6, 0.12) + stroke(3.6, -5.6, 1.4, -5.8, 0.1);   // the pack and its nozzle
+      if (!flyPaths) {
+        flyPuffs = el('path', { 'class': 'pencil soft' }, gFly);
+        flyPaths = [el('path', { 'class': 'pencil' }, gFly), el('path', { 'class': 'pencil soft' }, gFly)];
+        var lab = el('text', { 'class': 'note-txt', x: -11, y: 3, 'text-anchor': 'end', style: 'font-size:7.5px' }, gFly);
+        lab.textContent = 'someday';
+      }
+      flyPaths[0].setAttribute('d', body);
+      flyPaths[1].setAttribute('d', jet);
+    }
+    function renderFly() {
+      var period = (1120 / FLY_V) + FLY_GAP, u = reduceMotion ? null : (t + 3) % period;
+      var x = u == null ? 880 : -60 + u * FLY_V;
+      if (x > 1060) { if (gFly.style.display !== 'none') gFly.style.display = 'none'; return; }
+      if (gFly.style.display) gFly.style.display = '';
+      if (!flyPaths || (!reduceMotion && Math.floor(t * 6) !== renderFly.k)) { renderFly.k = Math.floor(t * 6); drawFly(); }
+      var tt = u == null ? 0 : t, y = FLY_Y + Math.sin(tt * 1.7) * 2.2, tilt = Math.sin(tt * 1.7 + 0.8) * 3;
+      var pd = '';                                    // three puffs drifting back from the nozzle, growing and thinning
+      for (var q = 0; q < 3; q++) {
+        var k = ((tt * 1.6 + q / 3) % 1), px = 0 - k * 16, py = -5 + k * 3, pr = 0.8 + k * 2.2;
+        if (k < .9) pd += ellipse(px, py, pr, pr * 0.8, 0.12);
+      }
+      flyPuffs.setAttribute('d', pd);
+      gFly.setAttribute('transform', 'translate(' + f(x) + ' ' + f(y) + ') rotate(' + f(tilt) + ') scale(2.2)');
+    }
     var gFront = el('g', { 'class': 'st-front' });        // near-side trees and people: drawn over the cyclist
     gFront.innerHTML = frontHTML;
     svg.insertBefore(gFront, gCar);
@@ -932,6 +993,7 @@
         if (gBike.style.display) gBike.style.display = '';
       } else if (gBike.style.display !== 'none') gBike.style.display = 'none';
       show(gazePath, gazeOn);
+      renderFly();
       if (pole.mode === 'kerb' && !pole.at) walk = false;   // still on its way: not yet
       setPole(walk);
       renderPole();
@@ -1020,23 +1082,6 @@
       });
       wrap.appendChild(row); wrap.appendChild(line);
       fig.insertBefore(wrap, fig.querySelector('figcaption'));
-    })();
-
-    /* --- the study conditions: four hand-written tabs under the street --- */
-    (function () {
-      var box = document.createElement('div');
-      box.className = 'street-conds'; box.setAttribute('role', 'group'); box.setAttribute('aria-label', 'Study condition');
-      [['none', 'Hesitation'], ['fixed', 'SPIU – Stationary'], ['mobile', 'SPIU – Mobility'], ['ehmi', 'SPIU + eHMI']].forEach(function (c) {
-        var b = document.createElement('button');
-        b.type = 'button'; b.textContent = c[1]; b.setAttribute('aria-pressed', c[0] === cond ? 'true' : 'false');
-        b.addEventListener('click', function () {
-          cond = c[0];
-          box.querySelectorAll('button').forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
-          if (!raf) { movePole(0, false); render(); }
-        });
-        box.appendChild(b);
-      });
-      fig.insertBefore(box, fig.querySelector('figcaption'));
     })();
 
     /* --- first frame --- */

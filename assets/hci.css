@@ -326,15 +326,6 @@ html #research .rs-signal-pulse { display: none; }
 .street .car-beam  { fill: none; stroke: currentColor; stroke-width: 1; stroke-linecap: round; opacity: .55; }
 /* the small LED word on the street pole's ring */
 .street .led.mini { font-size: 5px; letter-spacing: .04em; }
-/* the four study conditions under the street */
-.street-conds { display: flex; flex-wrap: wrap; gap: .1rem 1.4rem; margin-top: .9rem; }
-.street-conds button {
-  font: 600 1.2rem var(--hand); color: var(--ink-faint); background: none; border: 0;
-  border-bottom: 2px solid transparent; padding: .1em .1em 0; cursor: pointer;
-}
-.street-conds button:hover { color: var(--ink); }
-.street-conds button[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--ink-soft); }
-.street-conds + figcaption { margin-top: .5rem; }
 /* the car's tyres: dark rubber with lighter tread blocks that run as it drives */
 .street .car-tyre { fill: currentColor; opacity: .78; }
 .street .car-tread { fill: none; stroke: var(--paper); stroke-width: .9; stroke-linecap: round; opacity: .7; }
@@ -363,3 +354,28 @@ html #research .rs-signal-pulse { display: none; }
 .street .pencil.signal { stroke: var(--ehmi); opacity: .8; }
 .street .v2x { fill: none; stroke: var(--ehmi); stroke-width: 1.2; stroke-dasharray: 2 4; stroke-linecap: round; opacity: .6; }
 @media (prefers-reduced-motion: reduce) { .street svg .ar-mobility, .street svg .ar-hri, .street svg .ar-urban, .street svg .ar-design { transition: none; } }
+
+/* ---------- the street at night (dark mode) ----------
+   Not just inverted: a night street. Chalk-soft lines, an asphalt road, lit
+   shop windows, lamps with pools of light, headlights and a few stars. */
+.street .night-only { display: none; }
+.street .win-glow { fill: #f2c46d; opacity: 0; }
+[data-theme="dark"] .street .night-only { display: inline; }
+[data-theme="dark"] .street svg { color: #d8cfba; }
+[data-theme="dark"] .street .pencil { opacity: .72; }
+[data-theme="dark"] .street .pencil.soft { opacity: .3; }
+[data-theme="dark"] .street .pencil.hatch { opacity: .12; }
+[data-theme="dark"] .street .fill-road { fill: #24221d; }
+[data-theme="dark"] .street .fill-car { fill: #2a2722; }
+[data-theme="dark"] .street .ped { fill: #2a2722; }
+[data-theme="dark"] .street .win-glow { opacity: .42; }
+[data-theme="dark"] .street .tree-wash { fill: #6f9a66; opacity: .22; }
+[data-theme="dark"] .street .tactile-wash { opacity: .32; }
+[data-theme="dark"] .street .share-wash { fill: #c9905e; opacity: .12; }
+[data-theme="dark"] .street .sign-wash { opacity: .3; }
+[data-theme="dark"] .street .lantern-wash { fill: #ff7a5c; opacity: .55; }
+.street .lamp-pool { fill: #f5cf7a; opacity: .09; }
+.street .lamp-halo { fill: #f5cf7a; opacity: .14; }
+.street .lamp-bulb { fill: #ffe3a0; }
+.street .star { stroke: #e9dfc6; stroke-width: .7; stroke-linecap: round; opacity: .55; fill: none; }
+.street .headlight { fill: #ffe7a6; opacity: .13; }
