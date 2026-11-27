@@ -878,6 +878,72 @@
     var gFront = el('g', { 'class': 'st-front' });        // near-side trees and people: drawn over the cyclist
     gFront.innerHTML = frontHTML;
     svg.insertBefore(gFront, gCar);
+    /* --- a rose garden on the near pavement, and tulips across the street ---
+       A wooden raised bed between the two friends and the last tree, full of
+       rose bushes in red, pink, coral, yellow, white and lilac; across the
+       street a strip of tulips in front of the house. The flowers sway a
+       little in the breeze (CSS, so reduced motion keeps them still). */
+    var gGarden = el('g', { 'class': 'st-garden ar-urban' });
+    svg.insertBefore(gGarden, gCar);
+    (function () {
+      var g = '', COLORS = ['rose-red', 'rose-pink', 'rose-coral', 'rose-yellow', 'rose-white', 'rose-lilac'];
+      function rose(cx, cy, rr, cls) {                 // a rose seen from the side: a cupped bloom with a swirl of petals
+        return '<circle class="' + cls + '" cx="' + f(cx) + '" cy="' + f(cy) + '" r="' + f(rr) + '"/>' +
+               path(ellipse(cx, cy, rr, rr * 0.92, 0.08) +
+                    'M' + f(cx - rr * 0.5) + ' ' + f(cy + rr * 0.1) + 'Q' + f(cx) + ' ' + f(cy - rr * 0.75) + ' ' + f(cx + rr * 0.45) + ' ' + f(cy) +
+                    'Q' + f(cx + rr * 0.1) + ' ' + f(cy + rr * 0.55) + ' ' + f(cx - rr * 0.25) + ' ' + f(cy - rr * 0.15), 'pencil soft');
+      }
+      function leaf(x, y, a) {                          // a small almond leaf at angle a (degrees)
+        var c = Math.cos(a * Math.PI / 180), sn = Math.sin(a * Math.PI / 180), L = 2.6, x2 = x + c * L, y2 = y + sn * L;
+        var mx = (x + x2) / 2, my = (y + y2) / 2, nx = -sn * 1.1, ny = c * 1.1;
+        return 'M' + f(x) + ' ' + f(y) + 'Q' + f(mx + nx) + ' ' + f(my + ny) + ' ' + f(x2) + ' ' + f(y2) + 'Q' + f(mx - nx) + ' ' + f(my - ny) + ' ' + f(x) + ' ' + f(y) + 'Z';
+      }
+      // the raised bed: a planked wooden box, soil on top
+      var B0 = 852, B1 = 938, BT = 254, BB = 265;
+      g += '<rect class="bed-wood" x="' + B0 + '" y="' + BT + '" width="' + (B1 - B0) + '" height="' + (BB - BT) + '"/>';
+      g += path(line(B0, BT, B1, BT, 0.3) + line(B0, BB, B1, BB, 0.3) + stroke(B0, BT, B0, BB, 0.15) + stroke(B1, BT, B1, BB, 0.15) +
+                stroke(B0 + 1, BT + 5.5, B1 - 1, BT + 5.5, 0.15) + stroke(B0 + 30, BT + 1, B0 + 30, BT + 5, 0.08) + stroke(B0 + 58, BT + 6, B0 + 58, BB - 1, 0.08));
+      g += path(stroke(B0 + 1, BT - 0.6, B1 - 1, BT - 0.6, 0.4), 'pencil soft');
+      // rose bushes: two layers of leafy mounds, stems and leaves, buds, then the blooms swaying on top
+      var back = '', front = '', lv = '', stems = '', blooms = '', buds = '';
+      var SPOTS = [[-5.4, -9.6, 2.9], [0.6, -12.2, 2.6], [5.6, -8.6, 2.8], [-1.8, -6.2, 2.4], [3.4, -14.4, 2.2]];   // dx, dy, radius
+      for (var i = 0; i < 6; i++) {
+        var bx = B0 + 7.5 + i * 14.2, by = BT - 2;
+        back += '<ellipse class="bush-back" cx="' + f(bx + 1) + '" cy="' + f(by - 6) + '" rx="8.6" ry="7.4"/>';
+        front += '<ellipse class="tree-wash" cx="' + f(bx) + '" cy="' + f(by - 2.4) + '" rx="9" ry="5"/>';
+        lv += leaf(bx - 7, by - 1, 200) + leaf(bx + 6, by - 0.5, -20) + leaf(bx - 4, by - 7, 230) + leaf(bx + 4.4, by - 6, -50) +
+              leaf(bx - 1, by - 2, 100) + leaf(bx + 1.6, by - 10, -80) + leaf(bx - 6, by - 4.4, 160) + leaf(bx + 7, by - 4, 10);
+        var n = 3 + (i % 2);
+        for (var k = 0; k < n; k++) {
+          var sp = SPOTS[(k + i) % SPOTS.length], rx = bx + sp[0] + (i % 3 - 1) * 0.5, ry = by + sp[1], rr = sp[2] + ((i + k) % 2) * 0.3;
+          stems += stroke(rx, ry + rr * 0.8, bx + sp[0] * 0.4, by, 0.1);
+          blooms += '<g class="sway s' + ((i + k) % 3) + '">' + rose(rx, ry, rr, COLORS[(i * 2 + k) % COLORS.length]) + '</g>';
+        }
+        var ux = bx + (i % 2 ? -7.6 : 7.4), uy = by - 11.5;      // one bud per bush, still closed
+        stems += stroke(ux, uy + 1.4, bx + (i % 2 ? -3 : 3), by - 3, 0.08);
+        buds += '<g class="sway s' + (i % 3) + '"><path class="' + COLORS[(i * 2 + 3) % COLORS.length] + '" d="M' + f(ux) + ' ' + f(uy - 2.2) + 'Q' + f(ux + 1.4) + ' ' + f(uy) + ' ' + f(ux) + ' ' + f(uy + 1.2) +
+                'Q' + f(ux - 1.4) + ' ' + f(uy) + ' ' + f(ux) + ' ' + f(uy - 2.2) + 'Z"/>' + path(leaf(ux, uy + 1.2, 200) + leaf(ux, uy + 1.2, -20), 'leaf') + '</g>';
+      }
+      g += back + front + path(lv, 'leaf') + path(stems, 'pencil soft') + buds + blooms;
+      // a butterfly drifting over the roses (its path and wing beats are CSS)
+      g += '<g class="butterfly"><g class="bf-wings">' +
+           '<path class="rose-yellow" d="M0 0Q-4.4 -5.4 -6 -1.6Q-5 1.6 0 0.4Z"/><path class="rose-coral" d="M0 0.4Q-3.6 3.6 -2.4 4.6Q0.2 3.4 0 0.4Z"/>' +
+           '<path class="rose-yellow" d="M0 0Q4.4 -5.4 6 -1.6Q5 1.6 0 0.4Z"/><path class="rose-coral" d="M0 0.4Q3.6 3.6 2.4 4.6Q-0.2 3.4 0 0.4Z"/>' +
+           '</g>' + path(stroke(0, -1.6, 0, 3.4, 0.05) + stroke(0, -1.6, -1.4, -3.6, 0.05) + stroke(0, -1.6, 1.4, -3.6, 0.05)) + '</g>';
+      g += '<text class="note-txt" x="' + (B0 + 2) + '" y="' + (BB + 9) + '" style="font-size:12px">rose garden</text>';
+      // tulips across the street, in front of the house (x 850..922)
+      var tul = '', tst = '', TC = ['rose-red', 'rose-yellow', 'rose-pink', 'rose-coral', 'rose-lilac', 'rose-white'];
+      for (var q = 0; q < 12; q++) {
+        var tx = 854 + q * 5.6, ty = 3.6 + (q % 2) * 0.8;
+        if (tx > 875 && tx < 896) continue;                 // keep the path to the door clear
+        tst += stroke(tx, ty, tx + (q % 3 - 1) * 0.4, 9, 0.08) + leaf(tx, 8.4, q % 2 ? -40 : 220);
+        tul += '<g class="sway s' + (q % 3) + '"><path class="' + TC[q % TC.length] + '" d="M' + f(tx - 1.5) + ' ' + f(ty - 2.4) + 'L' + f(tx - 0.7) + ' ' + f(ty - 1.2) +
+               'L' + f(tx) + ' ' + f(ty - 2.6) + 'L' + f(tx + 0.7) + ' ' + f(ty - 1.2) + 'L' + f(tx + 1.5) + ' ' + f(ty - 2.4) + 'Q' + f(tx + 1.6) + ' ' + f(ty + 0.4) + ' ' + f(tx) + ' ' + f(ty + 0.4) +
+               'Q' + f(tx - 1.6) + ' ' + f(ty + 0.4) + ' ' + f(tx - 1.5) + ' ' + f(ty - 2.4) + 'Z"/></g>';
+      }
+      g += path(line(850, 9.4, 924, 9.4, 0.2), 'pencil soft') + path(tst, 'leaf') + tul;
+      gGarden.innerHTML = g;
+    })();
     /* the cyclist's line along the pavement: it swings behind each tree and the
        people standing there, and drifts back out in between */
     var BIKE_PATH = [[-60, 228], [96, 233], [150, 217], [204, 226], [258, 215], [304, 230], [338, 216], [388, 233], [436, 217],
