@@ -738,7 +738,7 @@
         el('path', { 'class': 'fly-visor', d: 'M16.6 -5.6Q19.4 -4.8 18.6 -2.4Q17 -2 16.2 -3Z' }, gFly);
         flyPaths = [el('path', { 'class': 'pencil' }, gFly), el('path', { 'class': 'pencil soft' }, gFly)];
         var lab = el('text', { 'class': 'note-txt', x: -13, y: 3, 'text-anchor': 'end', style: 'font-size:7.5px' }, gFly);
-        lab.textContent = 'someday, Lalu';
+        lab.textContent = 'someday';
       }
       flyPaths[0].setAttribute('d', body);
       flyPaths[1].setAttribute('d', pack);
