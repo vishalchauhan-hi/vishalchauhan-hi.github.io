@@ -202,7 +202,12 @@
         "CHI 2026 Honourable Mention"
       ]
     ],
-    "links": [],
+    "links": [
+      {
+        "label": "Watch the video ↗",
+        "href": "https://www.youtube.com/watch?v=PORfzWr2v5c"
+      }
+    ],
     "papersTitle": "Publication",
     "steps": [
       {
