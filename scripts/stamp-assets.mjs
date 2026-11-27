@@ -41,4 +41,5 @@ if (check) {
   console.log(stale.length ? `✓ Updated ${stale.length} link(s).` : '✓ All version stamps already up to date.');
   if (existsSync('scripts/build-blog.mjs')) spawnSync(process.execPath, ['scripts/build-blog.mjs'], { stdio: 'inherit' });
   if (existsSync('scripts/build-projects.mjs')) spawnSync(process.execPath, ['scripts/build-projects.mjs'], { stdio: 'inherit' });
+  if (existsSync('scripts/build-home-moments.mjs')) spawnSync(process.execPath, ['scripts/build-home-moments.mjs'], { stdio: 'inherit' });
 }

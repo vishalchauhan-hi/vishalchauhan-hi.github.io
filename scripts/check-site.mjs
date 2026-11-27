@@ -12,6 +12,7 @@
 //   • broken JSON-LD (what Google reads about you)
 //   • CSS/JS links without the current version stamp (run: node scripts/stamp-assets.mjs)
 //   • blog pages out of date with their blog/*.md (run: node scripts/build-blog.mjs)
+//   • homepage moments out of date, or moments.html not newest first (run: node scripts/build-home-moments.mjs)
 //   • (on GitHub, or with --external) photos linked from other websites that no longer exist
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, dirname, extname, relative } from 'node:path';
@@ -154,6 +155,12 @@ if (existsSync(join(ROOT, 'scripts/build-blog.mjs'))) {
 if (existsSync(join(ROOT, 'scripts/build-projects.mjs'))) {
   const r = spawnSync(process.execPath, ['scripts/build-projects.mjs', '--check'], { cwd: ROOT, encoding: 'utf8' });
   if (r.status !== 0) for (const l of (r.stdout + r.stderr).trim().split('\n')) fail('projects', 1, l.replace(/^✗ /, ''));
+}
+
+/* ---------- homepage moments match moments.html (newest first) ---------- */
+if (existsSync(join(ROOT, 'scripts/build-home-moments.mjs'))) {
+  const r = spawnSync(process.execPath, ['scripts/build-home-moments.mjs', '--check'], { cwd: ROOT, encoding: 'utf8' });
+  if (r.status !== 0) for (const l of (r.stdout + r.stderr).trim().split('\n')) fail('moments', 1, l.replace(/^✗ /, ''));
 }
 
 /* ---------- CSS/JS links carry the current version stamp ---------- */
