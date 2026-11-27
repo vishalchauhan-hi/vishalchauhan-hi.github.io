@@ -169,7 +169,9 @@
                     photo, data-src = the file, the text = caption shown under it.
                     Put the cover photo as the first <li>.
                 An event with 1 photo just has 1 <li> (or no <ol> at all).
-             4. On the <figure> line, set data-note = the short handwritten caption
+             4. On the <figure> line, give the event a short unique id (e.g. id="chi-2027";
+                the homepage photo links to moments.html#chi-2027 and opens its photos),
+                set data-note = the short handwritten caption
                 for the homepage, and data-note-img = the photo to use there
                 (or leave data-note-img out to use the cover photo).
              5. Run: node scripts/stamp-assets.mjs
@@ -179,7 +181,7 @@
         <div class="moments-grid">
 
           <!-- Tsukada Lab farewell and welcome night · Nezu -->
-          <figure class="moment-tile" data-note="farewell + welcome night, Nezu" data-note-img="assets/images/notes/tlab-farewell-26.jpg">
+          <figure class="moment-tile" id="farewell-welcome-2026" data-note="farewell + welcome night, Nezu" data-note-img="assets/images/notes/tlab-farewell-26.jpg">
             <div class="moment-photo">
               <img src="assets/images/tiles/tlab-farewell-welcome-2026.webp" data-full="assets/images/tlab-farewell-welcome-2026.jpg" width="900" height="506" decoding="async"
                    alt="Tsukada Lab members around the tables at a restaurant in Nezu, raising drinks and thumbs up"
@@ -197,7 +199,7 @@
           </figure>
 
           <!-- CIV Summer School 2026 · Miyazaki -->
-          <figure class="moment-tile" data-note="giving “who goes first?”, CIV ’26 Miyazaki" data-note-img="assets/images/notes/civ26-talk.jpg" data-note-alt="Giving “Who goes first?” at the CIV Summer School 2026 in Miyazaki">
+          <figure class="moment-tile" id="civ-2026" data-note="giving “who goes first?”, CIV ’26 Miyazaki" data-note-img="assets/images/notes/civ26-talk.jpg" data-note-alt="Giving “Who goes first?” at the CIV Summer School 2026 in Miyazaki">
             <div class="moment-photo">
               <img src="assets/images/tiles/civ-3.webp" data-full="assets/images/CIV%203.jpg" width="900" height="600" decoding="async"
                    alt="CIV Summer School 2026 participants and lecturers, Miyazaki"
@@ -216,7 +218,7 @@
           </figure>
 
           <!-- ACM CHI 2026 · Barcelona -->
-          <figure class="moment-tile" data-note="CHI ’26, Barcelona" data-note-img="assets/images/notes/chi26-barcelona.jpg" data-note-alt="At CHI 2026 in Barcelona">
+          <figure class="moment-tile" id="chi-2026" data-note="CHI ’26, Barcelona" data-note-img="assets/images/notes/chi26-barcelona.jpg" data-note-alt="At CHI 2026 in Barcelona">
             <div class="moment-photo">
               <img src="assets/images/tiles/chi2026-barcelona.webp" data-full="assets/images/chi2026-barcelona.jpg" width="900" height="675" decoding="async"
                    alt="ACM CHI 2026 in Barcelona"
@@ -233,7 +235,7 @@
           </figure>
 
           <!-- ACM VRST 2025 · Montréal -->
-          <figure class="moment-tile" data-note="VRST ’25, Montréal" data-note-img="assets/images/vrst2025-montreal.jpg">
+          <figure class="moment-tile" id="vrst-2025" data-note="VRST ’25, Montréal" data-note-img="assets/images/vrst2025-montreal.jpg">
             <div class="moment-photo">
               <img src="assets/images/vrst2025-montreal.jpg" width="1600" height="1200" decoding="async"
                    alt="Presenting at ACM VRST 2025 in Montréal"
@@ -249,7 +251,7 @@
           </figure>
 
           <!-- CIV Summer School 2025 · Blonay -->
-          <figure class="moment-tile" data-note="CIV ’25, above Blonay" data-note-img="assets/images/notes/civ25-blonay.jpg" data-note-alt="Above Blonay, Switzerland, at the CIV Summer School 2025">
+          <figure class="moment-tile" id="civ-2025" data-note="CIV ’25, above Blonay" data-note-img="assets/images/notes/civ25-blonay.jpg" data-note-alt="Above Blonay, Switzerland, at the CIV Summer School 2025">
             <div class="moment-photo">
               <img src="assets/images/tiles/civ-blonay.webp" data-full="assets/images/civ-blonay.jpg" width="900" height="1200" decoding="async"
                    alt="CIV Summer School 2025 in Blonay, Switzerland"
@@ -262,7 +264,7 @@
           </figure>
 
           <!-- OzCHI 2024 · Brisbane -->
-          <figure class="moment-tile" data-note="OzCHI ’24 finalists, Brisbane" data-note-img="assets/images/ozchi2024-award.jpg">
+          <figure class="moment-tile" id="ozchi-2024" data-note="OzCHI ’24 finalists, Brisbane" data-note-img="assets/images/ozchi2024-award.jpg">
             <div class="moment-photo">
               <img src="assets/images/ozchi2024-award.jpg" width="1200" height="1600" decoding="async"
                    alt="OzCHI 2024 Student Design Challenge Finalist Award, Brisbane"
@@ -279,7 +281,7 @@
           </figure>
 
           <!-- ACM AutoUI 2024 · Stanford -->
-          <figure class="moment-tile" data-note="AutoUI ’24 at Stanford. had to." data-note-img="assets/images/notes/autoui24-stanford.jpg" data-note-alt="Sitting in a DeLorean at AutomotiveUI 2024, Stanford">
+          <figure class="moment-tile" id="autoui-2024" data-note="AutoUI ’24 at Stanford. had to." data-note-img="assets/images/notes/autoui24-stanford.jpg" data-note-alt="Sitting in a DeLorean at AutomotiveUI 2024, Stanford">
             <div class="moment-photo">
               <img src="assets/images/tiles/autoui-stanford.webp" data-full="assets/images/autoui-stanford.jpg" width="900" height="675" decoding="async"
                    alt="ACM AutoUI 2024 at Stanford"
@@ -292,7 +294,7 @@
           </figure>
 
           <!-- Tsukada Lab -->
-          <figure class="moment-tile" data-note="lab dinner" data-note-img="assets/images/notes/lab-dinner.jpg" data-note-alt="Dinner with the lab">
+          <figure class="moment-tile" id="tsukada-lab" data-note="lab dinner" data-note-img="assets/images/notes/lab-dinner.jpg" data-note-alt="Dinner with the lab">
             <div class="moment-photo">
               <img src="assets/images/tiles/tsukada-lab.webp" data-full="assets/images/tsukada-lab.jpg" width="900" height="785" decoding="async"
                    alt="Life in Tsukada Lab"
@@ -417,6 +419,7 @@
         lb.classList.remove('is-open');
         document.body.style.overflow = '';
         img.removeAttribute('src');
+        if (location.hash) history.replaceState(null, '', location.pathname + location.search);
         if (lastFocus && lastFocus.focus) lastFocus.focus();
       }
       document.getElementById('lbClose').addEventListener('click', close);
@@ -429,6 +432,18 @@
         else if (e.key === 'ArrowRight') show(idx + 1);
         else if (e.key === 'ArrowLeft') show(idx - 1);
       });
+      // opened from a homepage photo (moments.html#event-id): jump to that event and show its photos
+      function openFromHash() {
+        var id = decodeURIComponent(location.hash.slice(1));
+        var tile = id && document.getElementById(id);
+        if (!tile || !tile.classList.contains('moment-tile') || !tile._photos) return;
+        tile.scrollIntoView({ block: 'center' });
+        lastFocus = tile;
+        open(tile, 0);
+        lastFocus = tile;
+      }
+      openFromHash();
+      window.addEventListener('hashchange', openFromHash);
       var x0 = null;
       lb.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; }, { passive: true });
       lb.addEventListener('touchend', function (e) {
