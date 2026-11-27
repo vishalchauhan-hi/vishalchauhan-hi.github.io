@@ -479,21 +479,30 @@
        cross it rolls up to the crossing, and rolls back home afterwards.
        The LED swaps instantly (real LEDs don't fade). */
     var POLE_HOME = 704, GY = 251, PS = 1.2;   // PS: drawing scale
-    var pole = { x: POLE_HOME, v: 0, spin: 0, idleSince: null, sig: '', drawn: '', boil: 0, at: false };
-    function wheel(cx, cy, rad, a) {
+    var pole = { x: POLE_HOME, v: 0, spin: 0, idleSince: null, sig: '', drawn: '', boil: 0, at: false,
+                 lean: 0, leanV: 0, bob: 0, pv: 0, pvy: 0, els: null };
+    /* a wheel: tyre and hub are drawn once; the crossed spokes sit in their own group
+       so they can turn every frame without redrawing the pencil lines */
+    function wheel(cx, cy, rad) {
+      var r = rad * .8;
       return '<circle class="fill-car" cx="' + cx + '" cy="' + cy + '" r="' + rad + '"/>' +
              path(ellipse(cx, cy, rad, rad, .25) + ellipse(cx, cy, rad * .35, rad * .35, .1)) +
-             path(stroke(cx - Math.cos(a) * rad * .8, cy - Math.sin(a) * rad * .8, cx + Math.cos(a) * rad * .8, cy + Math.sin(a) * rad * .8, .1), 'pencil soft');
+             '<g class="pole-spokes" data-c="' + cx + ' ' + cy + '">' +
+             path(stroke(cx - r, cy, cx + r, cy, .1) + stroke(cx, cy - r, cx, cy + r, .1), 'pencil soft') + '</g>';
     }
     function drawPole() {
-      var walk = pole.sig === 'walk', a = pole.spin, h = '';
-      // back wheel, base box (front face + side), front wheels
-      h += wheel(13, -5, 3, a);
+      var walk = pole.sig === 'walk', h = '';
+      // the base: back wheel, box (front face + side), front wheels. It bumps a little as it rolls.
+      h += '<g class="pole-base">';
+      h += wheel(13, -5, 3);
       h += '<path class="fill-car" d="M-13 -17H9L14 -21V-8L9 -4H-13Z"/>' +
            path(line(-13, -17, 9, -17, .4) + line(-13, -17, -13, -4, .4) + line(9, -17, 9, -4, .4) + line(-13, -4, 9, -4, .4) +
                 stroke(9, -17, 14, -21, .2) + stroke(14, -21, 14, -8, .2) + stroke(14, -8, 9, -4, .2) + stroke(-13, -17, -8, -21, .2) + stroke(-8, -21, 14, -21, .2)) +
            path(stroke(-9, -14, 5, -14, .15), 'pencil soft');
-      h += wheel(-9, -2.5, 3.6, a) + wheel(6, -2.5, 3.6, a);
+      h += wheel(-9, -2.5, 3.6) + wheel(6, -2.5, 3.6);
+      h += text(-17, 1, 'SPIU', 'note-txt small', 'end') + '</g>';
+      // the tall part (pole, arms, ring, camera) sways on the base like a mast on a cart
+      h += '<g class="pole-top">';
       // pole
       h += '<rect class="fill-car" x="-2" y="-40" width="4" height="22"/>' +
            path(line(-2, -40, -2, -18, .2) + line(2, -40, 2, -18, .2) + ellipse(0, -19, 4, 1.2, .1));
@@ -510,8 +519,20 @@
            path(ellipse(-1.5, -56, 1.8, 1.8, .1) + ellipse(-1.5, -56, .6, .6, .05));
       // the readable word beside it, and its name underneath
       h += text(-19, -40, walk ? 'WALK' : 'STOP', 'led ' + (walk ? 'walk' : 'stop'), 'end');   // on the left, clear of the person beside it
-      h += text(-17, 1, 'SPIU', 'note-txt small', 'end');
+      h += '</g>';
       gPole.innerHTML = h;
+      pole.els = { base: gPole.querySelector('.pole-base'), top: gPole.querySelector('.pole-top'),
+                   spokes: Array.prototype.slice.call(gPole.querySelectorAll('.pole-spokes')) };
+      poseParts();
+    }
+    /* every frame: turn the spokes, bump the base, sway the mast (cheap: transforms only) */
+    function poseParts() {
+      var e = pole.els;
+      if (!e) return;
+      var deg = f(pole.spin * 57.2958);
+      e.spokes.forEach(function (g) { g.setAttribute('transform', 'rotate(' + deg + ' ' + g.getAttribute('data-c') + ')'); });
+      e.base.setAttribute('transform', 'translate(0 ' + f(pole.bob) + ')');
+      e.top.setAttribute('transform', 'translate(0 ' + f(pole.bob) + ') rotate(' + f(pole.lean) + ' 0 -18)');
     }
     function setPole(walk) { pole.sig = walk ? 'walk' : 'stop'; }
     /* the four conditions of the field study: no pole at all, a pole that stays
@@ -558,7 +579,19 @@
       pole.v += ((dist ? dx / dist * sp : 0) - pole.v) * k;
       pole.vy += ((dist ? dy / dist * sp : 0) - pole.vy) * k;
       pole.x += pole.v * dt; pole.y += pole.vy * dt;
-      pole.spin += Math.hypot(pole.v, pole.vy) * (pole.v < 0 ? -1 : 1) * dt / 3.6;
+      var speed = Math.hypot(pole.v, pole.vy);
+      pole.spin += speed * (pole.v < 0 ? -1 : 1) * dt / 5;
+      /* the mast is tall and the base is short: when the base speeds up the top lags
+         behind, when it brakes the top tips forward, then it settles with a small wobble.
+         A damped spring driven by the base's acceleration. */
+      if (dt > 0 && !reduceMotion) {
+        var ax = (pole.v - pole.pv) / dt, ay = (pole.vy - pole.pvy) / dt;
+        var push = -(ax + ay * .5) * .45;
+        pole.leanV += (-60 * pole.lean - 7 * pole.leanV + push) * dt;
+        pole.lean = Math.max(-5, Math.min(5, pole.lean + pole.leanV * dt));
+        pole.bob = speed > 2 ? -Math.abs(Math.sin(pole.spin * 2)) * Math.min(.5, speed / 160) : pole.bob * .8;
+      }
+      pole.pv = pole.v; pole.pvy = pole.vy;
       pole.at = (pole.mode === 'kerb' || pole.mode === 'escort') && dist < 6;
     }
     function renderPole() {
@@ -567,6 +600,7 @@
       var moving = Math.hypot(pole.v, pole.vy) > 1;
       pole.boil += 1;
       if (pole.sig !== pole.drawn || (moving && pole.boil % 6 === 0)) { pole.drawn = pole.sig; drawPole(); }
+      else poseParts();
       gPole.setAttribute('transform', 'translate(' + f(pole.x) + ' ' + f(pole.y) + ') scale(' + PS + ')');
     }
 
